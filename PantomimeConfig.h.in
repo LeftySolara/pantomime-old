@@ -1,0 +1,6 @@
+/* Configured options and settings for Pantomime */
+
+#define Pantomime_VERSION_MAJOR @Pantomime_VERSION_MAJOR@
+#define Pantomime_VERSION_MINOR @Pantomime_VERSION_MINOR@
+
+#define Pantomime_COPYRIGHT_LINE "Copyright (c) 2017 Jalen Adams"
