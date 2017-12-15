@@ -20,4 +20,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 # Recursively add source files to the build tree
 file(GLOB_RECURSE SOURCE_FILES "src/*.c")
 add_executable(Pantomime ${SOURCE_FILES})
+
 set_target_properties(Pantomime PROPERTIES OUTPUT_NAME "pantomime")
+
+target_link_libraries(Pantomime mpdclient)
