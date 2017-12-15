@@ -1,5 +1,5 @@
 /******************************************************************************
- * main.c : entry point for the program
+ * mpdclient.h : interface for interacting with MPD
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,15 +21,11 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include <stdio.h>
-#include "PantomimeConfig.h"
+#ifndef MPDCLIENT_H
+#define MPDCLIENT_H
 
-int main(int argc, char **argv)
-{
-    fprintf(stdout,
-            "Pantomime Version %d.%d\n",
-            Pantomime_VERSION_MAJOR,
-            Pantomime_VERSION_MINOR);
+#include <mpd/client.h>
 
-    return 0;
-}
+struct mpd_connection *mpd_connect(const char *host, int port, int timeout);
+
+#endif
