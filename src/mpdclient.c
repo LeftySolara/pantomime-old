@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include "mpdclient.h"
 
-struct mpd *mpd_connect(const char *host, int port, int timeout)
+struct mpdclient *mpdclient_connect(const char *host, int port, int timeout)
 {
     /* Set some default values */
     if (host == NULL)
@@ -35,9 +35,15 @@ struct mpd *mpd_connect(const char *host, int port, int timeout)
     if (timeout == 0)
         timeout = 30000;
 
-    struct mpd *mpd = malloc(sizeof(mpd));
+    struct mpdclient *mpd = malloc(sizeof(mpd));
     mpd->connection = mpd_connection_new(host, port, timeout);
     mpd->last_error= mpd_connection_get_error(mpd->connection);
 
     return mpd;
+}
+
+void mpdclient_free(struct mpdclient *mpd)
+{
+    mpd_connection_free(mpd->connection);
+    free(mpd);
 }

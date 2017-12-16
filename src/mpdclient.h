@@ -26,11 +26,12 @@
 
 #include <mpd/client.h>
 
-struct mpd {
+struct mpdclient {
     struct mpd_connection *connection;
     enum mpd_error last_error;
 };
 
-struct mpd *mpd_connect(const char *host, int port, int timeout);
+struct mpdclient *mpdclient_connect(const char *host, int port, int timeout);
+void mpdclient_free(struct mpdclient *mpd);
 
 #endif
