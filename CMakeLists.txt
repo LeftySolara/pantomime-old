@@ -8,6 +8,11 @@ set(CMAKE_BUILD_TYPE Debug)
 set(Pantomime_VERSION_MAJOR 0)
 set(Pantomime_VERSION_MINOR 1)
 
+# Set up ncurses
+set(CURSES_USE_NCURSES TRUE)
+find_package(Curses REQUIRED)
+include_directories(${CURSES_INCLUDE_DIR})
+
 # Configure a header file to pass some of the CMake settings to the source code
 configure_file (
   "${PROJECT_SOURCE_DIR}/PantomimeConfig.h.in"
@@ -22,5 +27,5 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.c")
 add_executable(Pantomime ${SOURCE_FILES})
 
 set_target_properties(Pantomime PROPERTIES OUTPUT_NAME "pantomime")
-
+target_link_libraries(Pantomime -lpanel ${CURSES_LIBRARIES})
 target_link_libraries(Pantomime mpdclient)
