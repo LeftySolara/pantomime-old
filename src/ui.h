@@ -27,4 +27,10 @@
 #include <ncurses.h>
 #include <panel.h>
 
+enum panels {QUEUE, NUM_PANELS};
+
+void ncurses_init();
+PANEL **panels_init();
+void panels_free(PANEL **panels);
+
 #endif

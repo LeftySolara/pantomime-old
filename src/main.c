@@ -23,13 +23,21 @@
 
 #include <stdio.h>
 #include "PantomimeConfig.h"
+#include "ui.h"
 
 int main(int argc, char **argv)
 {
-    fprintf(stdout,
-            "Pantomime Version %d.%d\n",
-            Pantomime_VERSION_MAJOR,
-            Pantomime_VERSION_MINOR);
+    ncurses_init();
+    PANEL **panels = panels_init();
+
+    printw("Hello World!", panel_window(panels[QUEUE]));
+    top_panel(panels[QUEUE]);
+    update_panels();
+    doupdate();
+    getch();
+
+    panels_free(panels);
+    endwin();
 
     return 0;
 }

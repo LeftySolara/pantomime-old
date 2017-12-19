@@ -20,3 +20,41 @@
  * You should have received a copy of the GNU General Public License
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
+
+#include <locale.h>
+#include <stdlib.h>
+#include "ui.h"
+
+void ncurses_init()
+{
+    setlocale(LC_ALL, "");
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+    keypad(stdscr, TRUE);
+    refresh();
+}
+
+PANEL **panels_init()
+{
+    PANEL **panels = calloc(NUM_PANELS, sizeof(PANEL *));
+
+    WINDOW *win;
+    for (int i = 0; i < NUM_PANELS; ++i) {
+        win = newwin(LINES, COLS, 1, 1);
+        panels[i] = new_panel(win);
+    }
+
+    return panels;
+}
+
+void panels_free(PANEL **panels)
+{
+    for (int i = 0; i < NUM_PANELS; ++i) {
+        delwin(panel_window(panels[i]));
+        del_panel(panels[i]);
+    }
+
+    free(panels);
+}
