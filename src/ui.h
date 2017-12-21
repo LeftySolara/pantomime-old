@@ -29,8 +29,16 @@
 
 enum panels {QUEUE, NUM_PANELS};
 
+struct ui {
+    PANEL **panels;
+};
+
 void ncurses_init();
 PANEL **panels_init();
+struct ui *ui_init();
+
 void panels_free(PANEL **panels);
+void ui_free(struct ui *ui);
+
 
 #endif

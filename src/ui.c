@@ -32,6 +32,7 @@ void ncurses_init()
     cbreak();
     noecho();
     curs_set(0);
+    nodelay(stdscr, TRUE);
     keypad(stdscr, TRUE);
     refresh();
 }
@@ -49,12 +50,28 @@ PANEL **panels_init()
     return panels;
 }
 
+struct ui *ui_init()
+{
+    ncurses_init();
+    struct ui *ui = malloc(sizeof(*ui));
+    ui->panels = panels_init();
+    top_panel(ui->panels[QUEUE]);
+
+    return ui;
+}
+
 void panels_free(PANEL **panels)
 {
     for (int i = 0; i < NUM_PANELS; ++i) {
         delwin(panel_window(panels[i]));
         del_panel(panels[i]);
     }
-
     free(panels);
+}
+
+void ui_free(struct ui *ui)
+{
+    panels_free(ui->panels);
+    free(ui);
+    endwin();
 }

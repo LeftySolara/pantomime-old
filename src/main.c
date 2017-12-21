@@ -28,23 +28,18 @@
 
 int main(int argc, char **argv)
 {
-    ncurses_init();
-    PANEL **panels = panels_init();
+    struct ui *ui = ui_init();
     struct mpdclient *mpd = mpdclient_connect("localhost", 6600, 30000);
 
-    if (mpd->last_error == MPD_ERROR_SUCCESS)
-        printw("Connected to MPD", panel_window(panels[QUEUE]));
-    else
-        printw("Unable to connect to MPD", panel_window(panels[QUEUE]));
-
-    top_panel(panels[QUEUE]);
-    update_panels();
-    doupdate();
-    getch();
+    /* main loop */
+    char ch;
+    while ((ch = getch() != 'q')) {
+        update_panels();
+        doupdate();
+    }
 
     mpdclient_free(mpd);
-    panels_free(panels);
-    endwin();
+    ui_free(ui);
 
     return 0;
 }
