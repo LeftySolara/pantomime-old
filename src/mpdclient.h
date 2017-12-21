@@ -42,4 +42,6 @@ extern struct mpdclient *mpdclient;
 struct mpdclient *mpdclient_connect(char *host, int port, int timeout);
 void mpdclient_free(struct mpdclient *mpd);
 
+void mpdclient_update(struct mpdclient *mpd);
+
 #endif

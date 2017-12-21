@@ -50,3 +50,9 @@ void mpdclient_free(struct mpdclient *mpd)
         mpd_status_free(mpd->status);
     free(mpd);
 }
+
+void mpdclient_update(struct mpdclient *mpd)
+{
+    mpd->status = mpd_run_status(mpd->connection);
+    mpd->last_error = mpd_connection_get_error(mpd->connection);
+}
