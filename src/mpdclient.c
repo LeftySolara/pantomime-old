@@ -27,7 +27,7 @@
 
 struct mpdclient *mpdclient_connect(char *host, int port, int timeout)
 {
-    struct mpdclient *mpd = malloc(sizeof(mpd));
+    struct mpdclient *mpd = malloc(sizeof(*mpd));
 
     /* Set some default values */
     mpd->host = (host == NULL) ? "localhost" : host;
@@ -44,6 +44,9 @@ struct mpdclient *mpdclient_connect(char *host, int port, int timeout)
 
 void mpdclient_free(struct mpdclient *mpd)
 {
-    mpd_connection_free(mpd->connection);
+    if (mpd->connection)
+        mpd_connection_free(mpd->connection);
+    if (mpd->status)
+        mpd_status_free(mpd->status);
     free(mpd);
 }

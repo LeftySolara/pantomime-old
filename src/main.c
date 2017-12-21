@@ -23,19 +23,26 @@
 
 #include <stdio.h>
 #include "PantomimeConfig.h"
+#include "mpdclient.h"
 #include "ui.h"
 
 int main(int argc, char **argv)
 {
     ncurses_init();
     PANEL **panels = panels_init();
+    struct mpdclient *mpd = mpdclient_connect("localhost", 6600, 30000);
 
-    printw("Hello World!", panel_window(panels[QUEUE]));
+    if (mpd->last_error == MPD_ERROR_SUCCESS)
+        printw("Connected to MPD", panel_window(panels[QUEUE]));
+    else
+        printw("Unable to connect to MPD", panel_window(panels[QUEUE]));
+
     top_panel(panels[QUEUE]);
     update_panels();
     doupdate();
     getch();
 
+    mpdclient_free(mpd);
     panels_free(panels);
     endwin();
 
