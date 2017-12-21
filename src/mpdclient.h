@@ -28,10 +28,18 @@
 
 struct mpdclient {
     struct mpd_connection *connection;
+    struct mpd_status *status;
     enum mpd_error last_error;
+    int current_song_id;
+
+    char *host;
+    int port;
+    int timeout;
 };
 
-struct mpdclient *mpdclient_connect(const char *host, int port, int timeout);
+extern struct mpdclient *mpdclient;
+
+struct mpdclient *mpdclient_connect(char *host, int port, int timeout);
 void mpdclient_free(struct mpdclient *mpd);
 
 #endif

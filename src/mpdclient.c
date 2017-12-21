@@ -25,18 +25,18 @@
 #include <stdio.h>
 #include "mpdclient.h"
 
-struct mpdclient *mpdclient_connect(const char *host, int port, int timeout)
+struct mpdclient *mpdclient_connect(char *host, int port, int timeout)
 {
-    /* Set some default values */
-    if (host == NULL)
-        host = "localhost";
-    if (port == 0)
-        port = 6600;
-    if (timeout == 0)
-        timeout = 30000;
-
     struct mpdclient *mpd = malloc(sizeof(mpd));
-    mpd->connection = mpd_connection_new(host, port, timeout);
+
+    /* Set some default values */
+    mpd->host = (host == NULL) ? "localhost" : host;
+    mpd->port = (port == 0) ? 6600 : port;
+    mpd->timeout = (timeout == 0) ? 30000 : timeout;
+
+    mpd->connection = mpd_connection_new(mpd->host, mpd->port, mpd->timeout);
+    mpd->status = mpd_run_status(mpd->connection);
+    mpd->current_song_id = mpd_status_get_song_id(mpd->status);
     mpd->last_error= mpd_connection_get_error(mpd->connection);
 
     return mpd;
