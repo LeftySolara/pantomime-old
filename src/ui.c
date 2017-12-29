@@ -75,6 +75,7 @@ void panels_free(PANEL **panels)
 void ui_free(struct ui *ui)
 {
     panels_free(ui->panels);
+    statusbar_free(ui->statusbar);
     free(ui);
     endwin();
 }
