@@ -50,12 +50,15 @@ PANEL **panels_init()
     return panels;
 }
 
-struct ui *ui_init()
+struct ui *ui_init(struct mpdclient *mpd)
 {
     ncurses_init();
     struct ui *ui = malloc(sizeof(*ui));
+
     ui->panels = panels_init();
     top_panel(ui->panels[QUEUE]);
+
+    ui->statusbar = statusbar_init(mpd);
 
     return ui;
 }

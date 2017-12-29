@@ -30,9 +30,15 @@
 struct statusbar {
     WINDOW *win;
     int queue_len;
+    char *duration_label;
+    char *modes_label;
 };
 
 struct statusbar *statusbar_init(struct mpdclient *mpd);
 void statusbar_free(struct statusbar *statusbar);
+
+void statusbar_set_queue_length(struct statusbar *statusbar, struct mpdclient *mpd);
+void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd);
+void statusbar_set_modes_label(struct statusbar *statusbar, struct mpdclient *mpd);
 
 #endif

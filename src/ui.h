@@ -26,16 +26,18 @@
 
 #include <ncurses.h>
 #include <panel.h>
+#include "statusbar.h"
 
 enum panels {QUEUE, NUM_PANELS};
 
 struct ui {
     PANEL **panels;
+    struct statusbar *statusbar;
 };
 
 void ncurses_init();
 PANEL **panels_init();
-struct ui *ui_init();
+struct ui *ui_init(struct mpdclient *mpd);
 
 void panels_free(PANEL **panels);
 void ui_free(struct ui *ui);

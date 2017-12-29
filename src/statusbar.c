@@ -40,3 +40,17 @@ void statusbar_free(struct statusbar *statusbar)
     statusbar->win = NULL;
     free(statusbar);
 }
+
+void statusbar_set_queue_length(struct statusbar *statusbar, struct mpdclient *mpd)
+{
+    statusbar->queue_len = mpd_status_get_queue_length(mpd->status);
+}
+
+void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd)
+{
+    enum mpd_state state = mpd_status_get_state(mpd);
+    if (state == MPD_STATE_UNKNOWN || state == MPD_STATE_STOP) {
+        statusbar->duration_label = "";
+        return;
+    }
+}

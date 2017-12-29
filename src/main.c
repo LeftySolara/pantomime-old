@@ -28,8 +28,8 @@
 
 int main(int argc, char **argv)
 {
-    struct ui *ui = ui_init();
     struct mpdclient *mpd = mpdclient_connect("localhost", 6600, 30000);
+    struct ui *ui = ui_init(mpd);
 
     /* main loop */
     char ch;
