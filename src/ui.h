@@ -42,5 +42,7 @@ struct ui *ui_init(struct mpdclient *mpd);
 void panels_free(PANEL **panels);
 void ui_free(struct ui *ui);
 
+void ui_draw(struct ui *ui, struct mpdclient *mpd);
+
 
 #endif

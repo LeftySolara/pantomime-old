@@ -43,7 +43,7 @@ PANEL **panels_init()
 
     WINDOW *win;
     for (int i = 0; i < NUM_PANELS; ++i) {
-        win = newwin(LINES, COLS, 1, 1);
+        win = newwin(LINES - 2, COLS, 1, 1);
         panels[i] = new_panel(win);
     }
 
@@ -78,4 +78,9 @@ void ui_free(struct ui *ui)
     statusbar_free(ui->statusbar);
     free(ui);
     endwin();
+}
+
+void ui_draw(struct ui *ui, struct mpdclient *mpd)
+{
+    statusbar_draw(ui->statusbar, mpd);
 }

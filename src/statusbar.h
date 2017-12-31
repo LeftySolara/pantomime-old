@@ -41,4 +41,6 @@ void statusbar_set_queue_length(struct statusbar *statusbar, struct mpdclient *m
 void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd);
 void statusbar_set_modes_label(struct statusbar *statusbar, struct mpdclient *mpd);
 
+void statusbar_draw(struct statusbar *statusbar, struct mpdclient *mpd);
+
 #endif

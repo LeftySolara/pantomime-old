@@ -33,7 +33,10 @@ int main(int argc, char **argv)
 
     /* main loop */
     char ch;
+    halfdelay(TRUE);
     while ((ch = getch() != 'q')) {
+        mpd->status = mpd_run_status(mpd->connection);
+        ui_draw(ui, mpd);
         update_panels();
         doupdate();
     }

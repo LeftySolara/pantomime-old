@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ncurses.h>
 #include "statusbar.h"
 
 #define DURATION_FORMAT "[123:45/123:45]"
@@ -32,7 +33,8 @@ struct statusbar *statusbar_init(struct mpdclient *mpd)
     struct statusbar *statusbar = malloc(sizeof(*statusbar));
 
     statusbar->win = newwin(2, COLS, LINES - 2, 0);
-    statusbar->queue_len = mpd_status_get_queue_length(mpd->status);
+    statusbar_set_queue_length(statusbar, mpd);
+    statusbar_set_duration_label(statusbar, mpd);
 
     return statusbar;
 }
@@ -78,4 +80,15 @@ void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient 
 
     snprintf(statusbar->duration_label, str_sz, "[%d:%02d/%d:%02d]",
              elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
+}
+
+void statusbar_draw(struct statusbar *statusbar, struct mpdclient *mpd)
+{
+    wclear(statusbar->win);
+    whline(statusbar->win, ACS_HLINE, getmaxx(statusbar->win));
+
+    statusbar_set_duration_label(statusbar, mpd);
+
+    mvwaddstr(statusbar->win, 1, 0, statusbar->duration_label);
+    wnoutrefresh(statusbar->win);
 }
