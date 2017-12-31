@@ -29,7 +29,7 @@
 
 struct statusbar {
     WINDOW *win;
-    int queue_len;
+    unsigned int queue_len;
     char *duration_label;
     char *modes_label;
 };

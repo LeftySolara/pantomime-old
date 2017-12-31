@@ -22,7 +22,10 @@
  ***************************************************************************/
 
 #include <stdlib.h>
+#include <string.h>
 #include "statusbar.h"
+
+#define DURATION_FORMAT "[123:45/123:45]"
 
 struct statusbar *statusbar_init(struct mpdclient *mpd)
 {
@@ -38,6 +41,10 @@ void statusbar_free(struct statusbar *statusbar)
 {
     delwin(statusbar->win);
     statusbar->win = NULL;
+
+    free(statusbar->duration_label);
+    statusbar->duration_label = NULL;
+
     free(statusbar);
 }
 
@@ -48,9 +55,27 @@ void statusbar_set_queue_length(struct statusbar *statusbar, struct mpdclient *m
 
 void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd)
 {
-    enum mpd_state state = mpd_status_get_state(mpd);
+    enum mpd_state state = mpd_status_get_state(mpd->status);
     if (state == MPD_STATE_UNKNOWN || state == MPD_STATE_STOP) {
-        statusbar->duration_label = "";
+        statusbar->duration_label = NULL;
         return;
     }
+
+    unsigned int total_time = mpd_status_get_total_time(mpd->status);
+    unsigned int elapsed_time = mpd_status_get_elapsed_time(mpd->status);
+
+    if (total_time == 0)  /* no song playing */
+        statusbar->duration_label = NULL;
+
+    const size_t str_sz = strlen(DURATION_FORMAT) + 1;
+    statusbar->duration_label = realloc(statusbar->duration_label,
+                                        str_sz * sizeof(char));
+
+    unsigned int total_minutes = total_time / 60;
+    unsigned int total_seconds = total_time % 60;
+    unsigned int elapsed_minutes = elapsed_time / 60;
+    unsigned int elapsed_seconds = elapsed_time % 60;
+
+    snprintf(statusbar->duration_label, str_sz, "[%d:%02d/%d:%02d]",
+             elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
 }
