@@ -26,6 +26,7 @@
 #include <ncurses.h>
 #include "statusbar.h"
 
+#define QUEUE_LEN_STRING "songs in queue"
 #define DURATION_FORMAT "[123:45/123:45]"
 
 struct statusbar *statusbar_init(struct mpdclient *mpd)
@@ -33,7 +34,7 @@ struct statusbar *statusbar_init(struct mpdclient *mpd)
     struct statusbar *statusbar = malloc(sizeof(*statusbar));
 
     statusbar->win = newwin(2, COLS, LINES - 2, 0);
-    statusbar_set_queue_length(statusbar, mpd);
+    statusbar_set_queue_length_label(statusbar, mpd);
     statusbar_set_duration_label(statusbar, mpd);
 
     return statusbar;
@@ -50,9 +51,16 @@ void statusbar_free(struct statusbar *statusbar)
     free(statusbar);
 }
 
-void statusbar_set_queue_length(struct statusbar *statusbar, struct mpdclient *mpd)
+void statusbar_set_queue_length_label(struct statusbar *statusbar, struct mpdclient *mpd)
 {
-    statusbar->queue_len = mpd_status_get_queue_length(mpd->status);
+    unsigned int queue_len = mpd_status_get_queue_length(mpd->status);
+
+    /* account for max number of digits in an unsigned int and a null character */
+    const size_t str_sz = strlen(QUEUE_LEN_STRING) + 12;
+    statusbar->queue_len_label = realloc(statusbar->queue_len_label,
+                                         str_sz * sizeof(char));
+
+    snprintf(statusbar->queue_len_label, str_sz, "%u %s", queue_len, QUEUE_LEN_STRING);
 }
 
 void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd)
@@ -87,8 +95,12 @@ void statusbar_draw(struct statusbar *statusbar, struct mpdclient *mpd)
     wclear(statusbar->win);
     whline(statusbar->win, ACS_HLINE, getmaxx(statusbar->win));
 
+    statusbar_set_queue_length_label(statusbar, mpd);
     statusbar_set_duration_label(statusbar, mpd);
 
-    mvwaddstr(statusbar->win, 1, 0, statusbar->duration_label);
+    mvwaddstr(statusbar->win, 1, COLS - strlen(statusbar->duration_label),
+              statusbar->duration_label);
+    mvwaddstr(statusbar->win, 1, 0, statusbar->queue_len_label);
+
     wnoutrefresh(statusbar->win);
 }
