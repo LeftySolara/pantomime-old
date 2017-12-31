@@ -28,6 +28,7 @@
 
 #define QUEUE_LEN_STRING "songs in queue"
 #define DURATION_FORMAT "[123:45/123:45]"
+#define MODE_OFF_CHAR '-'
 
 struct statusbar *statusbar_init(struct mpdclient *mpd)
 {
@@ -36,6 +37,7 @@ struct statusbar *statusbar_init(struct mpdclient *mpd)
     statusbar->win = newwin(2, COLS, LINES - 2, 0);
     statusbar_set_queue_length_label(statusbar, mpd);
     statusbar_set_duration_label(statusbar, mpd);
+    statusbar_set_modes_label(statusbar, mpd);
 
     return statusbar;
 }
@@ -47,6 +49,9 @@ void statusbar_free(struct statusbar *statusbar)
 
     free(statusbar->duration_label);
     statusbar->duration_label = NULL;
+
+    free(statusbar->modes_label);
+    statusbar->modes_label = NULL;
 
     free(statusbar);
 }
@@ -63,6 +68,7 @@ void statusbar_set_queue_length_label(struct statusbar *statusbar, struct mpdcli
     snprintf(statusbar->queue_len_label, str_sz, "%u %s", queue_len, QUEUE_LEN_STRING);
 }
 
+/* This will be moved to the header bar later */
 void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd)
 {
     enum mpd_state state = mpd_status_get_state(mpd->status);
@@ -90,17 +96,33 @@ void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient 
              elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
 }
 
+void statusbar_set_modes_label(struct statusbar *statusbar, struct mpdclient *mpd)
+{
+    const int mode_count = 4; /* mpd has four modes built in */
+    statusbar->modes_label = realloc(statusbar->modes_label, mode_count + 1);
+    memset(statusbar->modes_label, MODE_OFF_CHAR, mode_count);
+
+    if (mpd_status_get_repeat(mpd->status))
+        statusbar->modes_label[0] = 'r';
+    if (mpd_status_get_random(mpd->status))
+        statusbar->modes_label[1] = 'z';
+    if (mpd_status_get_single(mpd->status))
+        statusbar->modes_label[2] = 's';
+    if (mpd_status_get_consume(mpd->status))
+        statusbar->modes_label[3] = 'c';
+}
+
 void statusbar_draw(struct statusbar *statusbar, struct mpdclient *mpd)
 {
     wclear(statusbar->win);
     whline(statusbar->win, ACS_HLINE, getmaxx(statusbar->win));
 
     statusbar_set_queue_length_label(statusbar, mpd);
-    statusbar_set_duration_label(statusbar, mpd);
+    statusbar_set_modes_label(statusbar, mpd);
 
-    mvwaddstr(statusbar->win, 1, COLS - strlen(statusbar->duration_label),
-              statusbar->duration_label);
     mvwaddstr(statusbar->win, 1, 0, statusbar->queue_len_label);
+    mvwaddstr(statusbar->win, 1, COLS - strlen(statusbar->modes_label),
+              statusbar->modes_label);
 
     wnoutrefresh(statusbar->win);
 }
