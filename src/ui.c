@@ -24,9 +24,8 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
+#include "labels.h"
 #include "ui.h"
-
-extern struct mpdclient *mpd;
 
 void ncurses_init()
 {
@@ -57,6 +56,10 @@ struct ui *ui_init()
 {
     ncurses_init();
     struct ui *ui = malloc(sizeof(*ui));
+
+    ui->label_duration = NULL;
+    ui->label_queue = NULL;
+    ui->label_modes = NULL;
 
     ui->panels = panels_init();
     top_panel(ui->panels[QUEUE]);
@@ -100,58 +103,4 @@ void ui_draw(struct ui *ui)
     statusbar_draw(ui->statusbar, ui);
     update_panels();
     doupdate();
-}
-
-/* Create a label for the progress of the currently playing song */
-char *create_label_duration(char *buffer)
-{
-    if (mpdclient->state == MPD_STATE_UNKNOWN || mpdclient->state == MPD_STATE_STOP)
-        return NULL;
-
-    unsigned int total_time = mpd_status_get_total_time(mpdclient->status);
-    unsigned int elapsed_time = mpd_status_get_elapsed_time(mpdclient->status);
-    const size_t label_size = strlen("123:45 / 123:45") + 1;
-
-    unsigned int total_minutes = total_time / 60;
-    unsigned int total_seconds = total_time % 60;
-    unsigned int elapsed_minutes = elapsed_time / 60;
-    unsigned int elapsed_seconds = elapsed_time % 60;
-
-    buffer = realloc(buffer, label_size);
-    snprintf(buffer, label_size, "%d:%02d / %d:%02d",
-             elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
-
-    return buffer;
-
-}
-
-/* Create a label for the number of songs in the queue */
-char *create_label_queue(char *buffer)
-{
-    /* account for max number of digits in an unsigned int and a null character */
-    const size_t label_size = strlen("songs in queue") + 12;
-    unsigned int queue_length = mpd_status_get_queue_length(mpdclient->status);
-
-    buffer = realloc(buffer, label_size);
-    snprintf(buffer, label_size, "%u %s", queue_length, "songs in queue");
-
-    return buffer;
-}
-
-char *create_label_modes(char *buffer)
-{
-    const int mode_count = 4; /* mpd has four modes built in */
-    buffer = realloc(buffer, mode_count + 1);
-    memset(buffer, '-', mode_count);
-
-    if (mpd_status_get_repeat(mpdclient->status))
-        buffer[0] = 'r';
-    if (mpd_status_get_random(mpdclient->status))
-        buffer[1] = 'z';
-    if (mpd_status_get_single(mpdclient->status))
-        buffer[2] = 's';
-    if (mpd_status_get_consume(mpdclient->status))
-        buffer[3] = 'c';
-
-    return buffer;
 }

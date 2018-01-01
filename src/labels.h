@@ -1,5 +1,5 @@
 /******************************************************************************
- * ui.h : user-facing elements of the program
+ * labels.h : functions for creating human-readable strings for MPD data
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,31 +21,11 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#ifndef UI_H
-#define UI_H
+#ifndef LABELS_H
+#define LABELS_H
 
-#include <ncurses.h>
-#include <panel.h>
-#include "statusbar.h"
-
-enum panels {QUEUE, NUM_PANELS};
-
-struct ui {
-    PANEL **panels;
-    struct statusbar *statusbar;
-
-    char *label_duration;
-    char *label_queue;
-    char *label_modes;
-};
-
-void ncurses_init();
-PANEL **panels_init();
-struct ui *ui_init();
-
-void panels_free(PANEL **panels);
-void ui_free(struct ui *ui);
-void ui_draw(struct ui *ui);
-
+char *create_label_duration(char *buffer);
+char *create_label_queue(char *buffer);
+char *create_label_modes(char *buffer);
 
 #endif
