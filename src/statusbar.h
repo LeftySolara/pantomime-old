@@ -26,22 +26,16 @@
 
 #include <ncurses.h>
 #include "mpdclient.h"
+#include "ui.h"
 
 struct statusbar {
     WINDOW *win;
-    char *queue_len_label;
-    char *duration_label;
-    char *modes_label;
 };
 
 struct statusbar *statusbar_init();
 void statusbar_free(struct statusbar *statusbar);
 
-void statusbar_set_queue_length_label(struct statusbar *statusbar);
-void statusbar_set_duration_label(struct statusbar *statusbar);
-void statusbar_set_modes_label(struct statusbar *statusbar);
-
 void statusbar_draw_progress(struct statusbar *statusbar);
-void statusbar_draw(struct statusbar *statusbar);
+void statusbar_draw(struct statusbar *statusbar, struct ui *ui);
 
 #endif

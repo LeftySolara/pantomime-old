@@ -33,6 +33,10 @@ enum panels {QUEUE, NUM_PANELS};
 struct ui {
     PANEL **panels;
     struct statusbar *statusbar;
+
+    char *label_duration;
+    char *label_queue;
+    char *label_modes;
 };
 
 void ncurses_init();
@@ -43,6 +47,10 @@ void panels_free(PANEL **panels);
 void ui_free(struct ui *ui);
 
 void ui_draw(struct ui *ui);
+
+char *create_label_duration(char *buffer);
+char *create_label_queue(char *buffer);
+char *create_label_modes(char *buffer);
 
 
 #endif
