@@ -26,13 +26,12 @@
 
 #include <ncurses.h>
 #include <panel.h>
-#include "statusbar.h"
 
 enum panels {QUEUE, NUM_PANELS};
 
 struct ui {
     PANEL **panels;
-    struct statusbar *statusbar;
+    WINDOW *statusbar;
 
     char *label_duration;
     char *label_queue;
@@ -45,7 +44,8 @@ struct ui *ui_init();
 
 void panels_free(PANEL **panels);
 void ui_free(struct ui *ui);
-void ui_draw(struct ui *ui);
 
+void draw_statusbar(struct ui *ui);
+void draw_ui(struct ui *ui);
 
 #endif

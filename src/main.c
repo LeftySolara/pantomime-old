@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     halfdelay(TRUE);
     while ((ch = getch() != 'q')) {
         mpdclient_update(mpdclient);
-        ui_draw(ui);
+        draw_ui(ui);
     }
 
     mpdclient_free(mpdclient);

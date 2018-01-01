@@ -24,6 +24,7 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
+#include "mpdclient.h"
 #include "labels.h"
 #include "ui.h"
 
@@ -64,7 +65,8 @@ struct ui *ui_init()
     ui->panels = panels_init();
     top_panel(ui->panels[QUEUE]);
 
-    ui->statusbar = statusbar_init();
+    ui->statusbar = newwin(2, COLS, LINES - 2, 0);
+
     ui->label_duration = create_label_duration(ui->label_duration);
     ui->label_queue = create_label_queue(ui->label_queue);
     ui->label_modes = create_label_modes(ui->label_modes);
@@ -84,23 +86,58 @@ void panels_free(PANEL **panels)
 void ui_free(struct ui *ui)
 {
     panels_free(ui->panels);
-    statusbar_free(ui->statusbar);
+    delwin(ui->statusbar);
     if (ui->label_duration)
         free(ui->label_duration);
     if (ui->label_queue)
         free(ui->label_queue);
 
+    ui->statusbar = NULL;
+    ui->panels = NULL;
+    ui->label_queue = NULL;
+    ui->label_duration = NULL;
+    ui->label_modes = NULL;
+
     free(ui);
     endwin();
 }
 
-void ui_draw(struct ui *ui)
+void draw_statusbar(struct ui *ui)
+{
+    enum mpd_state state = mpd_status_get_state(mpdclient->status);
+    if (state == MPD_STATE_STOP || state == MPD_STATE_UNKNOWN)
+        return;
+
+    double song_length = mpd_song_get_duration(mpdclient->current_song);
+    double time_elapsed = mpd_status_get_elapsed_time(mpdclient->status);
+    double width = getmaxx(ui->statusbar);
+
+    double secs_per_tick = song_length / width;     /* number of seconds before the bar progresses */
+    double tick_size = (width / song_length) + 1;   /* number of characters to print per tick */
+    double ticks_elapsed = time_elapsed / tick_size;
+
+    /* draw the progress bar */
+    wclear(ui->statusbar);
+    whline(ui->statusbar, '-', (tick_size * ticks_elapsed) / secs_per_tick);
+    mvwaddch(ui->statusbar, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
+
+    /* draw bottom labels */
+    mvwaddstr(ui->statusbar, 1, 0, ui->label_queue);
+    mvwaddstr(ui->statusbar, 1, COLS - strlen(ui->label_modes),
+              ui->label_modes);
+
+    wnoutrefresh(ui->statusbar);
+
+}
+
+void draw_ui(struct ui *ui)
 {
     ui->label_duration = create_label_duration(ui->label_duration);
     ui->label_queue = create_label_queue(ui->label_queue);
     ui->label_modes = create_label_modes(ui->label_modes);
 
-    statusbar_draw(ui->statusbar, ui);
+    draw_statusbar(ui);
+
     update_panels();
     doupdate();
 }
