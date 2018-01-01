@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include "ui.h"
 
+extern struct mpdclient *mpd;
+
 void ncurses_init()
 {
     setlocale(LC_ALL, "");
@@ -50,7 +52,7 @@ PANEL **panels_init()
     return panels;
 }
 
-struct ui *ui_init(struct mpdclient *mpd)
+struct ui *ui_init()
 {
     ncurses_init();
     struct ui *ui = malloc(sizeof(*ui));
@@ -58,7 +60,7 @@ struct ui *ui_init(struct mpdclient *mpd)
     ui->panels = panels_init();
     top_panel(ui->panels[QUEUE]);
 
-    ui->statusbar = statusbar_init(mpd);
+    ui->statusbar = statusbar_init();
 
     return ui;
 }
@@ -80,9 +82,9 @@ void ui_free(struct ui *ui)
     endwin();
 }
 
-void ui_draw(struct ui *ui, struct mpdclient *mpd)
+void ui_draw(struct ui *ui)
 {
-    statusbar_draw(ui->statusbar, mpd);
+    statusbar_draw(ui->statusbar);
     update_panels();
     doupdate();
 }

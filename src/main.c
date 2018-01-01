@@ -26,20 +26,22 @@
 #include "mpdclient.h"
 #include "ui.h"
 
+struct mpdclient *mpdclient;
+
 int main(int argc, char **argv)
 {
-    struct mpdclient *mpd = mpdclient_init("localhost", 6600, 30000);
-    struct ui *ui = ui_init(mpd);
+    mpdclient = mpdclient_init("localhost", 6600, 30000);
+    struct ui *ui = ui_init(mpdclient);
 
     /* main loop */
     char ch;
     halfdelay(TRUE);
     while ((ch = getch() != 'q')) {
-        mpd->status = mpd_run_status(mpd->connection);
-        ui_draw(ui, mpd);
+        mpdclient->status = mpd_run_status(mpdclient->connection);
+        ui_draw(ui);
     }
 
-    mpdclient_free(mpd);
+    mpdclient_free(mpdclient);
     ui_free(ui);
 
     return 0;

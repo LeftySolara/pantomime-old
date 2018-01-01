@@ -34,14 +34,14 @@ struct statusbar {
     char *modes_label;
 };
 
-struct statusbar *statusbar_init(struct mpdclient *mpd);
+struct statusbar *statusbar_init();
 void statusbar_free(struct statusbar *statusbar);
 
-void statusbar_set_queue_length_label(struct statusbar *statusbar, struct mpdclient *mpd);
-void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd);
-void statusbar_set_modes_label(struct statusbar *statusbar, struct mpdclient *mpd);
+void statusbar_set_queue_length_label(struct statusbar *statusbar);
+void statusbar_set_duration_label(struct statusbar *statusbar);
+void statusbar_set_modes_label(struct statusbar *statusbar);
 
-void statusbar_draw_progress(struct statusbar *statusbar, struct mpdclient *mpd);
-void statusbar_draw(struct statusbar *statusbar, struct mpdclient *mpd);
+void statusbar_draw_progress(struct statusbar *statusbar);
+void statusbar_draw(struct statusbar *statusbar);
 
 #endif

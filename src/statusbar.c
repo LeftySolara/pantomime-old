@@ -30,14 +30,14 @@
 #define DURATION_FORMAT "[123:45/123:45]"
 #define MODE_OFF_CHAR '-'
 
-struct statusbar *statusbar_init(struct mpdclient *mpd)
+struct statusbar *statusbar_init()
 {
     struct statusbar *statusbar = malloc(sizeof(*statusbar));
 
     statusbar->win = newwin(2, COLS, LINES - 2, 0);
-    statusbar_set_queue_length_label(statusbar, mpd);
-    statusbar_set_duration_label(statusbar, mpd);
-    statusbar_set_modes_label(statusbar, mpd);
+    statusbar_set_queue_length_label(statusbar);
+    statusbar_set_duration_label(statusbar);
+    statusbar_set_modes_label(statusbar);
 
     return statusbar;
 }
@@ -56,9 +56,9 @@ void statusbar_free(struct statusbar *statusbar)
     free(statusbar);
 }
 
-void statusbar_set_queue_length_label(struct statusbar *statusbar, struct mpdclient *mpd)
+void statusbar_set_queue_length_label(struct statusbar *statusbar)
 {
-    unsigned int queue_len = mpd_status_get_queue_length(mpd->status);
+    unsigned int queue_len = mpd_status_get_queue_length(mpdclient->status);
 
     /* account for max number of digits in an unsigned int and a null character */
     const size_t str_sz = strlen(QUEUE_LEN_STRING) + 12;
@@ -69,16 +69,16 @@ void statusbar_set_queue_length_label(struct statusbar *statusbar, struct mpdcli
 }
 
 /* This will be moved to the header bar later */
-void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient *mpd)
+void statusbar_set_duration_label(struct statusbar *statusbar)
 {
-    enum mpd_state state = mpd_status_get_state(mpd->status);
+    enum mpd_state state = mpd_status_get_state(mpdclient->status);
     if (state == MPD_STATE_UNKNOWN || state == MPD_STATE_STOP) {
         statusbar->duration_label = NULL;
         return;
     }
 
-    unsigned int total_time = mpd_status_get_total_time(mpd->status);
-    unsigned int elapsed_time = mpd_status_get_elapsed_time(mpd->status);
+    unsigned int total_time = mpd_status_get_total_time(mpdclient->status);
+    unsigned int elapsed_time = mpd_status_get_elapsed_time(mpdclient->status);
 
     if (total_time == 0)  /* no song playing */
         statusbar->duration_label = NULL;
@@ -96,30 +96,30 @@ void statusbar_set_duration_label(struct statusbar *statusbar, struct mpdclient 
              elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
 }
 
-void statusbar_set_modes_label(struct statusbar *statusbar, struct mpdclient *mpd)
+void statusbar_set_modes_label(struct statusbar *statusbar)
 {
     const int mode_count = 4; /* mpd has four modes built in */
     statusbar->modes_label = realloc(statusbar->modes_label, mode_count + 1);
     memset(statusbar->modes_label, MODE_OFF_CHAR, mode_count);
 
-    if (mpd_status_get_repeat(mpd->status))
+    if (mpd_status_get_repeat(mpdclient->status))
         statusbar->modes_label[0] = 'r';
-    if (mpd_status_get_random(mpd->status))
+    if (mpd_status_get_random(mpdclient->status))
         statusbar->modes_label[1] = 'z';
-    if (mpd_status_get_single(mpd->status))
+    if (mpd_status_get_single(mpdclient->status))
         statusbar->modes_label[2] = 's';
-    if (mpd_status_get_consume(mpd->status))
+    if (mpd_status_get_consume(mpdclient->status))
         statusbar->modes_label[3] = 'c';
 }
 
-void statusbar_draw_progress(struct statusbar *statusbar, struct mpdclient *mpd)
+void statusbar_draw_progress(struct statusbar *statusbar)
 {
-    enum mpd_state state = mpd_status_get_state(mpd->status);
+    enum mpd_state state = mpd_status_get_state(mpdclient->status);
     if (state == MPD_STATE_STOP || state == MPD_STATE_UNKNOWN)
         return;
 
-    double song_length = mpd_song_get_duration(mpd->current_song);
-    double time_elapsed = mpd_status_get_elapsed_time(mpd->status);
+    double song_length = mpd_song_get_duration(mpdclient->current_song);
+    double time_elapsed = mpd_status_get_elapsed_time(mpdclient->status);
     double width = getmaxx(statusbar->win);
 
     double secs_per_tick = song_length / width;     /* number of seconds before the bar progresses */
@@ -130,13 +130,13 @@ void statusbar_draw_progress(struct statusbar *statusbar, struct mpdclient *mpd)
     mvwaddch(statusbar->win, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
 }
 
-void statusbar_draw(struct statusbar *statusbar, struct mpdclient *mpd)
+void statusbar_draw(struct statusbar *statusbar)
 {
-    statusbar_set_queue_length_label(statusbar, mpd);
-    statusbar_set_modes_label(statusbar, mpd);
+    statusbar_set_queue_length_label(statusbar);
+    statusbar_set_modes_label(statusbar);
 
     wclear(statusbar->win);
-    statusbar_draw_progress(statusbar, mpd);
+    statusbar_draw_progress(statusbar);
     mvwaddstr(statusbar->win, 1, 0, statusbar->queue_len_label);
     mvwaddstr(statusbar->win, 1, COLS - strlen(statusbar->modes_label),
               statusbar->modes_label);

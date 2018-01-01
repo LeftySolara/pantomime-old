@@ -37,12 +37,12 @@ struct ui {
 
 void ncurses_init();
 PANEL **panels_init();
-struct ui *ui_init(struct mpdclient *mpd);
+struct ui *ui_init();
 
 void panels_free(PANEL **panels);
 void ui_free(struct ui *ui);
 
-void ui_draw(struct ui *ui, struct mpdclient *mpd);
+void ui_draw(struct ui *ui);
 
 
 #endif
