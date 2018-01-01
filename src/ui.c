@@ -42,10 +42,10 @@ void ncurses_init()
 PANEL **panels_init()
 {
     PANEL **panels = calloc(NUM_PANELS, sizeof(PANEL *));
-
     WINDOW *win;
+
     for (int i = 0; i < NUM_PANELS; ++i) {
-        win = newwin(LINES - 2, COLS, 1, 1);
+        win = newwin(LINES - 5, COLS, 3, 1);
         panels[i] = new_panel(win);
     }
 
