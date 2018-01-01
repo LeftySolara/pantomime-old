@@ -37,8 +37,6 @@ int main(int argc, char **argv)
     while ((ch = getch() != 'q')) {
         mpd->status = mpd_run_status(mpd->connection);
         ui_draw(ui, mpd);
-        update_panels();
-        doupdate();
     }
 
     mpdclient_free(mpd);

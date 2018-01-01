@@ -83,4 +83,6 @@ void ui_free(struct ui *ui)
 void ui_draw(struct ui *ui, struct mpdclient *mpd)
 {
     statusbar_draw(ui->statusbar, mpd);
+    update_panels();
+    doupdate();
 }
