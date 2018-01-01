@@ -28,31 +28,6 @@
 #include "labels.h"
 #include "ui.h"
 
-void ncurses_init()
-{
-    setlocale(LC_ALL, "");
-    initscr();
-    cbreak();
-    noecho();
-    curs_set(0);
-    nodelay(stdscr, TRUE);
-    keypad(stdscr, TRUE);
-    refresh();
-}
-
-PANEL **panels_init()
-{
-    PANEL **panels = calloc(NUM_PANELS, sizeof(PANEL *));
-    WINDOW *win;
-
-    for (int i = 0; i < NUM_PANELS; ++i) {
-        win = newwin(LINES - 5, COLS, 3, 1);
-        panels[i] = new_panel(win);
-    }
-
-    return panels;
-}
-
 struct ui *ui_init()
 {
     ncurses_init();
@@ -74,19 +49,11 @@ struct ui *ui_init()
     return ui;
 }
 
-void panels_free(PANEL **panels)
-{
-    for (int i = 0; i < NUM_PANELS; ++i) {
-        delwin(panel_window(panels[i]));
-        del_panel(panels[i]);
-    }
-    free(panels);
-}
-
 void ui_free(struct ui *ui)
 {
     panels_free(ui->panels);
     delwin(ui->statusbar);
+
     if (ui->label_duration)
         free(ui->label_duration);
     if (ui->label_queue)
@@ -101,6 +68,41 @@ void ui_free(struct ui *ui)
     free(ui);
     endwin();
 }
+
+PANEL **panels_init()
+{
+    PANEL **panels = calloc(NUM_PANELS, sizeof(PANEL *));
+    WINDOW *win;
+
+    for (int i = 0; i < NUM_PANELS; ++i) {
+        win = newwin(LINES - 5, COLS, 3, 1);
+        panels[i] = new_panel(win);
+    }
+
+    return panels;
+}
+
+void panels_free(PANEL **panels)
+{
+    for (int i = 0; i < NUM_PANELS; ++i) {
+        delwin(panel_window(panels[i]));
+        del_panel(panels[i]);
+    }
+    free(panels);
+}
+
+void ncurses_init()
+{
+    setlocale(LC_ALL, "");
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+    nodelay(stdscr, TRUE);
+    keypad(stdscr, TRUE);
+    refresh();
+}
+
 
 void draw_statusbar(struct ui *ui)
 {

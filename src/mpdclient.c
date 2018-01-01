@@ -29,7 +29,7 @@ struct mpdclient *mpdclient_init(char *host, int port, int timeout)
 {
     struct mpdclient *mpd = malloc(sizeof(*mpd));
 
-    /* Set some default values */
+    /* Set some default values if necessary */
     mpd->host = (host == NULL) ? "localhost" : host;
     mpd->port = (port == 0) ? 6600 : port;
     mpd->timeout = (timeout == 0) ? 30000 : timeout;

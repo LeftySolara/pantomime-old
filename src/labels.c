@@ -32,9 +32,9 @@ char *create_label_duration(char *buffer)
     if (mpdclient->state == MPD_STATE_UNKNOWN || mpdclient->state == MPD_STATE_STOP)
         return NULL;
 
+    const size_t label_size = strlen("123:45 / 123:45") + 1;
     unsigned int total_time = mpd_status_get_total_time(mpdclient->status);
     unsigned int elapsed_time = mpd_status_get_elapsed_time(mpdclient->status);
-    const size_t label_size = strlen("123:45 / 123:45") + 1;
 
     unsigned int total_minutes = total_time / 60;
     unsigned int total_seconds = total_time % 60;
@@ -57,11 +57,12 @@ char *create_label_queue(char *buffer)
     unsigned int queue_length = mpd_status_get_queue_length(mpdclient->status);
 
     buffer = realloc(buffer, label_size);
-    snprintf(buffer, label_size, "%u %s", queue_length, "songs in queue");
+    snprintf(buffer, label_size, "%u songs in queue", queue_length);
 
     return buffer;
 }
 
+/* Create a label for MPD playback modes */
 char *create_label_modes(char *buffer)
 {
     const int mode_count = 4; /* mpd has four modes built in */

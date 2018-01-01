@@ -38,12 +38,13 @@ struct ui {
     char *label_modes;
 };
 
-void ncurses_init();
-PANEL **panels_init();
 struct ui *ui_init();
-
-void panels_free(PANEL **panels);
 void ui_free(struct ui *ui);
+
+PANEL **panels_init();
+void panels_free(PANEL **panels);
+
+void ncurses_init();
 
 void draw_statusbar(struct ui *ui);
 void draw_ui(struct ui *ui);
