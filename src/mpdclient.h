@@ -31,15 +31,15 @@ struct mpdclient {
     struct mpd_status *status;
     struct mpd_song *current_song;
     enum mpd_error last_error;
+    enum mpd_state state;
 
     char *host;
     int port;
     int timeout;
 };
 
-struct mpdclient *mpdclient_connect(char *host, int port, int timeout);
+struct mpdclient *mpdclient_init(char *host, int port, int timeout);
 void mpdclient_free(struct mpdclient *mpd);
-
 void mpdclient_update(struct mpdclient *mpd);
 
 #endif
