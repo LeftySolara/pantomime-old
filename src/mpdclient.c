@@ -36,7 +36,7 @@ struct mpdclient *mpdclient_connect(char *host, int port, int timeout)
 
     mpd->connection = mpd_connection_new(mpd->host, mpd->port, mpd->timeout);
     mpd->status = mpd_run_status(mpd->connection);
-    mpd->current_song_id = mpd_status_get_song_id(mpd->status);
+    mpd->current_song = mpd_run_current_song(mpd->connection);
     mpd->last_error= mpd_connection_get_error(mpd->connection);
 
     return mpd;
@@ -54,5 +54,6 @@ void mpdclient_free(struct mpdclient *mpd)
 void mpdclient_update(struct mpdclient *mpd)
 {
     mpd->status = mpd_run_status(mpd->connection);
+    mpd->current_song = mpd_run_current_song(mpd->connection);
     mpd->last_error = mpd_connection_get_error(mpd->connection);
 }

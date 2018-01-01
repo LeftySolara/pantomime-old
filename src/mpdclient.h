@@ -29,8 +29,8 @@
 struct mpdclient {
     struct mpd_connection *connection;
     struct mpd_status *status;
+    struct mpd_song *current_song;
     enum mpd_error last_error;
-    int current_song_id;
 
     char *host;
     int port;
