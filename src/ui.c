@@ -107,7 +107,7 @@ void ncurses_init()
 void draw_statusbar(struct ui *ui)
 {
     enum mpd_state state = mpd_status_get_state(mpdclient->status);
-    if (state == MPD_STATE_STOP || state == MPD_STATE_UNKNOWN)
+    if (state == MPD_STATE_UNKNOWN)
         return;
 
     double song_length = mpd_song_get_duration(mpdclient->current_song);
@@ -118,10 +118,13 @@ void draw_statusbar(struct ui *ui)
     double tick_size = (width / song_length) + 1;   /* number of characters to print per tick */
     double ticks_elapsed = time_elapsed / tick_size;
 
-    /* draw the progress bar */
     wclear(ui->statusbar);
-    whline(ui->statusbar, '-', (tick_size * ticks_elapsed) / secs_per_tick);
-    mvwaddch(ui->statusbar, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
+
+    /* draw the progress bar */
+    if (state != MPD_STATE_STOP) {
+        whline(ui->statusbar, '-', (tick_size * ticks_elapsed) / secs_per_tick);
+        mvwaddch(ui->statusbar, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
+    }
 
     /* draw bottom labels */
     mvwaddstr(ui->statusbar, 1, 0, ui->label_queue);
