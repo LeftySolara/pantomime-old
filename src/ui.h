@@ -31,8 +31,10 @@ enum panels {QUEUE, NUM_PANELS};
 
 struct ui {
     PANEL **panels;
+    WINDOW *headerbar;
     WINDOW *statusbar;
 
+    char *label_current_song;
     char *label_duration;
     char *label_queue;
     char *label_modes;
@@ -46,6 +48,7 @@ void panels_free(PANEL **panels);
 
 void ncurses_init();
 
+void draw_headerbar(struct ui *ui);
 void draw_statusbar(struct ui *ui);
 void draw_ui(struct ui *ui);
 

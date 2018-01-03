@@ -40,11 +40,14 @@ struct ui *ui_init()
     ui->panels = panels_init();
     top_panel(ui->panels[QUEUE]);
 
+    ui->headerbar = newwin(3, COLS, 0, 0);
     ui->statusbar = newwin(2, COLS, LINES - 2, 0);
 
     ui->label_duration = create_label_duration(ui->label_duration);
     ui->label_queue = create_label_queue(ui->label_queue);
     ui->label_modes = create_label_modes(ui->label_modes);
+    ui->label_current_song = create_label_song(
+        ui->label_current_song, mpdclient->current_song);
 
     return ui;
 }
@@ -52,13 +55,19 @@ struct ui *ui_init()
 void ui_free(struct ui *ui)
 {
     panels_free(ui->panels);
+    delwin(ui->headerbar);
     delwin(ui->statusbar);
 
     if (ui->label_duration)
         free(ui->label_duration);
     if (ui->label_queue)
         free(ui->label_queue);
+    if (ui->label_modes)
+        free(ui->label_modes);
+    if (ui->label_current_song)
+        free(ui->label_current_song);
 
+    ui->headerbar = NULL;
     ui->statusbar = NULL;
     ui->panels = NULL;
     ui->label_queue = NULL;
@@ -103,6 +112,21 @@ void ncurses_init()
     refresh();
 }
 
+void draw_headerbar(struct ui *ui)
+{
+    wclear(ui->headerbar);
+    if (ui->label_duration)
+        mvwaddstr(ui->headerbar, 1, 0, ui->label_duration);
+    else
+        mvwaddstr(ui->headerbar, 1, 0, "0:00 / 0:00");
+
+    if (ui->label_current_song) {
+        int startx = (COLS / 2) - (strlen(ui->label_current_song) / 2);
+        mvwaddstr(ui->headerbar, 1, startx, ui->label_current_song);
+    }
+
+    wnoutrefresh(ui->headerbar);
+}
 
 void draw_statusbar(struct ui *ui)
 {
@@ -140,7 +164,10 @@ void draw_ui(struct ui *ui)
     ui->label_duration = create_label_duration(ui->label_duration);
     ui->label_queue = create_label_queue(ui->label_queue);
     ui->label_modes = create_label_modes(ui->label_modes);
+    ui->label_current_song = create_label_song(
+        ui->label_current_song, mpdclient->current_song);
 
+    draw_headerbar(ui);
     draw_statusbar(ui);
 
     update_panels();

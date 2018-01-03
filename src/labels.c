@@ -26,6 +26,19 @@
 #include <stdio.h>
 #include "mpdclient.h"
 
+/* Create a label in the form "artist - title" */
+char *create_label_song(char *buffer, struct mpd_song *song)
+{
+    const char *artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
+    const char *title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
+    const size_t label_size = strlen(artist) + strlen(title) + strlen(" - ") + 1;
+
+    buffer = realloc(buffer, label_size);
+    snprintf(buffer, label_size, "%s - %s", artist, title);
+
+    return buffer;
+}
+
 /* Create a label for the progress of the currently playing song */
 char *create_label_duration(char *buffer)
 {
