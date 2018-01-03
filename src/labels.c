@@ -93,3 +93,13 @@ char *create_label_modes(char *buffer)
 
     return buffer;
 }
+
+char *create_label_volume(char *buffer)
+{
+    const size_t label_size = strlen("Volume: 100%") + 1;
+    unsigned int volume = mpd_status_get_volume(mpdclient->status);
+    buffer = realloc(buffer, label_size);
+    snprintf(buffer, label_size, "Volume: %d%%", volume);
+
+    return buffer;
+}

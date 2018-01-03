@@ -38,6 +38,7 @@ struct ui {
     char *label_duration;
     char *label_queue;
     char *label_modes;
+    char *label_volume;
 };
 
 struct ui *ui_init();

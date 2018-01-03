@@ -48,6 +48,7 @@ struct ui *ui_init()
     ui->label_modes = create_label_modes(ui->label_modes);
     ui->label_current_song = create_label_song(
         ui->label_current_song, mpdclient->current_song);
+    ui->label_volume = create_label_volume(ui->label_volume);
 
     return ui;
 }
@@ -66,6 +67,8 @@ void ui_free(struct ui *ui)
         free(ui->label_modes);
     if (ui->label_current_song)
         free(ui->label_current_song);
+    if (ui->label_volume)
+        free(ui->label_volume);
 
     ui->headerbar = NULL;
     ui->statusbar = NULL;
@@ -124,6 +127,7 @@ void draw_headerbar(struct ui *ui)
         int startx = (COLS / 2) - (strlen(ui->label_current_song) / 2);
         mvwaddstr(ui->headerbar, 1, startx, ui->label_current_song);
     }
+    mvwaddstr(ui->headerbar, 1, COLS - strlen(ui->label_volume), ui->label_volume);
 
     wnoutrefresh(ui->headerbar);
 }
