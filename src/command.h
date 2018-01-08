@@ -1,5 +1,5 @@
 /******************************************************************************
- * main.c : entry point for the program
+ * command.h : functions and structs for user input commands
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,36 +21,24 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include <stdio.h>
-#include "PantomimeConfig.h"
-#include "command.h"
-#include "mpdclient.h"
-#include "ui.h"
+#ifndef COMMAND_H
+#define COMMAND_H
 
-struct mpdclient *mpdclient;
+#define MAX_KEYS 3
 
-int main(int argc, char **argv)
-{
-    mpdclient = mpdclient_init("localhost", 6600, 30000);
-    struct ui *ui = ui_init(mpdclient);
+enum command {
+    CMD_NULL,
+    CMD_QUIT,
+    NUM_CMDS
+};
 
-    /* main loop */
-    int ch;
+struct command_def {
     enum command cmd;
-    halfdelay(TRUE);
-    while (cmd != CMD_QUIT) {
-        ch = getch();
-        cmd = find_key_command(ch);
+    int keys[MAX_KEYS];
+    char *name;
+    char *description;
+};
 
-        if (cmd == CMD_QUIT)
-            break;
+enum command find_key_command(int key);
 
-        mpdclient_update(mpdclient);
-        draw_ui(ui);
-    }
-
-    mpdclient_free(mpdclient);
-    ui_free(ui);
-
-    return 0;
-}
+#endif

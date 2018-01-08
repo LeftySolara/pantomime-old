@@ -1,5 +1,5 @@
 /******************************************************************************
- * main.c : entry point for the program
+ * command.c : functions and structs for user input commands
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,36 +21,29 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include <stdio.h>
-#include "PantomimeConfig.h"
 #include "command.h"
-#include "mpdclient.h"
-#include "ui.h"
 
-struct mpdclient *mpdclient;
+#define KEY_CTRL(x) ((x) & 0x1f)
 
-int main(int argc, char **argv)
+static struct command_def cmds[] = {
+
+    {CMD_NULL, {0, 0, 0}, "Null", "Null command"},
+
+    {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit", "Quit"}
+};
+
+/* Find a command based on the given input key */
+enum command find_key_command(int key)
 {
-    mpdclient = mpdclient_init("localhost", 6600, 30000);
-    struct ui *ui = ui_init(mpdclient);
+    if (key == 0)
+        return CMD_NULL;
 
-    /* main loop */
-    int ch;
-    enum command cmd;
-    halfdelay(TRUE);
-    while (cmd != CMD_QUIT) {
-        ch = getch();
-        cmd = find_key_command(ch);
-
-        if (cmd == CMD_QUIT)
-            break;
-
-        mpdclient_update(mpdclient);
-        draw_ui(ui);
+    for (int i = 0; i < NUM_CMDS; ++i) {
+        for (int j = 0; j < MAX_KEYS; ++j) {
+            if (key == cmds[i].keys[j])
+                return cmds[i].cmd;
+        }
     }
 
-    mpdclient_free(mpdclient);
-    ui_free(ui);
-
-    return 0;
+    return CMD_NULL;
 }
