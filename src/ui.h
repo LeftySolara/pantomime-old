@@ -39,12 +39,15 @@ struct ui {
     char *label_queue;
     char *label_modes;
     char *label_volume;
+
+    int maxx;
+    int maxy;
 };
 
 struct ui *ui_init();
 void ui_free(struct ui *ui);
 
-PANEL **panels_init();
+PANEL **panels_init(struct ui *ui);
 void panels_free(PANEL **panels);
 
 void ncurses_init();

@@ -32,16 +32,17 @@ struct ui *ui_init()
 {
     ncurses_init();
     struct ui *ui = malloc(sizeof(*ui));
+    getmaxyx(stdscr, ui->maxy, ui->maxx);
 
     ui->label_duration = NULL;
     ui->label_queue = NULL;
     ui->label_modes = NULL;
 
-    ui->panels = panels_init();
+    ui->panels = panels_init(ui);
     top_panel(ui->panels[QUEUE]);
 
-    ui->headerbar = newwin(3, COLS, 0, 0);
-    ui->statusbar = newwin(2, COLS, LINES - 2, 0);
+    ui->headerbar = newwin(3, ui->maxx, 0, 0);
+    ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
 
     ui->label_duration = create_label_duration(ui->label_duration);
     ui->label_queue = create_label_queue(ui->label_queue);
@@ -81,13 +82,13 @@ void ui_free(struct ui *ui)
     endwin();
 }
 
-PANEL **panels_init()
+PANEL **panels_init(struct ui *ui)
 {
     PANEL **panels = calloc(NUM_PANELS, sizeof(PANEL *));
     WINDOW *win;
 
     for (int i = 0; i < NUM_PANELS; ++i) {
-        win = newwin(LINES - 5, COLS, 3, 1);
+        win = newwin(ui->maxy - 5, ui->maxx, 3, 1);
         panels[i] = new_panel(win);
     }
 
@@ -124,10 +125,10 @@ void draw_headerbar(struct ui *ui)
         mvwaddstr(ui->headerbar, 1, 0, "0:00 / 0:00");
 
     if (ui->label_current_song) {
-        int startx = (COLS / 2) - (strlen(ui->label_current_song) / 2);
+        int startx = (ui->maxx / 2) - (strlen(ui->label_current_song) / 2);
         mvwaddstr(ui->headerbar, 1, startx, ui->label_current_song);
     }
-    mvwaddstr(ui->headerbar, 1, COLS - strlen(ui->label_volume), ui->label_volume);
+    mvwaddstr(ui->headerbar, 1, ui->maxx - strlen(ui->label_volume), ui->label_volume);
 
     wnoutrefresh(ui->headerbar);
 }
@@ -156,7 +157,7 @@ void draw_statusbar(struct ui *ui)
 
     /* draw bottom labels */
     mvwaddstr(ui->statusbar, 1, 0, ui->label_queue);
-    mvwaddstr(ui->statusbar, 1, COLS - strlen(ui->label_modes),
+    mvwaddstr(ui->statusbar, 1, ui->maxx - strlen(ui->label_modes),
               ui->label_modes);
 
     wnoutrefresh(ui->statusbar);
