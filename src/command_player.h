@@ -1,5 +1,5 @@
 /******************************************************************************
- * command.c : functions and structs for user input commands
+ * command_player.c : commands for interacting with MPD
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,33 +21,14 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
+#ifndef COMMAND_PLAYER_H
+#define COMMAND_PLAYER_H
+
+#include "mpdclient.h"
 #include "command.h"
 
-#define KEY_CTRL(x) ((x) & 0x1f)
+void mpd_pause(struct mpd_connection *connection);
+void mpd_stop(struct mpd_connection *connection);
+void cmd_player(enum command cmd, struct mpdclient *mpd);
 
-static struct command_def cmds[] = {
-
-    {CMD_NULL, {0, 0, 0}, "Null", "Null command"},
-
-    {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit", "Quit"},
-
-    {CMD_PAUSE, {'p', 'P', 0}, "Pause", "Toggle pause"},
-
-    {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop the currently playing song"}
-};
-
-/* Find a command based on the given input key */
-enum command find_key_command(int key)
-{
-    if (key == 0)
-        return CMD_NULL;
-
-    for (int i = 0; i < NUM_CMDS; ++i) {
-        for (int j = 0; j < MAX_KEYS; ++j) {
-            if (key == cmds[i].keys[j])
-                return cmds[i].cmd;
-        }
-    }
-
-    return CMD_NULL;
-}
+#endif

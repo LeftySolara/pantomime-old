@@ -1,5 +1,5 @@
 /******************************************************************************
- * command.c : functions and structs for user input commands
+ * command_player.c : commands for interacting with MPD
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,33 +21,30 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include "command.h"
+#include "command_player.h"
 
-#define KEY_CTRL(x) ((x) & 0x1f)
-
-static struct command_def cmds[] = {
-
-    {CMD_NULL, {0, 0, 0}, "Null", "Null command"},
-
-    {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit", "Quit"},
-
-    {CMD_PAUSE, {'p', 'P', 0}, "Pause", "Toggle pause"},
-
-    {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop the currently playing song"}
-};
-
-/* Find a command based on the given input key */
-enum command find_key_command(int key)
+void mpd_pause(struct mpd_connection *connection)
 {
-    if (key == 0)
-        return CMD_NULL;
+    mpd_run_toggle_pause(connection);
+}
 
-    for (int i = 0; i < NUM_CMDS; ++i) {
-        for (int j = 0; j < MAX_KEYS; ++j) {
-            if (key == cmds[i].keys[j])
-                return cmds[i].cmd;
-        }
+void mpd_stop(struct mpd_connection *connection)
+{
+    mpd_run_stop(connection);
+}
+
+void cmd_player(enum command cmd, struct mpdclient *mpd)
+{
+    switch(cmd) {
+    case CMD_NULL:
+        break;
+    case CMD_PAUSE:
+        mpd_pause(mpd->connection);
+        break;
+    case CMD_STOP:
+        mpd_stop(mpd->connection);
+        break;
+    default:
+        break;
     }
-
-    return CMD_NULL;
 }

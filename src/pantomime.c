@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "PantomimeConfig.h"
 #include "command.h"
+#include "command_player.h"
 #include "mpdclient.h"
 #include "ui.h"
 
@@ -45,6 +46,7 @@ int main(int argc, char **argv)
         if (cmd == CMD_QUIT)
             break;
 
+        cmd_player(cmd, mpdclient);
         mpdclient_update(mpdclient);
         draw_ui(ui);
     }

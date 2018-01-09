@@ -29,6 +29,8 @@
 enum command {
     CMD_NULL,
     CMD_QUIT,
+    CMD_PAUSE,
+    CMD_STOP,
     NUM_CMDS
 };
 
