@@ -31,6 +31,8 @@ enum command {
     CMD_QUIT,
     CMD_PAUSE,
     CMD_STOP,
+    CMD_VOL_UP,
+    CMD_VOL_DOWN,
     NUM_CMDS
 };
 

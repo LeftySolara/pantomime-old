@@ -29,6 +29,8 @@
 
 void mpd_pause(struct mpd_connection *connection);
 void mpd_stop(struct mpd_connection *connection);
+void mpd_vol_up(struct mpd_connection *connection);
+void mpd_vol_down(struct mpd_connection *connection);
 void cmd_player(enum command cmd, struct mpdclient *mpd);
 
 #endif

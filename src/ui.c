@@ -169,6 +169,7 @@ void draw_ui(struct ui *ui)
     ui->label_duration = create_label_duration(ui->label_duration);
     ui->label_queue = create_label_queue(ui->label_queue);
     ui->label_modes = create_label_modes(ui->label_modes);
+    ui->label_volume = create_label_volume(ui->label_volume);
     ui->label_current_song = create_label_song(
         ui->label_current_song, mpdclient->current_song);
 

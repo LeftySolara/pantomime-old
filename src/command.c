@@ -21,6 +21,7 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
+#include <ncurses.h>
 #include "command.h"
 
 #define KEY_CTRL(x) ((x) & 0x1f)
@@ -33,7 +34,11 @@ static struct command_def cmds[] = {
 
     {CMD_PAUSE, {'p', 'P', 0}, "Pause", "Toggle pause"},
 
-    {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop the currently playing song"}
+    {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop the currently playing song"},
+
+    {CMD_VOL_UP, {KEY_RIGHT, 0, 0}, "Volume up", "Increase the volume by 1%"},
+
+    {CMD_VOL_DOWN, {KEY_LEFT, 0, 0}, "Volume down", "Decrease the volume by 1%"},
 };
 
 /* Find a command based on the given input key */
