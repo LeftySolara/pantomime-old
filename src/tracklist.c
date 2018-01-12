@@ -24,3 +24,25 @@
 #include <stdlib.h>
 #include "mpdclient.h"
 #include "tracklist.h"
+
+struct tracknode *tracknode_init(struct mpd_song *song)
+{
+    struct tracknode *node = malloc(sizeof(struct tracknode *));
+
+    node->next = NULL;
+    node->prev = NULL;
+    node->song = song;
+    node->selected = false;
+    node->playing = mpd_status_get_song_id(mpdclient->status)
+        == mpd_song_get_id(node->song);
+
+    return node;
+}
+
+void tracknode_free(struct tracknode *node)
+{
+    mpd_song_free(node->song);
+    node->next = NULL;
+    node->prev = NULL;
+    free(node);
+}

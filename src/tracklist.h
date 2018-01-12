@@ -41,7 +41,7 @@ struct tracklist {
     struct tracknode *selected;
 };
 
-struct tracknode *tracknode_init();
+struct tracknode *tracknode_init(struct mpd_song *song);
 struct tracklist *tracklist_init();
 
 void tracknode_free(struct tracknode *node);
