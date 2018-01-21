@@ -39,10 +39,32 @@ struct tracknode *tracknode_init(struct mpd_song *song)
     return node;
 }
 
+struct tracklist *tracklist_init()
+{
+    struct tracklist *list = malloc(sizeof(struct tracklist *));
+    list->head = NULL;
+    list->selected = NULL;
+}
+
 void tracknode_free(struct tracknode *node)
 {
     mpd_song_free(node->song);
     node->next = NULL;
     node->prev = NULL;
     free(node);
+}
+
+void tracklist_free(struct tracklist *list)
+{
+    struct tracknode *current = list->head;
+    while (current) {
+        list->head = current->next;
+        tracknode_free(current);
+        current = list->head;
+    }
+
+    if (list->selected)
+        tracknode_free(list->selected);
+    list->selected = NULL;
+    free(list);
 }
