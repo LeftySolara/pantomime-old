@@ -33,8 +33,6 @@ struct tracknode *tracknode_init(struct mpd_song *song)
     node->prev = NULL;
     node->song = song;
     node->selected = false;
-    node->playing = mpd_status_get_song_id(mpdclient->status)
-        == mpd_song_get_id(node->song);
 
     return node;
 }
@@ -67,4 +65,23 @@ void tracklist_free(struct tracklist *list)
         tracknode_free(list->selected);
     list->selected = NULL;
     free(list);
+}
+
+void tracklist_append(struct tracklist *list, struct mpd_song *song)
+{
+    struct tracknode *node = tracknode_init(song);
+
+    if (!list->head) {
+        /* If the new node is the only item in the list, select it */
+        node->selected = true;
+        list->head = node;
+        list->selected = list->head;
+    }
+    else {
+        struct tracknode *current = list->head;
+        while (current->next)
+            current = current->next;
+        current->next = node;
+        node->prev = current;
+    }
 }

@@ -32,13 +32,12 @@ struct tracknode {
     struct tracknode *prev;
 
     struct mpd_song *song;
-    bool selected;
-    bool playing;
+    bool selected; /* For range selection */
 };
 
 struct tracklist {
     struct tracknode *head;
-    struct tracknode *selected;
+    struct tracknode *selected; /* Current cursor position */
 };
 
 struct tracknode *tracknode_init(struct mpd_song *song);
@@ -46,5 +45,7 @@ struct tracklist *tracklist_init();
 
 void tracknode_free(struct tracknode *node);
 void tracklist_free(struct tracklist *list);
+
+void tracklist_append(struct tracklist *list, struct mpd_song *song);
 
 #endif
