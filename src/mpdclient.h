@@ -36,6 +36,7 @@ struct mpdclient {
     char *host;
     int port;
     int timeout;
+    const int max_playlist_length;
 };
 
 extern struct mpdclient *mpdclient;

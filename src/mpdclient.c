@@ -33,6 +33,7 @@ struct mpdclient *mpdclient_init(char *host, int port, int timeout)
     mpd->host = (host == NULL) ? "localhost" : host;
     mpd->port = (port == 0) ? 6600 : port;
     mpd->timeout = (timeout == 0) ? 30000 : timeout;
+    *(int *)&mpd->max_playlist_length = 16384;  /* Default maximum defined by MPD */
 
     mpd->connection = mpd_connection_new(mpd->host, mpd->port, mpd->timeout);
     mpd->status = mpd_run_status(mpd->connection);
