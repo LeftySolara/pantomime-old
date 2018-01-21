@@ -47,5 +47,7 @@ void tracknode_free(struct tracknode *node);
 void tracklist_free(struct tracklist *list);
 
 void tracklist_append(struct tracklist *list, struct mpd_song *song);
+void tracklist_remove_selected(struct tracklist *list);
+void tracklist_clear(struct tracklist *list);
 
 #endif

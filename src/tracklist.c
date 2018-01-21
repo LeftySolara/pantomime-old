@@ -54,16 +54,7 @@ void tracknode_free(struct tracknode *node)
 
 void tracklist_free(struct tracklist *list)
 {
-    struct tracknode *current = list->head;
-    while (current) {
-        list->head = current->next;
-        tracknode_free(current);
-        current = list->head;
-    }
-
-    if (list->selected)
-        tracknode_free(list->selected);
-    list->selected = NULL;
+    tracklist_clear(list);
     free(list);
 }
 
@@ -84,4 +75,52 @@ void tracklist_append(struct tracklist *list, struct mpd_song *song)
         current->next = node;
         node->prev = current;
     }
+}
+
+/* Remove the song at the current cursor position */
+void tracklist_remove_selected(struct tracklist *list)
+{
+    if (!list->head || !list->selected)
+        return;
+
+    if (list->selected == list->head) {
+        /* Only one node in list */
+        if (!list->head->next) { 
+            tracknode_free(list->head);
+            list->head = NULL;
+            list->selected = NULL;
+        }
+        else {
+            struct tracknode *current = list->head;
+            list->head = list->head->next;
+            list->head->prev = NULL;
+            tracknode_free(current);
+        }
+    }
+    else {
+        struct tracknode *current = list->selected;
+        current->prev->next = current->next;
+        current->next->prev = current->prev;
+
+        if (current->next)
+            list->selected = current->next;
+        else
+            list->selected = current->prev;
+
+        tracknode_free(current);
+    }
+}
+
+void tracklist_clear(struct tracklist *list)
+{
+    struct tracknode *current = list->head;
+    while (current) {
+        list->head = current->next;
+        tracknode_free(current);
+        current = list->head;
+    }
+
+    if (list->selected)
+        tracknode_free(list->selected);
+    list->selected = NULL;
 }
