@@ -151,8 +151,10 @@ void draw_statusbar(struct ui *ui)
 
     /* draw the progress bar */
     if (state != MPD_STATE_STOP) {
+        wattr_on(ui->statusbar, A_BOLD, NULL);
         whline(ui->statusbar, '-', (tick_size * ticks_elapsed) / secs_per_tick);
         mvwaddch(ui->statusbar, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
+        wattr_off(ui->statusbar, A_BOLD, NULL);
     }
 
     /* draw bottom labels */
