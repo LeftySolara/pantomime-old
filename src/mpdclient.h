@@ -25,11 +25,14 @@
 #define MPDCLIENT_H
 
 #include <mpd/client.h>
+#include "tracklist.h"
 
 struct mpdclient {
     struct mpd_connection *connection;
     struct mpd_status *status;
     struct mpd_song *current_song;
+    struct tracklist *queue;
+    int queue_version;
     enum mpd_error last_error;
     enum mpd_state state;
 
@@ -44,5 +47,6 @@ extern struct mpdclient *mpdclient;
 struct mpdclient *mpdclient_init(char *host, int port, int timeout);
 void mpdclient_free(struct mpdclient *mpd);
 void mpdclient_update(struct mpdclient *mpd);
+void mpdclient_fetch_queue(struct mpdclient *mpd);
 
 #endif

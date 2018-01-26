@@ -38,6 +38,7 @@ struct mpdclient *mpdclient_init(char *host, int port, int timeout)
     mpd->connection = mpd_connection_new(mpd->host, mpd->port, mpd->timeout);
     mpd->status = mpd_run_status(mpd->connection);
     mpd->current_song = mpd_run_current_song(mpd->connection);
+    mpd->queue = tracklist_init();
     mpd->state = mpd_status_get_state(mpd->status);
     mpd->last_error= mpd_connection_get_error(mpd->connection);
 
@@ -46,6 +47,8 @@ struct mpdclient *mpdclient_init(char *host, int port, int timeout)
 
 void mpdclient_free(struct mpdclient *mpd)
 {
+    if (mpd->queue)
+        tracklist_free(mpd->queue);
     if (mpd->connection)
         mpd_connection_free(mpd->connection);
     if (mpd->status)
@@ -62,4 +65,18 @@ void mpdclient_update(struct mpdclient *mpd)
     mpd->current_song = mpd_run_current_song(mpd->connection);
     mpd->state = mpd_status_get_state(mpd->status);
     mpd->last_error = mpd_connection_get_error(mpd->connection);
+}
+
+void mpdclient_fetch_queue(struct mpdclient *mpd)
+{
+    if (!mpd->connection)
+        return;
+
+    struct mpd_song *song;
+    mpd_send_list_queue_meta(mpd->connection);
+    while ((song = mpd_recv_song(mpd->connection)))
+        tracklist_append(mpd->queue, song);
+
+    mpd_response_finish(mpd->connection);
+    mpd->queue_version = mpd_status_get_queue_version(mpd->status);
 }
