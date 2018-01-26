@@ -31,7 +31,11 @@ struct tracknode {
     struct tracknode *next;
     struct tracknode *prev;
 
-    struct mpd_song *song;
+    const char *title;
+    const char *artist;
+    const char *album;
+    int duration;
+
     bool selected; /* For range selection */
 };
 

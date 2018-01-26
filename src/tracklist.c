@@ -27,26 +27,31 @@
 
 struct tracknode *tracknode_init(struct mpd_song *song)
 {
-    struct tracknode *node = malloc(sizeof(struct tracknode *));
+    struct tracknode *node = malloc(sizeof(*node));
 
     node->next = NULL;
     node->prev = NULL;
-    node->song = song;
     node->selected = false;
+
+    node->title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
+    node->artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
+    node->album = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
+    node->duration = mpd_song_get_duration(song);
 
     return node;
 }
 
 struct tracklist *tracklist_init()
 {
-    struct tracklist *list = malloc(sizeof(struct tracklist *));
+    struct tracklist *list = malloc(sizeof(*list));
     list->head = NULL;
     list->selected = NULL;
+
+    return list;
 }
 
 void tracknode_free(struct tracknode *node)
 {
-    mpd_song_free(node->song);
     node->next = NULL;
     node->prev = NULL;
     free(node);
