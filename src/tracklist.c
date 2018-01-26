@@ -35,7 +35,7 @@ struct tracknode *tracknode_init(struct mpd_song *song)
 
     node->title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
     node->artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
-    node->album = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
+    node->album = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
     node->duration = mpd_song_get_duration(song);
 
     return node;
