@@ -26,6 +26,7 @@
 #include <string.h>
 #include "mpdclient.h"
 #include "labels.h"
+#include "screen_queue.h"
 #include "ui.h"
 
 struct ui *ui_init()
@@ -36,7 +37,8 @@ struct ui *ui_init()
     getmaxyx(stdscr, ui->maxy, ui->maxx);
 
     ui->panels = panels_init(ui);
-    top_panel(ui->panels[QUEUE]);
+    ui->visible_panel = QUEUE;
+    top_panel(ui->panels[ui->visible_panel]);
 
     ui->headerbar = newwin(3, ui->maxx, 0, 0);
     ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
@@ -76,7 +78,7 @@ PANEL **panels_init(struct ui *ui)
     WINDOW *win;
 
     for (int i = 0; i < NUM_PANELS; ++i) {
-        win = newwin(ui->maxy - 5, ui->maxx, 3, 1);
+        win = newwin(ui->maxy - 5, ui->maxx, 3, 0);
         panels[i] = new_panel(win);
     }
 
@@ -165,6 +167,15 @@ void draw_ui(struct ui *ui)
 
     draw_headerbar(ui);
     draw_statusbar(ui);
+
+    WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
+    switch(ui->visible_panel) {
+    case QUEUE:
+        draw_queue(mpdclient->queue, mpdclient->current_song, win);
+        break;
+    default:
+        break;
+    }
 
     update_panels();
     doupdate();

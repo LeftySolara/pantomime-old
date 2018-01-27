@@ -34,9 +34,10 @@ struct tracknode {
     const char *title;
     const char *artist;
     const char *album;
-    int duration;
 
-    bool selected; /* For range selection */
+    int duration;
+    unsigned int id;
+    bool range_selected;
 };
 
 struct tracklist {

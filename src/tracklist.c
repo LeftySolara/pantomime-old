@@ -31,13 +31,13 @@ struct tracknode *tracknode_init(struct mpd_song *song)
 
     node->next = NULL;
     node->prev = NULL;
-    node->selected = false;
 
     node->title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
     node->artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
     node->album = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0);
     node->duration = mpd_song_get_duration(song);
-
+    node->id = mpd_song_get_id(song);
+    node->range_selected = false;
     return node;
 }
 
@@ -69,7 +69,6 @@ void tracklist_append(struct tracklist *list, struct mpd_song *song)
 
     if (!list->head) {
         /* If the new node is the only item in the list, select it */
-        node->selected = true;
         list->head = node;
         list->selected = list->head;
     }

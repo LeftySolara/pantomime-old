@@ -1,5 +1,5 @@
 /******************************************************************************
- * ui.h : user-facing elements of the program
+ * screen_queue.h : interface for drawing the MPD queue screen
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,36 +21,8 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#ifndef UI_H
-#define UI_H
-
 #include <ncurses.h>
-#include <panel.h>
+#include "tracklist.h"
 
-enum panels {QUEUE, NUM_PANELS};
-enum labels {CURRENT_SONG, PROGRESS, QUEUE_LEN, MODES, VOLUME, NUM_LABELS};
-
-struct ui {
-    PANEL **panels;
-    WINDOW *headerbar;
-    WINDOW *statusbar;
-
-    char **labels;
-    int maxx;
-    int maxy;
-    enum panels visible_panel;
-};
-
-struct ui *ui_init();
-void ui_free(struct ui *ui);
-
-PANEL **panels_init(struct ui *ui);
-void panels_free(PANEL **panels);
-
-void ncurses_init();
-
-void draw_headerbar(struct ui *ui);
-void draw_statusbar(struct ui *ui);
-void draw_ui(struct ui *ui);
-
-#endif
+void draw_track(WINDOW *win, struct tracknode *track, int row, int width, bool selected, bool playing);
+void draw_queue(struct tracklist *list, struct mpd_song *current_song, WINDOW *win);
