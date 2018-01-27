@@ -31,12 +31,9 @@
 struct ui *ui_init()
 {
     ncurses_init();
+
     struct ui *ui = malloc(sizeof(*ui));
     getmaxyx(stdscr, ui->maxy, ui->maxx);
-
-    ui->label_duration = NULL;
-    ui->label_queue = NULL;
-    ui->label_modes = NULL;
 
     ui->panels = panels_init(ui);
     top_panel(ui->panels[QUEUE]);
@@ -44,12 +41,13 @@ struct ui *ui_init()
     ui->headerbar = newwin(3, ui->maxx, 0, 0);
     ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
 
-    ui->label_duration = create_label_duration(ui->label_duration);
-    ui->label_queue = create_label_queue(ui->label_queue);
-    ui->label_modes = create_label_modes(ui->label_modes);
-    ui->label_current_song = create_label_song(
-        ui->label_current_song, mpdclient->current_song);
-    ui->label_volume = create_label_volume(ui->label_volume);
+    ui->labels = calloc(NUM_LABELS - 1, sizeof(char *));
+    ui->labels[PROGRESS] = create_label_progress(ui->labels[PROGRESS]);
+    ui->labels[QUEUE_LEN] = create_label_queue(ui->labels[QUEUE_LEN]);
+    ui->labels[MODES] = create_label_modes(ui->labels[MODES]);
+    ui->labels[VOLUME] = create_label_volume(ui->labels[VOLUME]);
+    ui->labels[CURRENT_SONG] = create_label_song(
+        ui->labels[CURRENT_SONG], mpdclient->current_song);
 
     return ui;
 }
@@ -60,23 +58,13 @@ void ui_free(struct ui *ui)
     delwin(ui->headerbar);
     delwin(ui->statusbar);
 
-    if (ui->label_duration)
-        free(ui->label_duration);
-    if (ui->label_queue)
-        free(ui->label_queue);
-    if (ui->label_modes)
-        free(ui->label_modes);
-    if (ui->label_current_song)
-        free(ui->label_current_song);
-    if (ui->label_volume)
-        free(ui->label_volume);
-
     ui->headerbar = NULL;
     ui->statusbar = NULL;
     ui->panels = NULL;
-    ui->label_queue = NULL;
-    ui->label_duration = NULL;
-    ui->label_modes = NULL;
+
+    for (int i = 0; i < NUM_LABELS; ++i)
+        free(ui->labels[i]);
+    free(ui->labels);
 
     free(ui);
     endwin();
@@ -119,16 +107,16 @@ void ncurses_init()
 void draw_headerbar(struct ui *ui)
 {
     wclear(ui->headerbar);
-    if (ui->label_duration)
-        mvwaddstr(ui->headerbar, 1, 0, ui->label_duration);
+    if (ui->labels[PROGRESS])
+        mvwaddstr(ui->headerbar, 1, 0, ui->labels[PROGRESS]);
     else
         mvwaddstr(ui->headerbar, 1, 0, "0:00 / 0:00");
 
-    if (ui->label_current_song) {
-        int startx = (ui->maxx / 2) - (strlen(ui->label_current_song) / 2);
-        mvwaddstr(ui->headerbar, 1, startx, ui->label_current_song);
+    if (ui->labels[CURRENT_SONG]) {
+        int startx = (ui->maxx / 2) - (strlen(ui->labels[CURRENT_SONG]) / 2);
+        mvwaddstr(ui->headerbar, 1, startx, ui->labels[CURRENT_SONG]);
     }
-    mvwaddstr(ui->headerbar, 1, ui->maxx - strlen(ui->label_volume), ui->label_volume);
+    mvwaddstr(ui->headerbar, 1, ui->maxx - strlen(ui->labels[VOLUME]), ui->labels[VOLUME]);
 
     wnoutrefresh(ui->headerbar);
 }
@@ -158,9 +146,9 @@ void draw_statusbar(struct ui *ui)
     }
 
     /* draw bottom labels */
-    mvwaddstr(ui->statusbar, 1, 0, ui->label_queue);
-    mvwaddstr(ui->statusbar, 1, ui->maxx - strlen(ui->label_modes),
-              ui->label_modes);
+    mvwaddstr(ui->statusbar, 1, 0, ui->labels[QUEUE_LEN]);
+    mvwaddstr(ui->statusbar, 1, ui->maxx - strlen(ui->labels[MODES]),
+              ui->labels[MODES]);
 
     wnoutrefresh(ui->statusbar);
 
@@ -168,12 +156,12 @@ void draw_statusbar(struct ui *ui)
 
 void draw_ui(struct ui *ui)
 {
-    ui->label_duration = create_label_duration(ui->label_duration);
-    ui->label_queue = create_label_queue(ui->label_queue);
-    ui->label_modes = create_label_modes(ui->label_modes);
-    ui->label_volume = create_label_volume(ui->label_volume);
-    ui->label_current_song = create_label_song(
-        ui->label_current_song, mpdclient->current_song);
+    ui->labels[PROGRESS] = create_label_progress(ui->labels[PROGRESS]);
+    ui->labels[QUEUE_LEN] = create_label_queue(ui->labels[QUEUE_LEN]);
+    ui->labels[MODES] = create_label_modes(ui->labels[MODES]);
+    ui->labels[VOLUME] = create_label_volume(ui->labels[VOLUME]);
+    ui->labels[CURRENT_SONG] = create_label_song(
+        ui->labels[CURRENT_SONG], mpdclient->current_song);
 
     draw_headerbar(ui);
     draw_statusbar(ui);

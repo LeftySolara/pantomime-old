@@ -27,7 +27,7 @@
 #include <mpd/client.h>
 
 char *create_label_song(char *buffer, struct mpd_song *song);
-char *create_label_duration(char *buffer);
+char *create_label_progress(char *buffer);
 char *create_label_queue(char *buffer);
 char *create_label_modes(char *buffer);
 char *create_label_volume(char *buffer);

@@ -28,18 +28,14 @@
 #include <panel.h>
 
 enum panels {QUEUE, NUM_PANELS};
+enum labels {CURRENT_SONG, PROGRESS, QUEUE_LEN, MODES, VOLUME, NUM_LABELS};
 
 struct ui {
     PANEL **panels;
     WINDOW *headerbar;
     WINDOW *statusbar;
 
-    char *label_current_song;
-    char *label_duration;
-    char *label_queue;
-    char *label_modes;
-    char *label_volume;
-
+    char **labels;
     int maxx;
     int maxy;
 };

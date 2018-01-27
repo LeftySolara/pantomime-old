@@ -40,7 +40,7 @@ char *create_label_song(char *buffer, struct mpd_song *song)
 }
 
 /* Create a label for the progress of the currently playing song */
-char *create_label_duration(char *buffer)
+char *create_label_progress(char *buffer)
 {
     if (mpdclient->state == MPD_STATE_UNKNOWN || mpdclient->state == MPD_STATE_STOP)
         return NULL;
