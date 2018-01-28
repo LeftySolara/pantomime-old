@@ -39,6 +39,10 @@ static struct command_def cmds[] = {
     {CMD_VOL_UP, {KEY_RIGHT, 0, 0}, "Volume up", "Increase the volume by 1%"},
 
     {CMD_VOL_DOWN, {KEY_LEFT, 0, 0}, "Volume down", "Decrease the volume by 1%"},
+
+    {CMD_CURSOR_UP, {KEY_UP, 'k', 0}, "Cursor Up", "Move cursor up"},
+
+    {CMD_CURSOR_DOWN, {KEY_DOWN, 'j', 0}, "Cursor Down", "Move cursor down"},
 };
 
 /* Find a command based on the given input key */

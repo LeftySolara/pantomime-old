@@ -153,7 +153,6 @@ void draw_statusbar(struct ui *ui)
               ui->labels[MODES]);
 
     wnoutrefresh(ui->statusbar);
-
 }
 
 void draw_ui(struct ui *ui)
@@ -168,10 +167,10 @@ void draw_ui(struct ui *ui)
     draw_headerbar(ui);
     draw_statusbar(ui);
 
-    WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
     switch(ui->visible_panel) {
     case QUEUE:
-        draw_queue(mpdclient->queue, mpdclient->current_song, win);
+        draw_queue(mpdclient->queue, mpdclient->current_song,
+                   panel_window(ui->panels[ui->visible_panel]));
         break;
     default:
         break;

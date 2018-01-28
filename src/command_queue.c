@@ -1,7 +1,7 @@
 /******************************************************************************
- * main.c : entry point for the program
+ * command_queue.c : commands for interacting with the queue screen
  * ****************************************************************************
- * Copyright (C) 2017 Jalen Adams
+ * Copyright (C) 2018 Jalen Adams
  *
  * Authors: Jalen Adams <leftysolara@gmail.com>
  *
@@ -21,45 +21,28 @@
  * along with Pantomime.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include <stdio.h>
-#include "PantomimeConfig.h"
-#include "command.h"
-#include "command_player.h"
 #include "command_queue.h"
-#include "mpdclient.h"
-#include "ui.h"
 
-struct mpdclient *mpdclient;
-
-int main(int argc, char **argv)
+void move_cursor(struct tracklist *list, enum direction direction)
 {
-    mpdclient = mpdclient_init("localhost", 6600, 30000);
-    struct ui *ui = ui_init(mpdclient);
+    struct tracknode *current = list->selected;
 
-    /* main loop */
-    int ch;
-    enum command cmd;
-    halfdelay(TRUE);
+    if (direction == UP && current->prev)
+        list->selected = current->prev;
+    else if (direction == DOWN && current->next)
+        list->selected = current->next;
+}
 
-    while (cmd != CMD_QUIT) {
-        mpdclient_update(mpdclient);
-
-        ch = getch();
-        cmd = find_key_command(ch);
-        switch(ui->visible_panel) {
-        case QUEUE:
-            cmd_queue(cmd, mpdclient->queue);
-            break;
-        default:
-            break;
-        }
-
-        cmd_player(cmd, mpdclient);
-        draw_ui(ui);
+void cmd_queue(enum command cmd, struct tracklist *list)
+{
+    switch(cmd) {
+    case CMD_CURSOR_UP:
+        move_cursor(list, UP);
+        break;
+    case CMD_CURSOR_DOWN:
+        move_cursor(list, DOWN);
+        break;
+    default:
+        break;
     }
-
-    mpdclient_free(mpdclient);
-    ui_free(ui);
-
-    return 0;
 }

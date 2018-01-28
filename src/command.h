@@ -33,6 +33,8 @@ enum command {
     CMD_STOP,
     CMD_VOL_UP,
     CMD_VOL_DOWN,
+    CMD_CURSOR_UP,
+    CMD_CURSOR_DOWN,
     NUM_CMDS
 };
 
