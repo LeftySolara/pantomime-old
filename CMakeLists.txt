@@ -21,3 +21,4 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.c")
 add_executable(pantomime ${SOURCE_FILES})
 
 set_target_properties(pantomime PROPERTIES OUTPUT_NAME "pantomime")
+target_link_libraries(pantomime mpdclient)

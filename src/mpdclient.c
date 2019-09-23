@@ -1,5 +1,5 @@
 /*******************************************************************************
- * main.c
+ * mpd.c
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -18,11 +18,27 @@
  ******************************************************************************/
 
 #include "mpdclient.h"
+#include <stdlib.h>
 #include <stdio.h>
 
-int main()
+struct mpdclient *mpdclient_init(const char *host, int port, int timeout)
 {
-    struct mpdclient *mpd = mpdclient_init("localhost", 6600, 30000);
-    mpdclient_free(mpd);
-    return 0;
+    struct mpdclient *mpd = malloc(sizeof(*mpd));
+
+    mpd->connection = mpd_connection_new(host, port, timeout);
+    mpd->status = mpd_run_status(mpd->connection);
+    mpd->current_song = mpd_run_current_song(mpd->connection);
+    mpd->state = mpd_status_get_state(mpd->status);
+    mpd->last_error = mpd_connection_get_error(mpd->connection);
+
+    return mpd;
+}
+
+void mpdclient_free(struct mpdclient *mpd)
+{
+    mpd_status_free(mpd->status);
+    mpd_song_free(mpd->current_song);
+    mpd_connection_free(mpd->connection);
+
+    free(mpd);
 }

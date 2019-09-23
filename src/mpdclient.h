@@ -1,5 +1,5 @@
 /*******************************************************************************
- * main.c
+ * mpdclient.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,12 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "mpdclient.h"
-#include <stdio.h>
+#ifndef MPDCLIENT_H
+#define MPDCLIENT_H
 
-int main()
-{
-    struct mpdclient *mpd = mpdclient_init("localhost", 6600, 30000);
-    mpdclient_free(mpd);
-    return 0;
-}
+#include <mpd/client.h>
+
+struct mpdclient {
+    struct mpd_connection *connection;
+    struct mpd_status *status;
+    struct mpd_song *current_song;
+    int queue_version;
+    enum mpd_error last_error;
+    enum mpd_state state;
+};
+
+struct mpdclient *mpdclient_init(const char *host, int port, int timeout);
+void mpdclient_free(struct mpdclient *mpd);
+
+#endif /* MPDCLIENT_H */
