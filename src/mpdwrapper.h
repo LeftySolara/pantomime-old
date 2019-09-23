@@ -1,5 +1,5 @@
 /*******************************************************************************
- * mpdclient.h
+ * mpdwrapper.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,12 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef MPDCLIENT_H
-#define MPDCLIENT_H
+#ifndef MPDWRAPPER_H
+#define MPDWRAPPER_H
 
 #include <mpd/client.h>
 
-struct mpdclient {
+struct mpdwrapper {
     struct mpd_connection *connection;
     struct mpd_status *status;
     struct mpd_song *current_song;
@@ -31,7 +31,7 @@ struct mpdclient {
     enum mpd_state state;
 };
 
-struct mpdclient *mpdclient_init(const char *host, int port, int timeout);
-void mpdclient_free(struct mpdclient *mpd);
+struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout);
+void mpdwrapper_free(struct mpdwrapper *mpd);
 
-#endif /* MPDCLIENT_H */
+#endif /* MPDWRAPPER_H */

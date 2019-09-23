@@ -17,12 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "mpdclient.h"
+#include "mpdwrapper.h"
 #include <stdio.h>
 
 int main()
 {
-    struct mpdclient *mpd = mpdclient_init("localhost", 6600, 30000);
-    mpdclient_free(mpd);
     return 0;
 }

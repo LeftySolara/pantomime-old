@@ -1,5 +1,5 @@
 /*******************************************************************************
- * mpd.c
+ * mpdwrapper.c
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,13 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "mpdclient.h"
+#include "mpdwrapper.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 
-struct mpdclient *mpdclient_init(const char *host, int port, int timeout)
+
+struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout)
 {
-    struct mpdclient *mpd = malloc(sizeof(*mpd));
+    struct mpdwrapper *mpd = malloc(sizeof(*mpd));
 
     mpd->connection = mpd_connection_new(host, port, timeout);
     mpd->status = mpd_run_status(mpd->connection);
@@ -34,7 +36,7 @@ struct mpdclient *mpdclient_init(const char *host, int port, int timeout)
     return mpd;
 }
 
-void mpdclient_free(struct mpdclient *mpd)
+void mpdwrapper_free(struct mpdwrapper *mpd)
 {
     mpd_status_free(mpd->status);
     mpd_song_free(mpd->current_song);

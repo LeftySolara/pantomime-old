@@ -16,6 +16,10 @@ set(CMAKE_C_FLAGS_RELEASE "-O2")
 
 set(CMAKE_BUILD_TYPE Debug)
 
+enable_testing()
+add_subdirectory(src)
+add_subdirectory(test)
+
 # Recursively add source files to the build tree
 file(GLOB_RECURSE SOURCE_FILES "src/*.c")
 add_executable(pantomime ${SOURCE_FILES})
