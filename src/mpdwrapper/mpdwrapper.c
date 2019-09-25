@@ -17,12 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+/**
+ * @file mpdwrapper.h
+ */
+
 #include "mpdwrapper.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 
-
+/**
+ * @brief Creates a connection to an MPD server.
+ * 
+ * @param host The MPD server host to connect to. Defaults to "localhost".
+ * @param port The port MPD is running on. Defaults to 6600.
+ * @param timeout The MPD timeout. Defaults to 30000ms.
+ * @return Pointer to an mpdwrapper struct.
+ */
 struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout)
 {
     struct mpdwrapper *mpd = malloc(sizeof(*mpd));
@@ -36,6 +47,11 @@ struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout)
     return mpd;
 }
 
+/**
+ * @brief Frees memory allocated by an mpdwrapper.
+ * 
+ * @param mpd Pointer to an mpdwrapper struct.
+ */
 void mpdwrapper_free(struct mpdwrapper *mpd)
 {
     mpd_status_free(mpd->status);
@@ -45,6 +61,11 @@ void mpdwrapper_free(struct mpdwrapper *mpd)
     free(mpd);
 }
 
+/**
+ * @brief Fetches the current state from the MPD server.
+ * 
+ * @param mpd Pointer to an mpdwrapper struct.
+ */
 void mpdwrapper_update(struct mpdwrapper *mpd)
 {
     mpd->status = mpd_run_status(mpd->connection);
