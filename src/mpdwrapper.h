@@ -34,4 +34,6 @@ struct mpdwrapper {
 struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout);
 void mpdwrapper_free(struct mpdwrapper *mpd);
 
+void mpdwrapper_update(struct mpdwrapper *mpd);
+
 #endif /* MPDWRAPPER_H */

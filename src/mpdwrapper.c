@@ -44,3 +44,11 @@ void mpdwrapper_free(struct mpdwrapper *mpd)
 
     free(mpd);
 }
+
+void mpdwrapper_update(struct mpdwrapper *mpd)
+{
+    mpd->status = mpd_run_status(mpd->connection);
+    mpd->state = mpd_status_get_state(mpd->status);
+    mpd->current_song = mpd_run_current_song(mpd->connection);
+    mpd->last_error = mpd_connection_get_error(mpd->connection);
+}
