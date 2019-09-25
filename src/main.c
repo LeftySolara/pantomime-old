@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "mpdwrapper.h"
+#include "mpdwrapper/mpdwrapper.h"
 #include <stdio.h>
 
 int main()

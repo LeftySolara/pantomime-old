@@ -1,4 +1,4 @@
-#include "../src/mpdwrapper.h"
+#include "mpdwrapper/mpdwrapper.h"
 
 #include <stdarg.h>
 #include <stddef.h>
