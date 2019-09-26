@@ -9,3 +9,13 @@ add_test(test_mpdwrapper_valgrind valgrind
          --leak-check=full --show-leak-kinds=all
          ./test_mpdwrapper)
 target_link_libraries(test_mpdwrapper mpdwrapper mpdclient cmocka)
+
+# songlist tests
+add_executable(test_songlist test_songlist.c)
+add_dependencies(test_songlist test_songlist)
+add_test(test_songlist test_songlist)
+add_test(test_songlist_valgrind valgrind
+         --error-exitcode=1 --read-var-info=yes
+         --leak-check=full --show-leak-kinds=all
+         ./test_songlist)
+target_link_libraries(test_songlist mpdwrapper mpdclient cmocka)
