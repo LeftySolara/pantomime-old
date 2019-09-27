@@ -39,7 +39,22 @@ struct songnode {
     struct songnode *prev;  /**< The previous song in the list. */
 };
 
+/**
+ * @brief A list of MPD songs. Implemented as a doubly-linked list.
+ */
+struct songlist {
+    struct songnode *head;  /**< The first item in the list. */
+    struct songnode *tail;  /**< The last item in the list. */
+    int size;               /**< The number of items in the list. */
+};
+
 struct songnode *songnode_init(struct mpd_song *song);
 void songnode_free(struct songnode *node);
+
+struct songlist *songlist_init();
+void songlist_free(struct songlist *list);
+
+void songlist_append(struct songlist *list, struct mpd_song *song);
+void songlist_clear(struct songlist *list);
 
 #endif /* SONGLIST_H */

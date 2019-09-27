@@ -17,5 +17,6 @@ add_test(test_songlist test_songlist)
 add_test(test_songlist_valgrind valgrind
          --error-exitcode=1 --read-var-info=yes
          --leak-check=full --show-leak-kinds=all
+         --track-origins=yes --keep-stacktraces=alloc-and-free
          ./test_songlist)
 target_link_libraries(test_songlist mpdwrapper mpdclient cmocka)

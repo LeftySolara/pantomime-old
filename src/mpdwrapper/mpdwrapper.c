@@ -54,9 +54,12 @@ struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout)
  */
 void mpdwrapper_free(struct mpdwrapper *mpd)
 {
-    mpd_status_free(mpd->status);
-    mpd_song_free(mpd->current_song);
-    mpd_connection_free(mpd->connection);
+    if (mpd->current_song)
+        mpd_song_free(mpd->current_song);
+    if (mpd->status)
+        mpd_status_free(mpd->status);
+    if (mpd->connection)
+        mpd_connection_free(mpd->connection);
 
     free(mpd);
 }
@@ -68,8 +71,12 @@ void mpdwrapper_free(struct mpdwrapper *mpd)
  */
 void mpdwrapper_update(struct mpdwrapper *mpd)
 {
-    mpd->status = mpd_run_status(mpd->connection);
     mpd->state = mpd_status_get_state(mpd->status);
-    mpd->current_song = mpd_run_current_song(mpd->connection);
     mpd->last_error = mpd_connection_get_error(mpd->connection);
+
+    mpd_status_free(mpd->status);
+    mpd->status = mpd_run_status(mpd->connection);
+
+    mpd_song_free(mpd->current_song);
+    mpd->current_song = mpd_run_current_song(mpd->connection);
 }

@@ -8,6 +8,7 @@
 void test_connection()
 {
     struct mpdwrapper *mpd = mpdwrapper_init("localhost", 6600, 30000);
+    mpdwrapper_update(mpd);
     assert_int_equal(mpd->last_error, MPD_ERROR_SUCCESS);
     mpdwrapper_free(mpd);
 }

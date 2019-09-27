@@ -49,8 +49,80 @@ struct songnode *songnode_init(struct mpd_song *song)
  */
 void songnode_free(struct songnode *node)
 {
-    mpd_song_free(node->song);
+    if (node->song)
+        mpd_song_free(node->song);
+
     node->prev = NULL;
     node->next = NULL;
     free(node);
+}
+
+/**
+ * @brief Allocates memory for a list of songs.
+ * 
+ * @return An empty song list.
+ */
+struct songlist *songlist_init()
+{
+    struct songlist *list = malloc(sizeof(*list));
+
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
+
+    return list;
+}
+
+/**
+ * @brief Frees memory allocated by a song list.
+ * 
+ * @param list The list to free memory from.
+ */
+void songlist_free(struct songlist *list)
+{
+    songlist_clear(list);
+    free(list);
+}
+
+/**
+ * @brief Adds a song to the end of the list.
+ * 
+ * @param list The list to append a song to.
+ * @param song The song to add to the list.
+ */
+void songlist_append(struct songlist *list, struct mpd_song *song)
+{
+    struct songnode *new_node = songnode_init(song);
+
+    if (!list->head)
+        list->head = new_node;
+    else {
+        struct songnode *tmp = list->tail;
+        tmp->next = new_node;
+        new_node->prev = tmp;
+    }
+
+    list->tail = new_node;
+    list->size++;
+}
+
+/**
+ * @brief Removes all items from a list.
+ * 
+ * @param list The list to clear.
+ */
+void songlist_clear(struct songlist *list)
+{
+    struct songnode *current = list->head;
+    struct songnode *next;
+
+    while (current) {
+        next = current->next;
+        songnode_free(current);
+        current = next;
+    }
+
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
 }
