@@ -136,6 +136,42 @@ void songlist_append(struct songlist *list, struct mpd_song *song)
 }
 
 /**
+ * @brief Removes the song at the given index from a list.
+ * 
+ * @param list The list to remove a song from.
+ * @param index The position of the song to remove.
+ */
+void songlist_remove(struct songlist *list, unsigned int index)
+{
+    if (index >= list->size)
+        return;
+
+    if (index == 0) {
+        struct songnode *tmp = list->head;
+
+        list->head = list->head->next;
+        list->head->prev = NULL;
+        songnode_free(tmp);
+    }
+    else if (index == list->size-1) {
+        struct songnode *tmp = list->tail;
+
+        list->tail = list->tail->prev;
+        list->tail->next = NULL;
+        songnode_free(tmp);
+    }
+    else {
+        struct songnode *tmp = songlist_at(list, index);
+
+        tmp->prev->next = tmp->next;
+        tmp->next->prev = tmp->prev;
+        songnode_free(tmp);
+    }
+
+    list->size--;
+}
+
+/**
  * @brief Removes all items from a list.
  * 
  * @param list The list to clear.

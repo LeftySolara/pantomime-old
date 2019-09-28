@@ -56,6 +56,7 @@ void songlist_free(struct songlist *list);
 
 struct songnode *songlist_at(struct songlist *list, unsigned int index);
 void songlist_append(struct songlist *list, struct mpd_song *song);
+void songlist_remove(struct songlist *list, unsigned int index);
 void songlist_clear(struct songlist *list);
 
 #endif /* SONGLIST_H */
