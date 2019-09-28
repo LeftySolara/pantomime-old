@@ -20,6 +20,7 @@
 #ifndef MPDWRAPPER_H
 #define MPDWRAPPER_H
 
+#include "songlist.h"
 #include <mpd/client.h>
 
 /**
@@ -33,6 +34,7 @@ struct mpdwrapper {
     struct mpd_connection *connection;  /**< The MPD server connection. */
     struct mpd_status *status;          /**< Holds info about MPD's status. */
     struct mpd_song *current_song;      /**< The currently playing song. */
+    struct songlist *queue;             /**< A songlist struct representing the current playback queue. */
     enum mpd_error last_error;          /**< The most recent error encountered by MPD. */
     enum mpd_state state;               /**< Current player state (playing, paused, or stopped). */
     int queue_version;                  /**< The queue version number. Useful for checking if queue has changed. */
@@ -42,6 +44,7 @@ struct mpdwrapper {
 struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout);
 void mpdwrapper_free(struct mpdwrapper *mpd);
 
+void mpdwrapper_fetch_queue(struct mpdwrapper *mpd);
 void mpdwrapper_update(struct mpdwrapper *mpd);
 
 #endif /* MPDWRAPPER_H */

@@ -41,6 +41,7 @@ struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout)
     mpd->connection = mpd_connection_new(host, port, timeout);
     mpd->status = mpd_run_status(mpd->connection);
     mpd->current_song = mpd_run_current_song(mpd->connection);
+    mpd->queue = songlist_init();
     mpd->state = mpd_status_get_state(mpd->status);
     mpd->last_error = mpd_connection_get_error(mpd->connection);
 
@@ -60,8 +61,31 @@ void mpdwrapper_free(struct mpdwrapper *mpd)
         mpd_status_free(mpd->status);
     if (mpd->connection)
         mpd_connection_free(mpd->connection);
+    if (mpd->queue)
+        songlist_free(mpd->queue);
 
     free(mpd);
+}
+
+/**
+ * @brief Fetches the current MPD queue and stores it in a songlist struct.
+ * 
+ * @param mpd The MPD wrapper to fetch the queue for.
+ */
+void mpdwrapper_fetch_queue(struct mpdwrapper *mpd)
+{
+    if (!mpd->connection)
+        return;
+    if (mpd->queue)
+        songlist_clear(mpd->queue);
+    
+    struct mpd_song *song;
+    mpd_send_list_queue_meta(mpd->connection);
+    while ((song = mpd_recv_song(mpd->connection)))
+        songlist_append(mpd->queue, song);
+    
+    mpd_response_finish(mpd->connection);
+    mpd->queue_version = mpd_status_get_queue_version(mpd->status);
 }
 
 /**
