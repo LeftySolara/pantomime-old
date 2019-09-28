@@ -40,20 +40,17 @@ static void test_at(void **state)
     assert_non_null(songlist_at(list, 0));
     assert_null(songlist_at(list, 1));
 
-    /* List has multiple nodes. 
-     * Looks like [song, NULL, NULL, song, NULL]
-     */
-    songlist_append(list, NULL);
-    songlist_append(list, NULL);
+    /* List has multiple nodes. */
     songlist_append(list, mpd_run_current_song(mpd));
-    songlist_append(list, NULL);
+    songlist_append(list, mpd_run_current_song(mpd));
+    songlist_append(list, mpd_run_current_song(mpd));
 
-    assert_non_null(songlist_at(list, 0));
+    assert_true(songlist_at(list, 0) == list->head);
+    assert_true(songlist_at(list, list->size-1) == list->tail);
+
+    assert_non_null(songlist_at(list, 1));
+    assert_non_null(songlist_at(list, 2));
     assert_non_null(songlist_at(list, 3));
-
-    assert_null(songlist_at(list, 1)->song);
-    assert_null(songlist_at(list, 2)->song);
-    assert_null(songlist_at(list, 50));
 
     songlist_free(list);
     mpd_connection_free(mpd);
@@ -70,6 +67,11 @@ static void test_append(void **state)
     assert_non_null(list->head);
     assert_non_null(list->tail);
     assert_int_equal(list->size, 1);
+
+    /* Try appending a NULL song. */
+    songlist_append(list, NULL);
+    assert_int_equal(list->size, 1);
+    assert_null(list->head->next);
 
     /* Append when list is not empty. */
     struct mpd_song *song2 = mpd_run_current_song(mpd);

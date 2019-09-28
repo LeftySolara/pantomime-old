@@ -113,10 +113,14 @@ struct songnode *songlist_at(struct songlist *list, unsigned int index)
  * @brief Adds a song to the end of the list.
  * 
  * @param list The list to append a song to.
- * @param song The song to add to the list.
+ * @param song The song to add to the list. 
+ *   If this is NULL, the function does nothing.
  */
 void songlist_append(struct songlist *list, struct mpd_song *song)
 {
+    if (!song)
+        return;
+
     struct songnode *new_node = songnode_init(song);
 
     if (!list->head)
