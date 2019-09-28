@@ -16,6 +16,10 @@ set(CMAKE_C_FLAGS_RELEASE "-O2")
 
 set(CMAKE_BUILD_TYPE Debug)
 
+set(CURSES_USE_NCURSES TRUE)
+find_package(Curses REQUIRED)
+include_directories(${CURSES_INCLUDE_DIR})
+
 enable_testing()
 add_subdirectory(src)
 add_subdirectory(test)
@@ -25,4 +29,5 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.c")
 add_executable(pantomime ${SOURCE_FILES})
 
 set_target_properties(pantomime PROPERTIES OUTPUT_NAME "pantomime")
+target_link_libraries(pantomime -lpanel ${CURSES_LIBRARIES})
 target_link_libraries(pantomime mpdclient)
