@@ -85,6 +85,31 @@ void songlist_free(struct songlist *list)
 }
 
 /**
+ * @brief Gets the song at the given index.
+ * 
+ * @param list The list to find a song from.
+ * @param index The place in the list where the song is.
+ * 
+ * @return Pointer to the requested node, or NULL on error.
+ */
+struct songnode *songlist_at(struct songlist *list, unsigned int index)
+{
+    if (index >= list->size)
+        return NULL;
+
+    if (index == 0)
+        return list->head;
+    if (index == list->size-1)
+        return list->tail;
+
+    struct songnode *current = list->head;
+    for (int i = 0; i < index; ++i)
+        current = current->next;
+
+    return current;
+}
+
+/**
  * @brief Adds a song to the end of the list.
  * 
  * @param list The list to append a song to.
