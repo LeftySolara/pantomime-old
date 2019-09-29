@@ -106,6 +106,17 @@ void mpdwrapper_update(struct mpdwrapper *mpd)
 }
 
 /**
+ * @brief Gets the title of the currently playing song.
+ * 
+ * @param mpd The mpd connection to parse.
+ * @return The title of the currently playing song.
+ */
+const char *get_current_song_title(struct mpdwrapper *mpd)
+{
+    return mpd_song_get_tag(mpd->current_song, MPD_TAG_TITLE, 0);
+}
+
+/**
  * @brief Gets the duration of the currently playing song.
  * 
  * @param mpd The mpd connection to parse.

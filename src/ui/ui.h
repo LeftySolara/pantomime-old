@@ -29,6 +29,8 @@ struct ui {
 
     int maxx;
     int maxy;
+
+    char *status_label;
 };
 
 void start_curses();

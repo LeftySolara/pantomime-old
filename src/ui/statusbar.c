@@ -27,15 +27,21 @@
 
 #include "statusbar.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 /**
  * @brief Draws the status bar at the bottom of the screen.
  * 
+ * By default, the currently playing track will be displayed under the
+ * progress bar. If a status message needs to be shown to the user, then
+ * that message will be printed temporarily instead.
+ * 
  * @param win The ncurses window to draw on.
  * @param mpd The mpd connection to parse data from.
+ * @param status_buf Buffer to hold the message printed in the status bar.
  */
-void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd)
+void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd, char *status_buf)
 {
     if (mpd->state == MPD_STATE_UNKNOWN)
         return;
@@ -62,8 +68,23 @@ void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd)
     }
 
     /* Print the current player status */
-    mvwaddstr(win, 1, 0, "Song Title");
+    if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE)
+        create_label_song(status_buf, mpd->current_song);
+
+    mvwaddstr(win, 1, 0, status_buf);
     mvwaddstr(win, 1, width - strlen("-----"), "-----");
 
     wnoutrefresh(win);
+}
+
+char *create_label_song(char *buffer, struct mpd_song *song)
+{
+    const char *artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
+    const char *title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
+    const size_t label_len = strlen(artist) + strlen(title) + strlen(" - ") + 1;
+
+    buffer = realloc(buffer, label_len);
+    snprintf(buffer, label_len, "%s - %s", artist, title);
+
+    return buffer;
 }
