@@ -24,8 +24,10 @@
 
 #include <ncurses.h>
 
-void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd, char *status_buf);
+void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
+                    char *status_buf, char *modes_buf);
 
+char *create_label_modes(char *buffer, struct mpd_status *status);
 char *create_label_song(char *buffer, struct mpd_song *song);
 
 #endif

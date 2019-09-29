@@ -30,7 +30,8 @@ struct ui {
     int maxx;
     int maxy;
 
-    char *status_label;
+    char *modes_label;
+    char *song_label;
 };
 
 void start_curses();

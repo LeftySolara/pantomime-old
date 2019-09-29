@@ -41,7 +41,8 @@
  * @param mpd The mpd connection to parse data from.
  * @param status_buf Buffer to hold the message printed in the status bar.
  */
-void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd, char *status_buf)
+void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
+                    char *status_buf, char *modes_buf)
 {
     if (mpd->state == MPD_STATE_UNKNOWN)
         return;
@@ -71,10 +72,41 @@ void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd, char *status_buf)
     if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE)
         create_label_song(status_buf, mpd->current_song);
 
+    create_label_modes(modes_buf, mpd->status);
+
     mvwaddstr(win, 1, 0, status_buf);
-    mvwaddstr(win, 1, width - strlen("-----"), "-----");
+    mvwaddnstr(win, 1, width - strlen(modes_buf), modes_buf, 5);
 
     wnoutrefresh(win);
+}
+
+/**
+ * @brief Creates a label for the current play mode.
+ * 
+ * MPD has five playback modes: repeat, random, single, consume, and crossfade.
+ * This label showes which combination of modes is activated.
+ * 
+ * @param buffer A buffer to hold the label.
+ * @param status The MPD status to parse information from.
+ */
+char *create_label_modes(char *buffer, struct mpd_status *status)
+{
+    const int mode_cnt = 5;
+    buffer = realloc(buffer, mode_cnt + 1);
+    memset(buffer, '-', mode_cnt);
+
+    if (mpd_status_get_repeat(status))
+        buffer[0] = 'r';
+    if (mpd_status_get_random(status))
+        buffer[1] = 'z';
+    if (mpd_status_get_single(status))
+        buffer[2] = 's';
+    if (mpd_status_get_consume(status))
+        buffer[3] = 'c';
+    if (mpd_status_get_crossfade(status))
+        buffer[4] = 'x';
+
+    return buffer;
 }
 
 char *create_label_song(char *buffer, struct mpd_song *song)
