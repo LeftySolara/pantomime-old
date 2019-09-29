@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ui.h
+ * statusbar.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,47 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "ui.h"
-#include "statusbar.h"
+#ifndef STATUSBAR_H
+#define STATUSBAR_H
 
-#include <locale.h>
-#include <stdlib.h>
+#include "../mpdwrapper/mpdwrapper.h"
 
-void start_curses()
-{
-    setlocale(LC_ALL, "");
-    initscr();
-    cbreak();
-    noecho();
-    curs_set(0);
-    nodelay(stdscr, TRUE);
-    keypad(stdscr, TRUE);
-    refresh();
-}
+#include <ncurses.h>
 
-void end_curses()
-{
-    endwin();
-}
+void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd);
 
-struct ui *ui_init()
-{
-    struct ui *ui = malloc(sizeof(*ui));
-    getmaxyx(stdscr, ui->maxy, ui->maxx);
-
-    ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
-
-    return ui;
-}
-
-void ui_free(struct ui *ui)
-{
-    delwin(ui->statusbar);
-    free(ui);
-}
-
-void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
-{
-    draw_statusbar(ui->statusbar, mpd);
-    doupdate();
-}
+#endif

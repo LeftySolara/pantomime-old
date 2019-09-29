@@ -17,11 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+#include "mpdwrapper/mpdwrapper.h"
 #include "ui/ui.h"
 
 int main()
 {
     start_curses();
+    halfdelay(TRUE);
+
+    /* TODO: Allow user to specify connection settings as command line args
+     *       or from a config file.
+     */
+    struct mpdwrapper *mpd = mpdwrapper_init("localhost", 6600, 30000);
+
+    struct ui *ui = ui_init();
+    ui_draw(ui, mpd);
+
+    int ch;
+    while (ch != 'q') {
+        mpdwrapper_update(mpd);
+        ch = getch();
+        ui_draw(ui, mpd);
+    }
+
     end_curses();
+    ui_free(ui);
+    mpdwrapper_free(mpd);
+
     return 0;
 }

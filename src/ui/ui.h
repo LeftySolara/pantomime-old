@@ -20,7 +20,23 @@
 #ifndef UI_H
 #define UI_H
 
+#include "../mpdwrapper/mpdwrapper.h"
+
+#include <ncurses.h>
+
+struct ui {
+    WINDOW *statusbar;
+
+    int maxx;
+    int maxy;
+};
+
 void start_curses();
 void end_curses();
+
+struct ui *ui_init();
+void ui_free(struct ui *ui);
+
+void ui_draw(struct ui *ui, struct mpdwrapper *mpd);
 
 #endif /* UI_H */

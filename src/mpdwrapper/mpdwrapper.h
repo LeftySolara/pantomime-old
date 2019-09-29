@@ -47,4 +47,7 @@ void mpdwrapper_free(struct mpdwrapper *mpd);
 void mpdwrapper_fetch_queue(struct mpdwrapper *mpd);
 void mpdwrapper_update(struct mpdwrapper *mpd);
 
+unsigned int get_current_song_duration(struct mpdwrapper *mpd);
+unsigned int get_current_song_elapsed(struct mpdwrapper *mpd);
+
 #endif /* MPDWRAPPER_H */
