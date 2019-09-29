@@ -47,6 +47,7 @@ struct ui *ui_init()
 
     ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
     ui->modes_label = malloc(sizeof(char) * 5);
+    ui->progress_label = malloc(sizeof(char) * 16);
     ui->song_label = malloc(sizeof(char) * 64);
 
     return ui;
@@ -56,12 +57,14 @@ void ui_free(struct ui *ui)
 {
     delwin(ui->statusbar);
     free(ui->modes_label);
+    free(ui->progress_label);
     free(ui->song_label);
     free(ui);
 }
 
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
 {
-    draw_statusbar(ui->statusbar, mpd, ui->song_label, ui->modes_label);
+    draw_statusbar(ui->statusbar, mpd,
+                ui->song_label, ui->modes_label, ui->progress_label);
     doupdate();
 }

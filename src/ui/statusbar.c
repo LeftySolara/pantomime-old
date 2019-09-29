@@ -42,7 +42,7 @@
  * @param status_buf Buffer to hold the message printed in the status bar.
  */
 void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
-                    char *status_buf, char *modes_buf)
+                    char *status_buf, char *modes_buf, char *progress_buf)
 {
     if (mpd->state == MPD_STATE_UNKNOWN)
         return;
@@ -73,9 +73,11 @@ void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
         create_label_song(status_buf, mpd->current_song);
 
     create_label_modes(modes_buf, mpd->status);
+    create_label_progress(progress_buf, mpd);
 
     mvwaddstr(win, 1, 0, status_buf);
-    mvwaddnstr(win, 1, width - strlen(modes_buf), modes_buf, 5);
+    mvwaddstr(win, 1, width - strlen(progress_buf), progress_buf);
+    mvwaddnstr(win, 1, width - strlen(modes_buf) - strlen(progress_buf) - 1, modes_buf, 5);
 
     wnoutrefresh(win);
 }
@@ -105,6 +107,35 @@ char *create_label_modes(char *buffer, struct mpd_status *status)
         buffer[3] = 'c';
     if (mpd_status_get_crossfade(status))
         buffer[4] = 'x';
+
+    return buffer;
+}
+
+/**
+ * @brief Creates a label for the current time elapsed.
+ * 
+ * @param buffer The char buffer for storing the label.
+ * @param mpd The mpd connection to parse.
+ * @return The label representing time elapsed for the playing song,
+ *   or NULL on error.
+ */
+char *create_label_progress(char *buffer, struct mpdwrapper *mpd)
+{
+    if (mpd->state == MPD_STATE_UNKNOWN || mpd->state == MPD_STATE_STOP)
+        return NULL;
+    
+    const size_t label_size = strlen("123:45 / 123:45") + 1;
+    unsigned int song_len = get_current_song_duration(mpd);
+    unsigned int time_elapsed = get_current_song_elapsed(mpd);
+
+    unsigned int total_minutes = song_len / 60;
+    unsigned int total_seconds = song_len % 60;
+    unsigned int elapsed_minutes = time_elapsed / 60;
+    unsigned int elapsed_seconds = time_elapsed % 60;
+
+    buffer = realloc(buffer, label_size);
+    snprintf(buffer, label_size, "%d:%02d / %d:%02d",
+            elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
 
     return buffer;
 }

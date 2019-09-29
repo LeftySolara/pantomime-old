@@ -31,6 +31,7 @@ struct ui {
     int maxy;
 
     char *modes_label;
+    char *progress_label;
     char *song_label;
 };
 
