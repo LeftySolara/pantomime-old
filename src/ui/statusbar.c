@@ -69,14 +69,14 @@ void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
     }
 
     /* Print the current player status */
-    if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE)
+    if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE) {
         create_label_song(status_buf, mpd->current_song);
+        create_label_progress(progress_buf, mpd);
+        mvwaddstr(win, 1, width - strlen(progress_buf), progress_buf);
+        mvwaddstr(win, 1, 0, status_buf);
+    }
 
     create_label_modes(modes_buf, mpd->status);
-    create_label_progress(progress_buf, mpd);
-
-    mvwaddstr(win, 1, 0, status_buf);
-    mvwaddstr(win, 1, width - strlen(progress_buf), progress_buf);
     mvwaddnstr(win, 1, width - strlen(modes_buf) - strlen(progress_buf) - 1, modes_buf, 5);
 
     wnoutrefresh(win);
