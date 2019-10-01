@@ -1,5 +1,5 @@
 /*******************************************************************************
- * main.c
+ * command.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -7,48 +7,34 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "mpdwrapper/mpdwrapper.h"
-#include "ui/command.h"
-#include "ui/ui.h"
+#ifndef COMMAND_H
+#define COMMAND_H
 
-int main()
-{
-    start_curses();
-    halfdelay(TRUE);
+#define MAX_KEYS 3 /* Maximum number of keys a command can be mapped to. */
 
-    /* TODO: Allow user to specify connection settings as command line args
-     *       or from a config file.
-     */
-    struct mpdwrapper *mpd = mpdwrapper_init("localhost", 6600, 30000);
+enum command_type {
+    CMD_NULL,
+    CMD_QUIT,
+    NUM_CMDS
+};
 
-    struct ui *ui = ui_init();
-    ui_draw(ui, mpd);
+struct command {
+    enum command_type cmd;  /** The type of command to execute. */
+    int keys[MAX_KEYS];     /** The keys bound to the command. */
+    char *name;             /** The name of the command. */
+    char *description;      /** Brief description of what the command does. */
+};
 
-    int ch;
-    enum command_type cmd;
+enum command_type find_key_command(int key);
 
-    while (cmd != CMD_QUIT) {
-        mpdwrapper_update(mpd);
-
-        ch = getch();
-        cmd = find_key_command(ch);
-
-        ui_draw(ui, mpd);
-    }
-
-    end_curses();
-    ui_free(ui);
-    mpdwrapper_free(mpd);
-
-    return 0;
-}
+#endif
