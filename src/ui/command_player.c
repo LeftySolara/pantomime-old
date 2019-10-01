@@ -1,5 +1,5 @@
 /*******************************************************************************
- * command.h
+ * command_player.c
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,26 +17,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef COMMAND_H
-#define COMMAND_H
+/**
+ * @file command_player.h
+ * 
+ */
 
-#define MAX_KEYS 3 /* Maximum number of keys a command can be mapped to. */
+#include "command_player.h"
 
-enum command_type {
-    CMD_NULL,
-    CMD_QUIT,
-    CMD_PAUSE,
-    CMD_STOP,
-    NUM_CMDS
-};
+void toggle_pause(struct mpd_connection *connection)
+{
+    mpd_run_toggle_pause(connection);
+}
 
-struct command {
-    enum command_type cmd;  /** The type of command to execute. */
-    int keys[MAX_KEYS];     /** The keys bound to the command. */
-    char *name;             /** The name of the command. */
-    char *description;      /** Brief description of what the command does. */
-};
+void stop_playback(struct mpd_connection *connection)
+{
+    mpd_run_stop(connection);
+}
 
-enum command_type find_key_command(int key);
-
-#endif
+/**
+ * @brief Finds the requested player command and executes it.
+ * 
+ * @param cmd The command to execute.
+ * @param mpd The MPD connection to run the command on.
+ */
+void cmd_player(enum command_type cmd, struct mpdwrapper *mpd)
+{
+    switch (cmd) {
+    case CMD_NULL:
+        break;
+    case CMD_PAUSE:
+        toggle_pause(mpd->connection);
+        break;
+    case CMD_STOP:
+        stop_playback(mpd->connection);
+    default:
+        break;
+    }
+}

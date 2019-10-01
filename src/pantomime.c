@@ -19,6 +19,7 @@
 
 #include "mpdwrapper/mpdwrapper.h"
 #include "ui/command.h"
+#include "ui/command_player.h"
 #include "ui/ui.h"
 
 int main()
@@ -43,6 +44,7 @@ int main()
         ch = getch();
         cmd = find_key_command(ch);
 
+        cmd_player(cmd, mpd);
         ui_draw(ui, mpd);
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * command.h
+ * command_player.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,26 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef COMMAND_H
-#define COMMAND_H
+/**
+ * @brief Functions that control MPD playback.
+ * 
+ */
 
-#define MAX_KEYS 3 /* Maximum number of keys a command can be mapped to. */
+#ifndef COMMAND_PLAYER_H
+#define COMMAND_PLAYER_H
 
-enum command_type {
-    CMD_NULL,
-    CMD_QUIT,
-    CMD_PAUSE,
-    CMD_STOP,
-    NUM_CMDS
-};
+#include "command.h"
+#include "../mpdwrapper/mpdwrapper.h"
 
-struct command {
-    enum command_type cmd;  /** The type of command to execute. */
-    int keys[MAX_KEYS];     /** The keys bound to the command. */
-    char *name;             /** The name of the command. */
-    char *description;      /** Brief description of what the command does. */
-};
+void toggle_pause(struct mpd_connection *connection);
+void stop_playback(struct mpd_connection *connection);
 
-enum command_type find_key_command(int key);
+void cmd_player(enum command_type cmd, struct mpdwrapper *mpd);
 
 #endif
