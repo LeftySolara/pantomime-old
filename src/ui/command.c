@@ -22,6 +22,7 @@
  */
 
 #include "command.h"
+#include <ncurses.h>
 
 #define KEY_CTRL(x) ((x) & 0x1f)
 
@@ -29,7 +30,9 @@ static struct command commands[] = {
     {CMD_NULL, {0, 0, 0}, "Null", "Null command"},
     {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit", "Quit Pantomime"},
     {CMD_PAUSE, {'p', 'P', 0}, "Pause", "Toggle pause"},
-    {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop playback"}
+    {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop playback"},
+    {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help", "Show the help screen"},
+    {CMD_PANEL_QUEUE, {'2', KEY_F(2), 0}, "Queue", "Show the queue screen"}
 };
 
 /**

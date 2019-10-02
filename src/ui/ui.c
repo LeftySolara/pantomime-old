@@ -19,6 +19,7 @@
 
 #include "ui.h"
 
+#include "panel_help.h"
 #include "panel_queue.h"
 #include "statusbar.h"
 
@@ -113,10 +114,27 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
 {
     draw_statusbar(ui->statusbar, mpd,
                 ui->song_label, ui->modes_label, ui->progress_label);
+    
+    WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
 
-    PANEL *panel = ui->panels[ui->visible_panel];
-    draw_queue(panel_window(panel));
+    switch (ui->visible_panel) {
+    case HELP:
+        draw_help_screen(win);
+        break;
+    case QUEUE:
+        draw_queue(win);
+        break;
+    default:
+        break;
+    }
+
     update_panels();
 
     doupdate();
+}
+
+void set_visible_panel(struct ui *ui, enum ui_panel panel)
+{
+    ui->visible_panel = panel;
+    top_panel(ui->panels[panel]);
 }

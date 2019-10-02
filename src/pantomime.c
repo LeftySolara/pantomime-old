@@ -45,6 +45,17 @@ int main()
         cmd = find_key_command(ch);
 
         cmd_player(cmd, mpd);
+
+        switch (cmd) {
+        case CMD_PANEL_HELP:
+            set_visible_panel(ui, HELP);
+            break;
+        case CMD_PANEL_QUEUE:
+            set_visible_panel(ui, QUEUE);
+            break;
+        default:
+            break;
+        }
         ui_draw(ui, mpd);
     }
 

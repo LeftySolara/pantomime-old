@@ -27,6 +27,8 @@ enum command_type {
     CMD_QUIT,
     CMD_PAUSE,
     CMD_STOP,
+    CMD_PANEL_HELP,
+    CMD_PANEL_QUEUE,
     NUM_CMDS
 };
 
