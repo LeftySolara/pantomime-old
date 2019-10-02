@@ -18,10 +18,17 @@
  ******************************************************************************/
 
 #include "ui.h"
+
+#include "panel_queue.h"
 #include "statusbar.h"
 
 #include <locale.h>
 #include <stdlib.h>
+
+/**
+ * @file ui.h
+ * 
+ */
 
 void start_curses()
 {
@@ -40,10 +47,50 @@ void end_curses()
     endwin();
 }
 
+/**
+ * @brief Create panels with the given width and height.
+ * 
+ * @param num_panels The number of panels to create.
+ * @param width The desired width of all the panels.
+ * @param height The desired height of all the panels.
+ * @return An array of PANEL pointers
+ */
+PANEL **create_panels(int num_panels, int height, int width)
+{
+    PANEL **panels = malloc(num_panels * sizeof(PANEL *));
+    WINDOW *win;
+
+    for (int i = 0; i < num_panels; ++i) {
+        win = newwin(height, width, 0, 0);
+        panels[i] = new_panel(win);
+    }
+
+    return panels;
+}
+
+/**
+ * @brief Free memory allocated for the UI panels.
+ * 
+ * @param panels Pointer to an array of panels.
+ * @param num_panels The number of panels to free.
+ */
+void destroy_panels(PANEL **panels, int num_panels)
+{
+    for (int i = 0; i < num_panels; ++i) {
+        delwin(panel_window(panels[i]));
+        del_panel(panels[i]);
+    }
+    free(panels);
+}
+
 struct ui *ui_init()
 {
     struct ui *ui = malloc(sizeof(*ui));
     getmaxyx(stdscr, ui->maxy, ui->maxx);
+
+    ui->panels = create_panels(NUM_PANELS, ui->maxy - 2, ui->maxx);
+    ui->visible_panel = QUEUE;
+    top_panel(ui->panels[ui->visible_panel]);
 
     ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
     ui->modes_label = malloc(sizeof(char) * 5);
@@ -66,5 +113,10 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
 {
     draw_statusbar(ui->statusbar, mpd,
                 ui->song_label, ui->modes_label, ui->progress_label);
+
+    PANEL *panel = ui->panels[ui->visible_panel];
+    draw_queue(panel_window(panel));
+    update_panels();
+
     doupdate();
 }

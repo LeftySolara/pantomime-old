@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ui.h
+ * panel_queue.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,38 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef UI_H
-#define UI_H
-
-#include "../mpdwrapper/mpdwrapper.h"
+#ifndef PANEL_QUEUE_H
+#define PANEL_QUEUE_H
 
 #include <ncurses.h>
-#include <panel.h>
 
-enum ui_panel {HELP, QUEUE, NUM_PANELS};
+void draw_queue(WINDOW *win);
 
-struct ui {
-    PANEL **panels;
-    WINDOW *statusbar;
-    enum ui_panel visible_panel; /* Only one panel should be visible at a time. */
-
-    int maxx;
-    int maxy;
-
-    char *modes_label;
-    char *progress_label;
-    char *song_label;
-};
-
-void start_curses();
-void end_curses();
-
-PANEL **create_panels(int num_panels, int width, int height);
-void destroy_panels(PANEL **panels, int num_panels);
-
-struct ui *ui_init();
-void ui_free(struct ui *ui);
-
-void ui_draw(struct ui *ui, struct mpdwrapper *mpd);
-
-#endif /* UI_H */
+#endif
