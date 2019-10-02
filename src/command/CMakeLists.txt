@@ -1,0 +1,1 @@
+add_library(command STATIC command.c command_player.c)

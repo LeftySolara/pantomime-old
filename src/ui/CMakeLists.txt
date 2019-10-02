@@ -1,1 +1,1 @@
-add_library(ui STATIC ui.c)
+add_library(ui STATIC ui.c statusbar.c panel_queue.c panel_help.c)

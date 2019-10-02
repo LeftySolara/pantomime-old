@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+#include "command/command.h"
+#include "command/command_player.h"
 #include "mpdwrapper/mpdwrapper.h"
-#include "ui/command.h"
-#include "ui/command_player.h"
 #include "ui/ui.h"
 
 int main()
