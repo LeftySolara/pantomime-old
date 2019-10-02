@@ -76,6 +76,10 @@ void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
         mvwaddstr(win, 1, 0, status_buf);
     }
 
+    int volume = mpd_status_get_volume(mpd->status);
+    mvwprintw(win, 1, width - strlen(modes_buf) - strlen(progress_buf) - strlen("100%%") - 1,
+              "%d%%", volume);
+
     create_label_modes(modes_buf, mpd->status);
     mvwaddnstr(win, 1, width - strlen(modes_buf) - strlen(progress_buf) - 1, modes_buf, 5);
 
