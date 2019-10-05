@@ -24,9 +24,17 @@
 
 #include "panel_queue.h"
 
-void draw_queue(WINDOW *win)
+void draw_queue(WINDOW *win, struct mpdwrapper *mpd)
 {
     werase(win);
-    mvwaddstr(win, 0, 0, "Queue Screen");
+
+    int y = 0;
+
+    struct songnode *node = mpd->queue->head;
+    while (node) {
+        mvwaddstr(win, y++, 0, mpd_song_get_tag(node->song, MPD_TAG_TITLE, 0));
+        node = node->next;
+    }
+
     wnoutrefresh(win);
 }

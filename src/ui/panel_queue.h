@@ -20,8 +20,10 @@
 #ifndef PANEL_QUEUE_H
 #define PANEL_QUEUE_H
 
+#include "../mpdwrapper/mpdwrapper.h"
+
 #include <ncurses.h>
 
-void draw_queue(WINDOW *win);
+void draw_queue(WINDOW *win, struct mpdwrapper *mpd);
 
 #endif

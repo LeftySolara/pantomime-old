@@ -45,6 +45,8 @@ struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout)
     mpd->state = mpd_status_get_state(mpd->status);
     mpd->last_error = mpd_connection_get_error(mpd->connection);
 
+    mpdwrapper_fetch_queue(mpd);
+
     return mpd;
 }
 
@@ -103,6 +105,12 @@ void mpdwrapper_update(struct mpdwrapper *mpd)
 
     mpd_song_free(mpd->current_song);
     mpd->current_song = mpd_run_current_song(mpd->connection);
+
+    int queue_version = mpd_status_get_queue_version(mpd->status);
+    if (mpd->queue_version != queue_version) {
+        mpdwrapper_fetch_queue(mpd);
+        mpd->queue_version = queue_version; 
+    }
 }
 
 /**

@@ -122,7 +122,7 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
         draw_help_screen(win);
         break;
     case QUEUE:
-        draw_queue(win);
+        draw_queue(win, mpd);
         break;
     default:
         break;
