@@ -20,8 +20,12 @@
 #ifndef PANEL_HELP_H
 #define PANEL_HELP_H
 
+#include "../command/command.h"
+
 #include <ncurses.h>
 
 void draw_help_screen(WINDOW *win);
+void draw_help_header(WINDOW *win, int begin_y, char *header_text);
+void draw_command_info(WINDOW *win, int begin_y, enum command_type cmd);
 
 #endif

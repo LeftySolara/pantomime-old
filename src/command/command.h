@@ -40,5 +40,8 @@ struct command {
 };
 
 enum command_type find_key_command(int key);
+void get_command_keys(enum command_type cmd, char *buffer);
+char *get_command_desc(enum command_type cmd);
+void key_to_str(int key, char *buffer);
 
 #endif

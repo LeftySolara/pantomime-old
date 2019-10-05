@@ -22,11 +22,83 @@
  * 
  */
 
+#define ARRAY_LENGTH(x) (sizeof(x) / sizeof((x)[0]))
+
 #include "panel_help.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+static enum command_type global_commands[] = {
+    CMD_QUIT,
+    CMD_PANEL_HELP,
+    CMD_PANEL_QUEUE
+};
+
+static enum command_type queue_panel_commands[] = {
+    CMD_PAUSE,
+    CMD_STOP
+};
 
 void draw_help_screen(WINDOW *win)
 {
     werase(win);
-    mvwaddstr(win, 0, 0, "Help Screen");
+
+    int y = 1;
+
+    draw_help_header(win, y++, "Global");
+    for (int i = 0; i < ARRAY_LENGTH(global_commands); ++i)
+        draw_command_info(win, ++y, global_commands[i]);
+
+    y += 2;
+    draw_help_header(win, y++, "Queue Screen");
+    for (int i = 0; i < ARRAY_LENGTH(queue_panel_commands); ++i)
+        draw_command_info(win, ++y, queue_panel_commands[i]);
+
     wnoutrefresh(win);
+}
+
+/**
+ * @brief Prints the section name for a group of commands.
+ * 
+ * @param win The window to print onto,
+ * @param begin_y The y-position of the text.
+ * @param header_text The text to print.
+ */
+void draw_help_header(WINDOW *win, int begin_y, char *header_text)
+{
+    const int begin_x = 6;  /* Arbitrary */
+
+    wattr_on(win, A_BOLD, NULL);
+    mvwaddstr(win, begin_y, begin_x, header_text);
+    wattr_off(win, A_BOLD, NULL);
+
+    /* Draw a horizontal rule under the header. */
+    wmove(win, begin_y + 1, begin_x);
+    for (int i = 0; i < strlen(header_text); ++i)
+        waddch(win, ACS_HLINE);
+}
+
+/**
+ * @brief Prints information about the requested command.
+ */
+void draw_command_info(WINDOW *win, int begin_y, enum command_type cmd)
+{
+    if (cmd == CMD_NULL)
+        return;
+    
+    /* The x position of the character that separates the keys and desc. */
+    int colon_pos = 17;
+
+    char *desc = get_command_desc(cmd);
+    char *keys = malloc(16 * sizeof(char));
+    get_command_keys(cmd, keys);
+
+    wmove(win, begin_y, colon_pos - strlen(keys) - 1);
+    waddstr(win, keys);
+    waddstr(win, " : ");
+    waddstr(win, desc);
+
+    if (keys)
+        free(keys);
 }
