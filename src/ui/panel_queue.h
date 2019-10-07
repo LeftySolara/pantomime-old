@@ -24,6 +24,39 @@
 
 #include <ncurses.h>
 
+/**
+ * @brief A selectable item in the queue menu. Displays information about
+ * a track in the current version of the play queue.
+ */
+struct queue_menu_item {
+    struct queue_menu_item *prev;
+    struct queue_menu_item *next;
+
+    char *title;
+    char *artist;
+    char *album;
+
+    unsigned int duration;  /* Length of the song in seconds. */
+    unsigned int id;        /* ID given to the song by MPD if fetched from queue. */
+};
+
+struct queue_menu_list {
+    struct queue_menu_item *head;
+    struct queue_menu_item *tail;
+    struct queue_menu_item *selected;
+
+    int size;
+};
+
+struct queue_menu_item *queue_menu_item_init(struct mpd_song *song);
+void queue_menu_item_free(struct queue_menu_item *item);
+
+struct queue_menu_list *queue_menu_list_init(struct songlist *songlist);
+void queue_menu_list_free(struct queue_menu_list *list);
+
+void queue_menu_list_append(struct queue_menu_list *list, struct mpd_song *song);
+void queue_menu_list_clear(struct queue_menu_list *list);
+
 void draw_queue(WINDOW *win, struct mpdwrapper *mpd);
 
 #endif

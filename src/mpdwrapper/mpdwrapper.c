@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 /**
  * @brief Creates a connection to an MPD server.
@@ -144,4 +145,28 @@ unsigned int get_current_song_duration(struct mpdwrapper *mpd)
 unsigned int get_current_song_elapsed(struct mpdwrapper *mpd)
 {
     return mpd_status_get_elapsed_time(mpd->status);
+}
+
+/**
+ * @brief Gets a tag associated with the given song.
+ * 
+ * This function gets information about a song based on its MPD tags.
+ * It allocates enough memory to hold a null-terminated string
+ * containing the tag value. The caller is responsible for
+ * freeing this memory.
+ * 
+ * @return A null-terminated string containing the tag value, or NULL on error.
+ */
+char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag)
+{
+    if (!song)
+        return NULL;
+
+    const char *tag_val = mpd_song_get_tag(song, tag, 0);
+    int len = strlen(tag_val) + 1;
+
+    char *buffer = malloc(len * sizeof(char));
+    memcpy(buffer, tag_val, len);
+
+    return buffer;
 }
