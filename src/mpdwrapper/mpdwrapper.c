@@ -148,6 +148,14 @@ unsigned int get_current_song_elapsed(struct mpdwrapper *mpd)
 }
 
 /**
+ * @brief Gets the ID of the currently playing song.
+ */
+unsigned int get_current_song_id(struct mpdwrapper *mpd)
+{
+    return mpd_song_get_id(mpd->current_song);
+}
+
+/**
  * @brief Gets a tag associated with the given song.
  * 
  * This function gets information about a song based on its MPD tags.

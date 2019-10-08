@@ -20,6 +20,7 @@
 #ifndef UI_H
 #define UI_H
 
+#include "panel_queue.h"
 #include "../mpdwrapper/mpdwrapper.h"
 
 #include <ncurses.h>
@@ -31,6 +32,8 @@ struct ui {
     PANEL **panels;
     WINDOW *statusbar;
     enum ui_panel visible_panel; /* Only one panel should be visible at a time. */
+
+    struct queue_menu_list *queue_list;
 
     int maxx;
     int maxy;
@@ -46,7 +49,7 @@ void end_curses();
 PANEL **create_panels(int num_panels, int width, int height);
 void destroy_panels(PANEL **panels, int num_panels);
 
-struct ui *ui_init();
+struct ui *ui_init(struct mpdwrapper *mpd);
 void ui_free(struct ui *ui);
 
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd);

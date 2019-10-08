@@ -84,7 +84,7 @@ void destroy_panels(PANEL **panels, int num_panels)
     free(panels);
 }
 
-struct ui *ui_init()
+struct ui *ui_init(struct mpdwrapper *mpd)
 {
     struct ui *ui = malloc(sizeof(*ui));
     getmaxyx(stdscr, ui->maxy, ui->maxx);
@@ -92,6 +92,8 @@ struct ui *ui_init()
     ui->panels = create_panels(NUM_PANELS, ui->maxy - 2, ui->maxx);
     ui->visible_panel = QUEUE;
     top_panel(ui->panels[ui->visible_panel]);
+
+    ui->queue_list = queue_menu_list_init(mpd->queue);
 
     ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
     ui->modes_label = malloc(sizeof(char) * 5);
@@ -104,6 +106,7 @@ struct ui *ui_init()
 void ui_free(struct ui *ui)
 {
     delwin(ui->statusbar);
+    queue_menu_list_free(ui->queue_list);
     free(ui->modes_label);
     free(ui->progress_label);
     free(ui->song_label);
@@ -116,13 +119,15 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
                 ui->song_label, ui->modes_label, ui->progress_label);
     
     WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
+    int current_song_id;
 
     switch (ui->visible_panel) {
     case HELP:
         draw_help_screen(win);
         break;
     case QUEUE:
-        draw_queue(win, mpd);
+        current_song_id = get_current_song_id(mpd);
+        draw_queue(win, ui->queue_list, current_song_id);
         break;
     default:
         break;

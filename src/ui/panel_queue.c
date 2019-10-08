@@ -84,8 +84,10 @@ void queue_menu_list_append(struct queue_menu_list *list, struct mpd_song *song)
     
     struct queue_menu_item *new_item = queue_menu_item_init(song);
 
-    if (!list->head)
+    if (!list->head) {
         list->head = new_item;
+        list->selected = new_item;
+    }
     else {
         struct queue_menu_item *tmp = list->tail;
         tmp->next = new_item;
@@ -113,17 +115,68 @@ void queue_menu_list_clear(struct queue_menu_list *list)
     list->size = 0;
 }
 
-void draw_queue(WINDOW *win, struct mpdwrapper *mpd)
+void draw_queue_menu_item(WINDOW *win, struct queue_menu_item *item, int field_width,
+                          int row, bool selected, bool playing)
 {
+    int maxx = getmaxx(win);
+
+    if (playing)    /* Bold the currently playing song */
+        wattr_on(win, A_BOLD, 0);
+    if (selected)   /* Highlight selected items */
+        wattr_on(win, A_STANDOUT, 0);
+    
+    mvwprintw(win, row, 0, "%s\n", item->artist); 
+    mvwprintw(win, row, field_width + 1, " %s\n", item->title);
+    mvwprintw(win, row, (field_width * 2) + 1, " %s\n", item->album);
+    mvwprintw(win, row, maxx - 8, "%d:%02d\n", item->duration / 60, item->duration % 60);
+
+    if (selected)
+        mvwchgat(win, row, 0, -1, A_STANDOUT, 0, NULL);
+    wattr_off(win, A_BOLD, 0);
+    wattr_off(win, A_STANDOUT, 0);
+}
+
+void draw_queue(WINDOW *win, struct queue_menu_list *list, unsigned int playing_id)
+{
+    int y, x;
+    getmaxyx(win, y, x);
+
+    /* The width of each column. There are four columns total but only three
+     * are of variable size; the "Length" column is always 8 characters wide.
+     */
+    int field_width = (x - 8) / 3;
+
     werase(win);
 
-    int y = 0;
+    /* Draw column titles */
+    wattr_on(win, A_BOLD, NULL);
+    mvwprintw(win, 0, 0, "Artist\n");
+    mvwprintw(win, 0, field_width + 1, " Title\n");
+    mvwprintw(win, 0, (field_width * 2) + 1, " Album\n");
+    mvwprintw(win, 0, x - 9, " Length\n");
+    wattr_off(win, A_BOLD, NULL);
 
-    struct songnode *node = mpd->queue->head;
-    while (node) {
-        mvwaddstr(win, y++, 0, mpd_song_get_tag(node->song, MPD_TAG_TITLE, 0));
-        node = node->next;
+    if (list->size <= 0)
+        return;
+    if (!list->selected)
+        list->selected = list->head;
+
+    struct queue_menu_item *item = list->head;
+    bool selected;
+    bool playing;
+
+    /* Only draw y items to prevent wasting resources
+     * drawing past the end of the screen.
+     */
+    for (int i = 1; i <= y; ++i) {
+        playing = item->id == playing_id;
+        selected = item->id == list->selected->id;
+
+        draw_queue_menu_item(win, item, field_width, i, selected, playing);
+        if (!item->next)
+            break;
+        else
+            item = item->next;
     }
-
     wnoutrefresh(win);
 }

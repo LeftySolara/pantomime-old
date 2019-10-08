@@ -57,6 +57,8 @@ void queue_menu_list_free(struct queue_menu_list *list);
 void queue_menu_list_append(struct queue_menu_list *list, struct mpd_song *song);
 void queue_menu_list_clear(struct queue_menu_list *list);
 
-void draw_queue(WINDOW *win, struct mpdwrapper *mpd);
+void draw_queue_menu_item(WINDOW *win, struct queue_menu_item *item, int field_width,
+                          int begin_y, bool selected, bool playing);
+void draw_queue(WINDOW *win, struct queue_menu_list *list, unsigned int playing_id);
 
 #endif

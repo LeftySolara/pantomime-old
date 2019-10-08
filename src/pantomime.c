@@ -32,7 +32,7 @@ int main()
      */
     struct mpdwrapper *mpd = mpdwrapper_init("localhost", 6600, 30000);
 
-    struct ui *ui = ui_init();
+    struct ui *ui = ui_init(mpd);
     ui_draw(ui, mpd);
 
     int ch;
