@@ -29,6 +29,7 @@
 #include "../mpdwrapper/mpdwrapper.h"
 
 void toggle_pause(struct mpd_connection *connection);
+void start_playback(int id);
 void stop_playback(struct mpd_connection *connection);
 
 void cmd_player(enum command_type cmd, struct mpdwrapper *mpd);

@@ -62,7 +62,7 @@ int main()
         case HELP:
             break;
         case QUEUE:
-            cmd_queue(cmd, ui->queue_list);
+            cmd_queue(cmd, mpd, ui->queue_list);
             break;
         default:
             break;

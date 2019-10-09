@@ -32,6 +32,7 @@
 static struct command commands[] = {
     {CMD_NULL, {0, 0, 0}, "Null", "Null command"},
     {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit", "Quit Pantomime"},
+    {CMD_PLAY, {KEY_RETURN, 0, 0}, "Play", "Play the currently selected track"},
     {CMD_PAUSE, {'p', 'P', 0}, "Pause", "Toggle pause"},
     {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop playback"},
     {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help", "Show the help screen"},

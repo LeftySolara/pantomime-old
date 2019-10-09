@@ -25,6 +25,7 @@
 enum command_type {
     CMD_NULL,
     CMD_QUIT,
+    CMD_PLAY,
     CMD_PAUSE,
     CMD_STOP,
     CMD_PANEL_HELP,

@@ -32,7 +32,7 @@ void move_cursor(struct queue_menu_list *list, enum direction direction)
         list->selected = current->next;
 }
 
-void cmd_queue(enum command_type cmd, struct queue_menu_list *list)
+void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd,  struct queue_menu_list *list)
 {
     switch (cmd) {
     case CMD_NULL:
@@ -42,6 +42,9 @@ void cmd_queue(enum command_type cmd, struct queue_menu_list *list)
         break;
     case CMD_CURSOR_UP:
         move_cursor(list, UP);
+        break;
+    case CMD_PLAY:
+        mpd_run_play_id(mpd->connection, list->selected->id);
         break;
     default:
         break;
