@@ -36,6 +36,7 @@ static enum command_type global_commands[] = {
 };
 
 static enum command_type queue_panel_commands[] = {
+    CMD_PLAY,
     CMD_PAUSE,
     CMD_STOP,
     CMD_CURSOR_DOWN,
