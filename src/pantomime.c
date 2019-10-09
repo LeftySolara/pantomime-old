@@ -19,6 +19,7 @@
 
 #include "command/command.h"
 #include "command/command_player.h"
+#include "command/command_queue.h"
 #include "mpdwrapper/mpdwrapper.h"
 #include "ui/ui.h"
 
@@ -56,6 +57,17 @@ int main()
         default:
             break;
         }
+
+        switch (ui->visible_panel) {
+        case HELP:
+            break;
+        case QUEUE:
+            cmd_queue(cmd, ui->queue_list);
+            break;
+        default:
+            break;
+        }
+
         ui_draw(ui, mpd);
     }
 

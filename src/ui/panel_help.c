@@ -37,7 +37,9 @@ static enum command_type global_commands[] = {
 
 static enum command_type queue_panel_commands[] = {
     CMD_PAUSE,
-    CMD_STOP
+    CMD_STOP,
+    CMD_CURSOR_DOWN,
+    CMD_CURSOR_UP
 };
 
 void draw_help_screen(WINDOW *win)

@@ -1,1 +1,1 @@
-add_library(command STATIC command.c command_player.c)
+add_library(command STATIC command.c command_player.c command_queue.c)

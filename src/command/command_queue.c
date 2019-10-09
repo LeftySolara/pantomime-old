@@ -1,5 +1,5 @@
 /*******************************************************************************
- * command.h
+ * command_queue.c
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,33 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef COMMAND_H
-#define COMMAND_H
+#include "command_queue.h"
 
-#define MAX_KEYS 3 /* Maximum number of keys a command can be mapped to. */
+/**
+ * @brief Moves the cursor up or down on the queue screen.
+ */
+void move_cursor(struct queue_menu_list *list, enum direction direction)
+{
+    struct queue_menu_item *current = list->selected;
 
-enum command_type {
-    CMD_NULL,
-    CMD_QUIT,
-    CMD_PAUSE,
-    CMD_STOP,
-    CMD_PANEL_HELP,
-    CMD_PANEL_QUEUE,
-    CMD_CURSOR_DOWN,
-    CMD_CURSOR_UP,
-    NUM_CMDS
-};
+    if (direction == UP && current->prev)
+        list->selected = current->prev;
+    else if (direction == DOWN && current->next)
+        list->selected = current->next;
+}
 
-struct command {
-    enum command_type cmd;  /** The type of command to execute. */
-    int keys[MAX_KEYS];     /** The keys bound to the command. */
-    char *name;             /** The name of the command. */
-    char *description;      /** Brief description of what the command does. */
-};
-
-enum command_type find_key_command(int key);
-void get_command_keys(enum command_type cmd, char *buffer);
-char *get_command_desc(enum command_type cmd);
-void key_to_str(int key, char *buffer);
-
-#endif
+void cmd_queue(enum command_type cmd, struct queue_menu_list *list)
+{
+    switch (cmd) {
+    case CMD_NULL:
+        break;
+    case CMD_CURSOR_DOWN:
+        move_cursor(list, DOWN);
+        break;
+    case CMD_CURSOR_UP:
+        move_cursor(list, UP);
+        break;
+    default:
+        break;
+    }
+}
