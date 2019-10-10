@@ -104,7 +104,8 @@ void mpdwrapper_update(struct mpdwrapper *mpd)
     mpd_status_free(mpd->status);
     mpd->status = mpd_run_status(mpd->connection);
 
-    mpd_song_free(mpd->current_song);
+    if (mpd->current_song)
+        mpd_song_free(mpd->current_song);
     mpd->current_song = mpd_run_current_song(mpd->connection);
 
     int queue_version = mpd_status_get_queue_version(mpd->status);
@@ -129,30 +130,39 @@ const char *get_current_song_title(struct mpdwrapper *mpd)
  * @brief Gets the duration of the currently playing song.
  * 
  * @param mpd The mpd connection to parse.
- * @return The length of the song in seconds.
+ * @return The length of the song in seconds, or -1 on error.
  */
-unsigned int get_current_song_duration(struct mpdwrapper *mpd)
+int get_current_song_duration(struct mpdwrapper *mpd)
 {
-    return mpd_song_get_duration(mpd->current_song);
+    if (mpd->current_song)
+        return mpd_song_get_duration(mpd->current_song);
+    else
+        return -1;
 }
 
 /**
  * @brief Gets the amount of time elapsed for the currently playing song.
  * 
  * @param mpd The mpd connection to parse.
- * @return The time elapsed in seconds.
+ * @return The time elapsed in seconds, or -1 on error.
  */
-unsigned int get_current_song_elapsed(struct mpdwrapper *mpd)
+int get_current_song_elapsed(struct mpdwrapper *mpd)
 {
-    return mpd_status_get_elapsed_time(mpd->status);
+    if (mpd->current_song)
+        return mpd_status_get_elapsed_time(mpd->status);
+    else
+        return -1;
 }
 
 /**
  * @brief Gets the ID of the currently playing song.
  */
-unsigned int get_current_song_id(struct mpdwrapper *mpd)
+int get_current_song_id(struct mpdwrapper *mpd)
 {
-    return mpd_song_get_id(mpd->current_song);
+    if (mpd->current_song)
+        return mpd_song_get_id(mpd->current_song);
+    else
+        return -1;
 }
 
 /**

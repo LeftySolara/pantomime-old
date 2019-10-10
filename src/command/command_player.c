@@ -50,6 +50,10 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd)
         break;
     case CMD_STOP:
         stop_playback(mpd->connection);
+        break;
+    case CMD_RANDOM:
+        mpd_run_random(mpd->connection, !mpd_status_get_random(mpd->status));
+        break;
     default:
         break;
     }
