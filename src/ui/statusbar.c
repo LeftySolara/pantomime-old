@@ -67,65 +67,102 @@ void status_bar_free(struct status_bar *bar)
  * 
  * @param win The ncurses window to draw on.
  * @param mpd The mpd connection to parse data from.
- * @param status_buf Buffer to hold the message printed in the status bar.
  */
 void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
 {
     if (mpd->state == MPD_STATE_UNKNOWN)
         return;
 
-    double song_length;
-    double time_elapsed;
-    double width;
-
     werase(status_bar->win);
+    draw_modes(status_bar, mpd->status);
+    draw_volume(status_bar, mpd->status);
 
-    /* Draw the progress bar. */
     if (mpd->state != MPD_STATE_STOP) {
 
-        song_length = get_current_song_duration(mpd);
-        time_elapsed = get_current_song_elapsed(mpd);
-        width = getmaxx(status_bar->win);
+        double song_length = get_current_song_duration(mpd);
+        double time_elapsed = get_current_song_elapsed(mpd);
 
-        /* Number of seconds that must elapse for the bar to progress. */
-        double secs_per_tick = song_length / width;
-        /* Number of spaces to move for every tick. */
-        double tick_size = (width / song_length) + 1;
-        /* Number of times the bar has moved. */
-        double ticks_elapsed = time_elapsed / tick_size;
-
-        wattr_on(status_bar->win, A_BOLD, NULL);
-        whline(status_bar->win, '=', (tick_size * ticks_elapsed) / secs_per_tick);
-        mvwaddch(status_bar->win, 0, (tick_size *ticks_elapsed) / secs_per_tick, '>');
-        wattr_off(status_bar->win, A_BOLD, NULL);
-
-        /* Print the current player status */
-        if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE) {
-            char *title = mpdwrapper_get_song_tag(mpd->current_song, MPD_TAG_TITLE);
-            char *artist = mpdwrapper_get_song_tag(mpd->current_song, MPD_TAG_ARTIST);
-
-            status_bar->song_label = create_label_song(status_bar->song_label, title, artist);
-            status_bar->progress_label = create_label_progress(status_bar->progress_label, (unsigned int)time_elapsed, (unsigned int)song_length);
-
-            mvwaddstr(status_bar->win, 1, width - strlen(status_bar->progress_label), status_bar->progress_label);
-            mvwaddstr(status_bar->win, 1, 0, status_bar->song_label);
-
-            free(title);
-            free(artist);
-        }
+        draw_progress_bar(status_bar, time_elapsed, song_length);
+        draw_progress_label(status_bar, time_elapsed, song_length);
     }
 
-    status_bar->modes_label = create_label_modes(status_bar->modes_label, mpd->status);
-    mvwaddnstr(status_bar->win, 1,
-               width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - 1,
-               status_bar->modes_label, 5);
-
-    int volume = mpd_status_get_volume(mpd->status);
-    mvwprintw(status_bar->win, 1,
-              width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - strlen("100%%") - 1,
-              "%d%%", volume);
+    if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE)
+        draw_song_label(status_bar, mpd->current_song);
 
     wnoutrefresh(status_bar->win);
+}
+
+/**
+ * @brief Draws the playback modes label on the status bar.
+ */
+void draw_modes(struct status_bar *status_bar, struct mpd_status *mpd_status)
+{
+    status_bar->modes_label = create_label_modes(status_bar->modes_label, mpd_status);
+
+    int width = getmaxx(status_bar->win);
+    int begin_x = width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - 1;
+
+    mvwaddnstr(status_bar->win, 1, begin_x, status_bar->modes_label, 5);
+}
+
+/**
+ * @brief Draws the current MPD volume on the status bar.
+ */
+void draw_volume(struct status_bar *status_bar, struct mpd_status *status)
+{
+    int volume = mpd_status_get_volume(status);
+    int width = getmaxx(status_bar->win);
+    int begin_x = width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - strlen("100%%") - 1;
+
+    mvwprintw(status_bar->win, 1, begin_x, "%d%%", volume);
+}
+
+/**
+ * @brief Draws the moving progress bar on the status bar area.
+ */
+void draw_progress_bar(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length)
+{
+    int width = getmaxx(status_bar->win);
+
+    /* Number of seconds that must elapse for the bar to progress. */
+    double secs_per_tick = song_length / width;
+    /* Number of spaces to move for every tick. */
+    double tick_size = (width / song_length) + 1;
+    /* Number of times the bar has moved. */
+    double ticks_elapsed = time_elapsed / tick_size;
+
+    wmove(status_bar->win, 0, 0);
+    wattr_on(status_bar->win, A_BOLD, NULL);
+    whline(status_bar->win, '=', (tick_size * ticks_elapsed) / secs_per_tick);
+    mvwaddch(status_bar->win, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
+    wattr_off(status_bar->win, A_BOLD, NULL);
+}
+
+/**
+ * @brief Draws the current song progress on the status bar.
+ */
+void draw_progress_label(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length)
+{
+    status_bar->progress_label = create_label_progress(status_bar->progress_label, time_elapsed, song_length);
+    int width = getmaxx(status_bar->win);
+
+    mvwaddstr(status_bar->win, 1, width - strlen(status_bar->progress_label), status_bar->progress_label);
+}
+
+/**
+ * @brief Draws the title and artist of the currently playing song in the status bar.
+ */
+void draw_song_label(struct status_bar *status_bar, struct mpd_song *song)
+{
+
+    char *title = mpdwrapper_get_song_tag(song, MPD_TAG_TITLE);
+    char *artist = mpdwrapper_get_song_tag(song, MPD_TAG_ARTIST);
+
+    status_bar->song_label = create_label_song(status_bar->song_label, title, artist);
+    mvwaddstr(status_bar->win, 1, 0, status_bar->song_label);
+
+    free(title);
+    free(artist);
 }
 
 /**
