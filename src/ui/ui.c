@@ -94,29 +94,21 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     top_panel(ui->panels[ui->visible_panel]);
 
     ui->queue_list = queue_menu_list_init(mpd->queue);
-
-    ui->statusbar = newwin(2, ui->maxx, ui->maxy - 2, 0);
-    ui->modes_label = malloc(sizeof(char) * 5);
-    ui->progress_label = malloc(sizeof(char) * 16);
-    ui->song_label = malloc(sizeof(char) * 64);
+    ui->status_bar = status_bar_init();
 
     return ui;
 }
 
 void ui_free(struct ui *ui)
 {
-    delwin(ui->statusbar);
     queue_menu_list_free(ui->queue_list);
-    free(ui->modes_label);
-    free(ui->progress_label);
-    free(ui->song_label);
+    status_bar_free(ui->status_bar);
     free(ui);
 }
 
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
 {
-    draw_statusbar(ui->statusbar, mpd,
-                ui->song_label, ui->modes_label, ui->progress_label);
+    draw_statusbar(ui->status_bar, mpd);
     
     WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
     int current_song_id;

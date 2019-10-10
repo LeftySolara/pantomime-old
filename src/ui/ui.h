@@ -30,17 +30,13 @@ enum ui_panel {HELP, QUEUE, NUM_PANELS};
 
 struct ui {
     PANEL **panels;
-    WINDOW *statusbar;
     enum ui_panel visible_panel; /* Only one panel should be visible at a time. */
 
     struct queue_menu_list *queue_list;
+    struct status_bar *status_bar;
 
     int maxx;
     int maxy;
-
-    char *modes_label;
-    char *progress_label;
-    char *song_label;
 };
 
 void start_curses();

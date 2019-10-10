@@ -24,11 +24,20 @@
 
 #include <ncurses.h>
 
-void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
-                    char *status_buf, char *modes_buf, char *progress_buf);
+struct status_bar {
+    WINDOW *win;
+    char *modes_label;
+    char *progress_label;
+    char *song_label;
+};
+
+struct status_bar *status_bar_init();
+void status_bar_free(struct status_bar *bar);
+
+void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd);
 
 char *create_label_modes(char *buffer, struct mpd_status *status);
-char *create_label_progress(char *buffer, struct mpdwrapper *mpd);
-char *create_label_song(char *buffer, struct mpd_song *song);
+char *create_label_progress(char *buffer, unsigned int time_elapsed, unsigned int song_length);
+char *create_label_song(char *buffer, const char *title, const char *artist);
 
-#endif
+#endif /* STATUSBAR_H */

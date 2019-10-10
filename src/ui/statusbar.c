@@ -30,6 +30,34 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MODES_LABEL_LENGTH 6
+#define PROGRESS_LABEL_LENGTH 16
+
+struct status_bar *status_bar_init()
+{
+    struct status_bar *status_bar = malloc(sizeof(*status_bar));
+
+    status_bar->win = newwin(2, COLS, LINES - 2, 0);
+    status_bar->song_label = NULL;
+
+    status_bar->modes_label = malloc(MODES_LABEL_LENGTH * sizeof(char));
+    memset(status_bar->modes_label, '-', MODES_LABEL_LENGTH - 1);
+
+    status_bar->progress_label = malloc(PROGRESS_LABEL_LENGTH * sizeof(char));
+    snprintf(status_bar->progress_label, strlen("[00:00]")+1, "[00:00]");
+
+    return status_bar;
+}
+
+void status_bar_free(struct status_bar *bar)
+{
+    delwin(bar->win);
+    free(bar->modes_label);
+    free(bar->progress_label);
+    free(bar->song_label);
+    free(bar);
+}
+
 /**
  * @brief Draws the status bar at the bottom of the screen.
  * 
@@ -41,15 +69,14 @@
  * @param mpd The mpd connection to parse data from.
  * @param status_buf Buffer to hold the message printed in the status bar.
  */
-void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
-                    char *status_buf, char *modes_buf, char *progress_buf)
+void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
 {
     if (mpd->state == MPD_STATE_UNKNOWN)
         return;
 
     double song_length = get_current_song_duration(mpd);
     double time_elapsed = get_current_song_elapsed(mpd);
-    double width = getmaxx(win);
+    double width = getmaxx(status_bar->win);
 
     /* Number of seconds that must elapse for the bar to progress. */
     double secs_per_tick = song_length / width;
@@ -58,32 +85,42 @@ void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
     /* Number of times the bar has moved. */
     double ticks_elapsed = time_elapsed / tick_size;
 
-    werase(win);
+    werase(status_bar->win);
 
     /* Draw the progress bar. */
     if (mpd->state != MPD_STATE_STOP) {
-        wattr_on(win, A_BOLD, NULL);
-        whline(win, '=', (tick_size * ticks_elapsed) / secs_per_tick);
-        mvwaddch(win, 0, (tick_size *ticks_elapsed) / secs_per_tick, '>');
-        wattr_off(win, A_BOLD, NULL);
+        wattr_on(status_bar->win, A_BOLD, NULL);
+        whline(status_bar->win, '=', (tick_size * ticks_elapsed) / secs_per_tick);
+        mvwaddch(status_bar->win, 0, (tick_size *ticks_elapsed) / secs_per_tick, '>');
+        wattr_off(status_bar->win, A_BOLD, NULL);
     }
 
     /* Print the current player status */
     if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE) {
-        create_label_song(status_buf, mpd->current_song);
-        create_label_progress(progress_buf, mpd);
-        mvwaddstr(win, 1, width - strlen(progress_buf), progress_buf);
-        mvwaddstr(win, 1, 0, status_buf);
+        char *title = mpdwrapper_get_song_tag(mpd->current_song, MPD_TAG_TITLE);
+        char *artist = mpdwrapper_get_song_tag(mpd->current_song, MPD_TAG_ARTIST);
+
+        status_bar->song_label = create_label_song(status_bar->song_label, title, artist);
+        status_bar->progress_label = create_label_progress(status_bar->progress_label, (unsigned int)time_elapsed, (unsigned int)song_length);
+
+        mvwaddstr(status_bar->win, 1, width - strlen(status_bar->progress_label), status_bar->progress_label);
+        mvwaddstr(status_bar->win, 1, 0, status_bar->song_label);
+
+        free(title);
+        free(artist);
     }
 
+    status_bar->modes_label = create_label_modes(status_bar->modes_label, mpd->status);
+    mvwaddnstr(status_bar->win, 1,
+               width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - 1,
+               status_bar->modes_label, 5);
+
     int volume = mpd_status_get_volume(mpd->status);
-    mvwprintw(win, 1, width - strlen(modes_buf) - strlen(progress_buf) - strlen("100%%") - 1,
+    mvwprintw(status_bar->win, 1,
+              width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - strlen("100%%") - 1,
               "%d%%", volume);
 
-    create_label_modes(modes_buf, mpd->status);
-    mvwaddnstr(win, 1, width - strlen(modes_buf) - strlen(progress_buf) - 1, modes_buf, 5);
-
-    wnoutrefresh(win);
+    wnoutrefresh(status_bar->win);
 }
 
 /**
@@ -97,7 +134,7 @@ void draw_statusbar(WINDOW *win, struct mpdwrapper *mpd,
  */
 char *create_label_modes(char *buffer, struct mpd_status *status)
 {
-    const int mode_cnt = 5;
+    const int mode_cnt = MODES_LABEL_LENGTH - 1;
     buffer = realloc(buffer, mode_cnt + 1);
     memset(buffer, '-', mode_cnt);
 
@@ -119,38 +156,37 @@ char *create_label_modes(char *buffer, struct mpd_status *status)
  * @brief Creates a label for the current time elapsed.
  * 
  * @param buffer The char buffer for storing the label.
- * @param mpd The mpd connection to parse.
- * @return The label representing time elapsed for the playing song,
- *   or NULL on error.
+ * @param time_elapdes The number of seconds the song has been playing.
+ * #param song_length The length of the song in seconds,
+ * @return A label representing time elapsed for the playing song.
  */
-char *create_label_progress(char *buffer, struct mpdwrapper *mpd)
+char *create_label_progress(char *buffer, unsigned int time_elapsed, unsigned int song_length)
 {
-    if (mpd->state == MPD_STATE_UNKNOWN || mpd->state == MPD_STATE_STOP)
-        return NULL;
-    
-    const size_t label_size = strlen("123:45 / 123:45") + 1;
-    unsigned int song_len = get_current_song_duration(mpd);
-    unsigned int time_elapsed = get_current_song_elapsed(mpd);
-
-    unsigned int total_minutes = song_len / 60;
-    unsigned int total_seconds = song_len % 60;
+    unsigned int total_minutes = song_length / 60;
+    unsigned int total_seconds = song_length % 60;
     unsigned int elapsed_minutes = time_elapsed / 60;
     unsigned int elapsed_seconds = time_elapsed % 60;
 
-    buffer = realloc(buffer, label_size);
-    snprintf(buffer, label_size, "%d:%02d / %d:%02d",
+    buffer = realloc(buffer, PROGRESS_LABEL_LENGTH);
+    snprintf(buffer, PROGRESS_LABEL_LENGTH, "%d:%02d / %d:%02d",
             elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
 
     return buffer;
 }
 
-char *create_label_song(char *buffer, struct mpd_song *song)
+/**
+ * @brief Creates a label for the currently playing song, formatted ARTIST - TITLE.
+ * 
+ * @param buffer The char buffer for storing the label.
+ * @param title The title of the song.
+ * @param artist The song's artist.
+ * @return A label representing the currently playing song.
+ */
+char *create_label_song(char *buffer, const char *title, const char *artist)
 {
-    const char *artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
-    const char *title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
     const size_t label_len = strlen(artist) + strlen(title) + strlen(" - ") + 1;
 
-    buffer = realloc(buffer, label_len);
+    buffer = realloc(buffer, label_len * sizeof(char));
     snprintf(buffer, label_len, "%s - %s", artist, title);
 
     return buffer;
