@@ -45,7 +45,7 @@ int main()
         ch = getch();
         cmd = find_key_command(ch);
 
-        cmd_player(cmd, mpd);
+        cmd_player(cmd, mpd, ui->status_bar);
 
         switch (cmd) {
         case CMD_PANEL_HELP:

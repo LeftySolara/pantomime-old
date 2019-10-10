@@ -34,13 +34,22 @@ void stop_playback(struct mpd_connection *connection)
     mpd_run_stop(connection);
 }
 
+void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar)
+{
+    bool random = mpd_status_get_random(mpd->status);
+    mpd_run_random(mpd->connection, !random);
+
+    char *notification = !random ? "Random mode is on" : "Random mode is off";
+    set_notification(status_bar, notification, 3);
+}
+
 /**
  * @brief Finds the requested player command and executes it.
  * 
  * @param cmd The command to execute.
  * @param mpd The MPD connection to run the command on.
  */
-void cmd_player(enum command_type cmd, struct mpdwrapper *mpd)
+void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar *status_bar)
 {
     switch (cmd) {
     case CMD_NULL:
@@ -52,7 +61,7 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd)
         stop_playback(mpd->connection);
         break;
     case CMD_RANDOM:
-        mpd_run_random(mpd->connection, !mpd_status_get_random(mpd->status));
+        toggle_random(mpd, status_bar);
         break;
     default:
         break;

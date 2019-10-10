@@ -27,11 +27,14 @@
 
 #include "command.h"
 #include "../mpdwrapper/mpdwrapper.h"
+#include "../ui/statusbar.h"
 
 void toggle_pause(struct mpd_connection *connection);
 void start_playback(int id);
 void stop_playback(struct mpd_connection *connection);
 
-void cmd_player(enum command_type cmd, struct mpdwrapper *mpd);
+void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar);
+
+void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar *status_bar);
 
 #endif

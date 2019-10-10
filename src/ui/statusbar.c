@@ -78,7 +78,6 @@ void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
     draw_volume(status_bar, mpd->status);
 
     if (mpd->state != MPD_STATE_STOP) {
-
         double song_length = get_current_song_duration(mpd);
         double time_elapsed = get_current_song_elapsed(mpd);
 
@@ -86,7 +85,10 @@ void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
         draw_progress_label(status_bar, time_elapsed, song_length);
     }
 
-    if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE)
+    /* Either the song or a notification is displayed, not both. */
+    if (status_bar->notification && time(NULL) <= status_bar->notify_end)
+        draw_notification(status_bar);
+    else if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE)
         draw_song_label(status_bar, mpd->current_song);
 
     wnoutrefresh(status_bar->win);
@@ -163,6 +165,30 @@ void draw_song_label(struct status_bar *status_bar, struct mpd_song *song)
 
     free(title);
     free(artist);
+}
+
+/**
+ * @brief Draws the current notification on the status bar.
+ */
+void draw_notification(struct status_bar *status_bar)
+{
+    wattr_on(status_bar->win, A_BOLD, NULL);
+    mvwaddstr(status_bar->win, 1, 0, status_bar->notification);
+    wattr_off(status_bar->win, A_BOLD, NULL);
+}
+
+/**
+ * @brief Sets the notification to display in the status bar.
+ * 
+ * @param status_bar The status bar to set a notification for.
+ * @param msg The message to display.
+ * @param duration The number of seconds to display the notification.
+ */
+void set_notification(struct status_bar *status_bar, char *msg, int duration)
+{
+    status_bar->notification = realloc(status_bar->notification, (strlen(msg) + 1) * sizeof(char));
+    sprintf(status_bar->notification, "%s", msg);
+    status_bar->notify_end = time(NULL) + duration;
 }
 
 /**

@@ -23,12 +23,15 @@
 #include "../mpdwrapper/mpdwrapper.h"
 
 #include <ncurses.h>
+#include <time.h>
 
 struct status_bar {
     WINDOW *win;
     char *modes_label;
     char *progress_label;
     char *song_label;
+    char *notification;
+    time_t notify_end;
 };
 
 struct status_bar *status_bar_init();
@@ -40,6 +43,9 @@ void draw_volume(struct status_bar *status_bar, struct mpd_status *status);
 void draw_progress_bar(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length);
 void draw_progress_label(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length);
 void draw_song_label(struct status_bar *status_bar, struct mpd_song *song);
+void draw_notification(struct status_bar *status_bar);
+
+void set_notification(struct status_bar *status_bar, char *msg, int duration);
 
 char *create_label_modes(char *buffer, struct mpd_status *status);
 char *create_label_progress(char *buffer, unsigned int time_elapsed, unsigned int song_length);
