@@ -33,6 +33,7 @@ void toggle_pause(struct mpd_connection *connection);
 void start_playback(int id);
 void stop_playback(struct mpd_connection *connection);
 
+void toggle_repeat(struct mpdwrapper *mpd, struct status_bar *status_bar);
 void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar);
 
 void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar *status_bar);

@@ -34,6 +34,15 @@ void stop_playback(struct mpd_connection *connection)
     mpd_run_stop(connection);
 }
 
+void toggle_repeat(struct mpdwrapper *mpd, struct status_bar *status_bar)
+{
+    bool repeat = mpd_status_get_repeat(mpd->status);
+    mpd_run_repeat(mpd->connection, !repeat);
+
+    char *notification = !repeat ? "Repeat mode is on" : "Repeat mode is off";
+    set_notification(status_bar, notification, 3);
+}
+
 void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar)
 {
     bool random = mpd_status_get_random(mpd->status);
@@ -62,6 +71,9 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         break;
     case CMD_RANDOM:
         toggle_random(mpd, status_bar);
+        break;
+    case CMD_REPEAT:
+        toggle_repeat(mpd, status_bar);
         break;
     default:
         break;

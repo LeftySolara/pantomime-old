@@ -28,6 +28,7 @@ enum command_type {
     CMD_PLAY,
     CMD_PAUSE,
     CMD_STOP,
+    CMD_REPEAT,
     CMD_RANDOM,
     CMD_PANEL_HELP,
     CMD_PANEL_QUEUE,
