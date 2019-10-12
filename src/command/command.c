@@ -39,6 +39,7 @@ static struct command commands[] = {
     {CMD_RANDOM, {'z', 0, 0}, "Random Mode", "Toggle random playback of songs in the queue"},
     {CMD_SINGLE, {'y', 0, 0}, "Single Mode", "Toggle single mode"},
     {CMD_CONSUME, {'c', 0, 0}, "Consume Mode", "Toggle consume mode"},
+    {CMD_CROSSFADE, {'x', 0, 0}, "Crossfade", "Toggle crossfadee"},
     {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help", "Show the help screen"},
     {CMD_PANEL_QUEUE, {'2', KEY_F(2), 0}, "Queue", "Show the queue screen"},
     {CMD_CURSOR_DOWN, {KEY_DOWN, 'j', 0}, "Cursor down", "Move the cursor down one line"},

@@ -70,6 +70,23 @@ void toggle_consume(struct mpdwrapper *mpd, struct status_bar *status_bar)
     set_notification(status_bar, notification, 3);
 }
 
+void toggle_crossfade(struct mpdwrapper *mpd, struct status_bar *status_bar)
+{
+    unsigned int crossfade = mpd_status_get_crossfade(mpd->status);
+    char *notification;
+    
+    if (crossfade == 0) {
+        mpd_run_crossfade(mpd->connection, 5);
+        notification = "Crossfade set to 5 seconds";
+    }
+    else {
+        mpd_run_crossfade(mpd->connection, 0);
+        notification = "Crossfade set to 0 seconds";
+    }
+
+    set_notification(status_bar, notification, 3);
+}
+
 /**
  * @brief Finds the requested player command and executes it.
  * 
@@ -98,6 +115,9 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         break;
     case CMD_CONSUME:
         toggle_consume(mpd, status_bar);
+        break;
+    case CMD_CROSSFADE:
+        toggle_crossfade(mpd, status_bar);
         break;
     default:
         break;
