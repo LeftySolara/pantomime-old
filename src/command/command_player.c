@@ -61,6 +61,15 @@ void toggle_single(struct mpdwrapper *mpd, struct status_bar *status_bar)
     set_notification(status_bar, notification, 3);
 }
 
+void toggle_consume(struct mpdwrapper *mpd, struct status_bar *status_bar)
+{
+    bool consume = mpd_status_get_consume(mpd->status);
+    mpd_run_consume(mpd->connection, !consume);
+
+    char *notification = !consume ? "Consume mode is on" : "Consume mpde is off";
+    set_notification(status_bar, notification, 3);
+}
+
 /**
  * @brief Finds the requested player command and executes it.
  * 
@@ -86,6 +95,9 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         break;
     case CMD_SINGLE:
         toggle_single(mpd, status_bar);
+        break;
+    case CMD_CONSUME:
+        toggle_consume(mpd, status_bar);
         break;
     default:
         break;
