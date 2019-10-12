@@ -60,6 +60,8 @@ void queue_menu_item_free(struct queue_menu_item *item)
 struct queue_menu_list *queue_menu_list_init(struct songlist *songlist)
 {
     struct queue_menu_list *menu_list = malloc(sizeof(*menu_list));
+    menu_list->top_visible = NULL;
+    menu_list->bottom_visible = NULL;
 
     struct songnode *current = songlist->head;
     while (current) {
@@ -87,6 +89,8 @@ void queue_menu_list_append(struct queue_menu_list *list, struct mpd_song *song)
     if (!list->head) {
         list->head = new_item;
         list->selected = new_item;
+        list->top_visible = new_item;
+        list->bottom_visible = new_item;
     }
     else {
         struct queue_menu_item *tmp = list->tail;
@@ -115,6 +119,20 @@ void queue_menu_list_clear(struct queue_menu_list *list)
     list->size = 0;
 }
 
+/* Tells the list to figure out which item is the last one visible on screen. */
+void queue_menu_list_find_bottom(struct queue_menu_list *list, WINDOW *win)
+{
+    int rows = getmaxy(win);
+    struct queue_menu_item *current = list->top_visible;
+
+    for (int i = 0; i < rows-2; ++i) {
+        if (!current->next)
+            break;
+        current = current->next;
+    }
+    list->bottom_visible = current;
+}
+
 void draw_queue_menu_item(WINDOW *win, struct queue_menu_item *item, int field_width,
                           int row, bool selected, bool playing)
 {
@@ -138,13 +156,12 @@ void draw_queue_menu_item(WINDOW *win, struct queue_menu_item *item, int field_w
 
 void draw_queue(WINDOW *win, struct queue_menu_list *list, unsigned int playing_id)
 {
-    int y, x;
-    getmaxyx(win, y, x);
+    int maxx = getmaxx(win);
 
     /* The width of each column. There are four columns total but only three
      * are of variable size; the "Length" column is always 8 characters wide.
      */
-    int field_width = (x - 8) / 3;
+    int field_width = (maxx - 8) / 3;
 
     werase(win);
 
@@ -153,30 +170,28 @@ void draw_queue(WINDOW *win, struct queue_menu_list *list, unsigned int playing_
     mvwprintw(win, 0, 0, "Artist\n");
     mvwprintw(win, 0, field_width + 1, " Title\n");
     mvwprintw(win, 0, (field_width * 2) + 1, " Album\n");
-    mvwprintw(win, 0, x - 9, " Length\n");
+    mvwprintw(win, 0, maxx - 9, " Length\n");
     wattr_off(win, A_BOLD, NULL);
 
     if (list->size <= 0)
         return;
     if (!list->selected)
-        list->selected = list->head;
+        list->selected = list->top_visible;
 
-    struct queue_menu_item *item = list->head;
+    struct queue_menu_item *current = list->top_visible;
+
     bool selected;
     bool playing;
+    int y = 1;
 
-    /* Only draw y items to prevent wasting resources
-     * drawing past the end of the screen.
-     */
-    for (int i = 1; i <= y; ++i) {
-        playing = item->id == playing_id;
-        selected = item->id == list->selected->id;
+    queue_menu_list_find_bottom(list, win);
+    while (current != list->bottom_visible->next) {
+        playing = current->id == playing_id;
+        selected = current->id == list->selected->id;
 
-        draw_queue_menu_item(win, item, field_width, i, selected, playing);
-        if (!item->next)
-            break;
-        else
-            item = item->next;
+        draw_queue_menu_item(win, current, field_width, y++, selected, playing);
+        current = current->next;
     }
+
     wnoutrefresh(win);
 }

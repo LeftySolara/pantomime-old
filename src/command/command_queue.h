@@ -26,6 +26,8 @@
 enum direction {UP, DOWN};
 
 void move_cursor(struct queue_menu_list *list, enum direction direction);
+void move_cursor_down(struct queue_menu_list *list);
+void move_cursor_up(struct queue_menu_list *list);
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct queue_menu_list *list);
 
 

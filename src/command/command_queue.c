@@ -32,16 +32,47 @@ void move_cursor(struct queue_menu_list *list, enum direction direction)
         list->selected = current->next;
 }
 
+void move_cursor_down(struct queue_menu_list *list)
+{
+    if (!list || list->size == 0)
+        return;
+    
+    struct queue_menu_item *current = list->selected;
+    if (current->next) {
+        if (current == list->bottom_visible) {
+            list->top_visible = list->top_visible->next;
+            list->bottom_visible = list->bottom_visible->next;
+        }
+        list->selected = current->next;
+    }
+}
+
+void move_cursor_up(struct queue_menu_list *list)
+{
+    if (!list || list->size == 0)
+        return;
+    
+    struct queue_menu_item *current = list->selected;
+    if (current->prev) {
+        if (current == list->top_visible) {
+            list->top_visible = list->top_visible->prev;
+            list->bottom_visible = list->bottom_visible->prev;
+        }
+        list->selected = current->prev;
+    }
+}
+
+
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd,  struct queue_menu_list *list)
 {
     switch (cmd) {
     case CMD_NULL:
         break;
     case CMD_CURSOR_DOWN:
-        move_cursor(list, DOWN);
+        move_cursor_down(list);
         break;
     case CMD_CURSOR_UP:
-        move_cursor(list, UP);
+        move_cursor_up(list);
         break;
     case CMD_PLAY:
         mpd_run_play_id(mpd->connection, list->selected->id);

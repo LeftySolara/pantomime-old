@@ -45,6 +45,9 @@ struct queue_menu_list {
     struct queue_menu_item *tail;
     struct queue_menu_item *selected;
 
+    struct queue_menu_item *top_visible;    /* First item visible on the screen. */
+    struct queue_menu_item *bottom_visible; /* Last item visible on the screen. */
+
     int size;
 };
 
@@ -56,6 +59,8 @@ void queue_menu_list_free(struct queue_menu_list *list);
 
 void queue_menu_list_append(struct queue_menu_list *list, struct mpd_song *song);
 void queue_menu_list_clear(struct queue_menu_list *list);
+
+void queue_menu_list_find_bottom(struct queue_menu_list *list, WINDOW *win);
 
 void draw_queue_menu_item(WINDOW *win, struct queue_menu_item *item, int field_width,
                           int begin_y, bool selected, bool playing);
