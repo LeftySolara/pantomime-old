@@ -30,6 +30,7 @@ enum command_type {
     CMD_STOP,
     CMD_REPEAT,
     CMD_RANDOM,
+    CMD_SINGLE,
     CMD_PANEL_HELP,
     CMD_PANEL_QUEUE,
     CMD_CURSOR_DOWN,

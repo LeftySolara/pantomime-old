@@ -35,6 +35,7 @@ void stop_playback(struct mpd_connection *connection);
 
 void toggle_repeat(struct mpdwrapper *mpd, struct status_bar *status_bar);
 void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar);
+void toggle_single(struct mpdwrapper *mpd, struct status_bar *status_bar);
 
 void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar *status_bar);
 

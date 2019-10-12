@@ -42,7 +42,8 @@ static enum command_type queue_panel_commands[] = {
     CMD_CURSOR_DOWN,
     CMD_CURSOR_UP,
     CMD_RANDOM,
-    CMD_REPEAT
+    CMD_REPEAT,
+    CMD_SINGLE
 };
 
 void draw_help_screen(WINDOW *win)

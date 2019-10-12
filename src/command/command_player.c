@@ -52,6 +52,15 @@ void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar)
     set_notification(status_bar, notification, 3);
 }
 
+void toggle_single(struct mpdwrapper *mpd, struct status_bar *status_bar)
+{
+    bool single = mpd_status_get_single(mpd->status);
+    mpd_run_single(mpd->connection, !single);
+
+    char *notification = !single ? "Single mode is on" : "Single mode is off";
+    set_notification(status_bar, notification, 3);
+}
+
 /**
  * @brief Finds the requested player command and executes it.
  * 
@@ -74,6 +83,9 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         break;
     case CMD_REPEAT:
         toggle_repeat(mpd, status_bar);
+        break;
+    case CMD_SINGLE:
+        toggle_single(mpd, status_bar);
         break;
     default:
         break;
