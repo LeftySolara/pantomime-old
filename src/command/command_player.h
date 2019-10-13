@@ -39,6 +39,9 @@ void toggle_single(struct mpdwrapper *mpd, struct status_bar *status_bar);
 void toggle_consume(struct mpdwrapper *mpd, struct status_bar *status_bar);
 void toggle_crossfade(struct mpdwrapper *mpd, struct status_bar *status_bar);
 
+void decrease_volume(struct mpd_connection *connection);
+void increase_volume(struct mpd_connection *connection);
+
 void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar *status_bar);
 
 #endif

@@ -87,6 +87,16 @@ void toggle_crossfade(struct mpdwrapper *mpd, struct status_bar *status_bar)
     set_notification(status_bar, notification, 3);
 }
 
+void decrease_volume(struct mpd_connection *connection)
+{
+    mpd_run_change_volume(connection, -2);
+}
+
+void increase_volume(struct mpd_connection *connection)
+{
+    mpd_run_change_volume(connection, 2);
+}
+
 /**
  * @brief Finds the requested player command and executes it.
  * 
@@ -118,6 +128,12 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         break;
     case CMD_CROSSFADE:
         toggle_crossfade(mpd, status_bar);
+        break;
+    case CMD_VOL_DOWN:
+        decrease_volume(mpd->connection);
+        break;
+    case CMD_VOL_UP:
+        increase_volume(mpd->connection);
         break;
     default:
         break;

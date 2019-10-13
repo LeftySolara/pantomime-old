@@ -33,6 +33,8 @@ enum command_type {
     CMD_SINGLE,
     CMD_CONSUME,
     CMD_CROSSFADE,
+    CMD_VOL_DOWN,
+    CMD_VOL_UP,
     CMD_PANEL_HELP,
     CMD_PANEL_QUEUE,
     CMD_CURSOR_DOWN,
