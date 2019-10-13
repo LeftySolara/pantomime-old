@@ -35,6 +35,8 @@ static struct command commands[] = {
     {CMD_PLAY, {KEY_RETURN, 0, 0}, "Play", "Play the currently selected track"},
     {CMD_PAUSE, {'p', 'P', 0}, "Pause", "Toggle pause"},
     {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop playback"},
+    {CMD_SEEK_BACKWARD, {'b', 0, 0}, "Seek backward", "Seek backward"},
+    {CMD_SEEK_FORWARD, {'f', 0, 0}, "Seek forward", "Seek forward"},
     {CMD_PREV_SONG, {'H', 0, 0}, "Previous song", "Skip backward to the previous track in the queue"},
     {CMD_NEXT_SONG, {'L', 0, 0}, "Next song", "Skip to the next song in the queue"},
     {CMD_REPEAT, {'r', 0, 0}, "Repeat Mode", "Toggle repeat mode"},

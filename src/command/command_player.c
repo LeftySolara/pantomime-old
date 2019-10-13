@@ -34,6 +34,34 @@ void stop_playback(struct mpd_connection *connection)
     mpd_run_stop(connection);
 }
 
+void seek_backward(struct mpdwrapper *mpd)
+{
+    if (mpd->state != MPD_STATE_PLAY)
+        return;
+
+    unsigned int elapsed_time = get_current_song_elapsed(mpd);
+    if (elapsed_time > 0) {
+        mpd_run_seek_pos(mpd->connection,
+                         mpd_song_get_pos(mpd->current_song),
+                         elapsed_time - 1);
+    }
+}
+
+void seek_forward(struct mpdwrapper *mpd)
+{
+    if (mpd->state != MPD_STATE_PLAY)
+        return;
+
+    unsigned int elapsed_time = get_current_song_elapsed(mpd);
+    unsigned int total_time = get_current_song_duration(mpd);
+
+    if (elapsed_time != total_time) {  /* Song hasn't finished playing */
+        mpd_run_seek_pos(mpd->connection,
+                         mpd_song_get_pos(mpd->current_song),
+                         elapsed_time + 1);
+    }
+}
+
 void prev_song(struct mpdwrapper *mpd, struct status_bar *status_bar)
 {
     if (mpd->state == MPD_STATE_STOP)
@@ -129,6 +157,12 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         break;
     case CMD_STOP:
         stop_playback(mpd->connection);
+        break;
+    case CMD_SEEK_BACKWARD:
+        seek_backward(mpd);
+        break;
+    case CMD_SEEK_FORWARD:
+        seek_forward(mpd);
         break;
     case CMD_PREV_SONG:
         prev_song(mpd, status_bar);
