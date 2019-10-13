@@ -39,6 +39,8 @@ static enum command_type queue_panel_commands[] = {
     CMD_PLAY,
     CMD_PAUSE,
     CMD_STOP,
+    CMD_PREV_SONG,
+    CMD_NEXT_SONG,
     CMD_CURSOR_DOWN,
     CMD_CURSOR_UP,
     CMD_RANDOM,

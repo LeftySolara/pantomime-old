@@ -28,6 +28,8 @@ enum command_type {
     CMD_PLAY,
     CMD_PAUSE,
     CMD_STOP,
+    CMD_PREV_SONG,
+    CMD_NEXT_SONG,
     CMD_REPEAT,
     CMD_RANDOM,
     CMD_SINGLE,

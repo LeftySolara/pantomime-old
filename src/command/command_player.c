@@ -34,6 +34,22 @@ void stop_playback(struct mpd_connection *connection)
     mpd_run_stop(connection);
 }
 
+void prev_song(struct mpdwrapper *mpd, struct status_bar *status_bar)
+{
+    if (mpd->state == MPD_STATE_STOP)
+        set_notification(status_bar, "Not playing", 3);
+    else
+        mpd_run_previous(mpd->connection);
+}
+
+void next_song(struct mpdwrapper *mpd, struct status_bar *status_bar)
+{
+    if (mpd->state == MPD_STATE_STOP)
+        set_notification(status_bar, "Not playing", 3);
+    else
+        mpd_run_next(mpd->connection);
+}
+
 void toggle_repeat(struct mpdwrapper *mpd, struct status_bar *status_bar)
 {
     bool repeat = mpd_status_get_repeat(mpd->status);
@@ -113,6 +129,12 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         break;
     case CMD_STOP:
         stop_playback(mpd->connection);
+        break;
+    case CMD_PREV_SONG:
+        prev_song(mpd, status_bar);
+        break;
+    case CMD_NEXT_SONG:
+        next_song(mpd, status_bar);
         break;
     case CMD_RANDOM:
         toggle_random(mpd, status_bar);

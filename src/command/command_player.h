@@ -33,6 +33,9 @@ void toggle_pause(struct mpd_connection *connection);
 void start_playback(int id);
 void stop_playback(struct mpd_connection *connection);
 
+void prev_song(struct mpdwrapper *mpd, struct status_bar *status_bar);
+void next_song(struct mpdwrapper *mpd, struct status_bar *status_bar);
+
 void toggle_repeat(struct mpdwrapper *mpd, struct status_bar *status_bar);
 void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar);
 void toggle_single(struct mpdwrapper *mpd, struct status_bar *status_bar);
