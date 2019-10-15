@@ -30,28 +30,72 @@
 #define KEY_RETURN 10
 
 static struct command commands[] = {
-    {CMD_NULL, {0, 0, 0}, "Null", "Null command"},
-    {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit", "Quit Pantomime"},
-    {CMD_PLAY, {KEY_RETURN, 0, 0}, "Play", "Play the currently selected track"},
-    {CMD_PAUSE, {'p', 'P', 0}, "Pause", "Toggle pause"},
-    {CMD_STOP, {'s', 'S', 0}, "Stop", "Stop playback"},
-    {CMD_SEEK_BACKWARD, {'b', 0, 0}, "Seek backward", "Seek backward"},
-    {CMD_SEEK_FORWARD, {'f', 0, 0}, "Seek forward", "Seek forward"},
-    {CMD_PREV_SONG, {'H', 0, 0}, "Previous song", "Skip backward to the previous track in the queue"},
-    {CMD_NEXT_SONG, {'L', 0, 0}, "Next song", "Skip to the next song in the queue"},
-    {CMD_REPEAT, {'r', 0, 0}, "Repeat Mode", "Toggle repeat mode"},
-    {CMD_RANDOM, {'z', 0, 0}, "Random Mode", "Toggle random playback of songs in the queue"},
-    {CMD_SINGLE, {'y', 0, 0}, "Single Mode", "Toggle single mode"},
-    {CMD_CONSUME, {'c', 0, 0}, "Consume Mode", "Toggle consume mode"},
-    {CMD_CROSSFADE, {'x', 0, 0}, "Crossfade", "Toggle crossfadee"},
-    {CMD_VOL_DOWN, {'h', KEY_LEFT, 0}, "Volume down", "Decrease the playback volume"},
-    {CMD_VOL_UP, {'l', KEY_RIGHT, 0}, "Volume up", "Increase the playback volume"},
-    {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help", "Show the help screen"},
-    {CMD_PANEL_QUEUE, {'2', KEY_F(2), 0}, "Queue", "Show the queue screen"},
-    {CMD_CURSOR_DOWN, {KEY_DOWN, 'j', 0}, "Cursor down", "Move the cursor down one line"},
-    {CMD_CURSOR_UP, {KEY_UP, 'k', 0}, "Cursor up", "Move the cursor up one line"},
-    {CMD_CURSOR_BOTTOM, {'J', 0, 0}, "Move to bottom", "Move the cursor to the bottom of the screen."},
-    {CMD_CURSOR_TOP, {'K', 0, 0}, "Move to top", "Move the cursor to the top of the screen"}
+
+    {CMD_NULL, {0, 0, 0}, "Null",
+    "Null command"},
+
+    {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit",
+    "Quit Pantomime"},
+
+    {CMD_PLAY, {KEY_RETURN, 0, 0}, "Play",
+    "Play the currently selected track"},
+
+    {CMD_PAUSE, {'p', 'P', 0}, "Pause",
+    "Toggle pause"},
+    
+    {CMD_STOP, {'s', 'S', 0}, "Stop",
+    "Stop playback"},
+
+    {CMD_SEEK_BACKWARD, {'b', 0, 0}, "Seek backward",
+    "Seek backward"},
+
+    {CMD_SEEK_FORWARD, {'f', 0, 0}, "Seek forward",
+    "Seek forward"},
+
+    {CMD_PREV_SONG, {'H', 0, 0}, "Previous song",
+    "Skip backward to the previous track in the queue"},
+
+    {CMD_NEXT_SONG, {'L', 0, 0}, "Next song",
+    "Skip to the next song in the queue"},
+
+    {CMD_REPEAT, {'r', 0, 0}, "Repeat Mode",
+    "Toggle repeat mode"},
+
+    {CMD_RANDOM, {'z', 0, 0}, "Random Mode",
+    "Toggle random playback of songs in the queue"},
+
+    {CMD_SINGLE, {'y', 0, 0}, "Single Mode",
+    "Toggle single mode"},
+
+    {CMD_CONSUME, {'c', 0, 0}, "Consume Mode",
+    "Toggle consume mode"},
+
+    {CMD_CROSSFADE, {'x', 0, 0}, "Crossfade",
+    "Toggle crossfade"},
+
+    {CMD_VOL_DOWN, {'h', KEY_LEFT, 0}, "Volume down",
+    "Decrease the playback volume"},
+
+    {CMD_VOL_UP, {'l', KEY_RIGHT, 0}, "Volume up",
+    "Increase the playback volume"},
+
+    {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help",
+    "Show the help screen"},
+
+    {CMD_PANEL_QUEUE, {'2', KEY_F(2), 0}, "Queue",
+    "Show the queue screen"},
+
+    {CMD_CURSOR_DOWN, {KEY_DOWN, 'j', 0}, "Cursor down",
+    "Move the cursor down one line"},
+
+    {CMD_CURSOR_UP, {KEY_UP, 'k', 0}, "Cursor up",
+    "Move the cursor up one line"},
+
+    {CMD_CURSOR_BOTTOM, {'J', 0, 0}, "Move to bottom",
+    "Move the cursor to the bottom of the screen."},
+
+    {CMD_CURSOR_TOP, {'K', 0, 0}, "Move to top",
+    "Move the cursor to the top of the screen"}
 };
 
 /**
