@@ -49,7 +49,9 @@ static struct command commands[] = {
     {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help", "Show the help screen"},
     {CMD_PANEL_QUEUE, {'2', KEY_F(2), 0}, "Queue", "Show the queue screen"},
     {CMD_CURSOR_DOWN, {KEY_DOWN, 'j', 0}, "Cursor down", "Move the cursor down one line"},
-    {CMD_CURSOR_UP, {KEY_UP, 'k', 0}, "Cursor up", "Move the cursor up one line"}
+    {CMD_CURSOR_UP, {KEY_UP, 'k', 0}, "Cursor up", "Move the cursor up one line"},
+    {CMD_CURSOR_BOTTOM, {'J', 0, 0}, "Move to bottom", "Move the cursor to the bottom of the screen."},
+    {CMD_CURSOR_TOP, {'K', 0, 0}, "Move to top", "Move the cursor to the top of the screen"}
 };
 
 /**
