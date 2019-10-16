@@ -18,6 +18,7 @@
  ******************************************************************************/
 
 #include "command/command.h"
+#include "command/command_global.h"
 #include "command/command_player.h"
 #include "command/command_queue.h"
 #include "mpdwrapper/mpdwrapper.h"
@@ -45,18 +46,8 @@ int main()
         ch = getch();
         cmd = find_key_command(ch);
 
+        cmd_global(cmd, ui);
         cmd_player(cmd, mpd, ui->status_bar);
-
-        switch (cmd) {
-        case CMD_PANEL_HELP:
-            set_visible_panel(ui, HELP);
-            break;
-        case CMD_PANEL_QUEUE:
-            set_visible_panel(ui, QUEUE);
-            break;
-        default:
-            break;
-        }
 
         switch (ui->visible_panel) {
         case HELP:
