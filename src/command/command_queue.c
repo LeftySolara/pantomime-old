@@ -62,8 +62,32 @@ void move_cursor_up(struct queue_menu_list *list)
     }
 }
 
+void move_cursor_page_down(struct queue_menu_list *list, WINDOW *win)
+{
+    if (!list || list->size == 0)
+        return;
+    
+    list->selected = list->bottom_visible;
+    if (!list->selected->next)
+        return;
 
-void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd,  struct queue_menu_list *list)
+    list->selected = list->selected->next;
+    list->top_visible = list->selected;
+    queue_menu_list_find_bottom(list, win);
+}
+
+void move_cursor_page_up(struct queue_menu_list *list, WINDOW *win)
+{
+    if (!list || list->size == 0)
+        return;
+    
+    int num_visible = getmaxy(win) - 2;
+    for (int i = 0; i <= num_visible; ++ i)
+        move_cursor_up(list);
+}
+
+
+void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd,  struct queue_menu_list *list, WINDOW *win)
 {
     switch (cmd) {
     case CMD_NULL:
@@ -73,6 +97,12 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd,  struct queue_menu
         break;
     case CMD_CURSOR_UP:
         move_cursor_up(list);
+        break;
+    case CMD_CURSOR_PAGE_DOWN:
+        move_cursor_page_down(list, win);
+        break;
+    case CMD_CURSOR_PAGE_UP:
+        move_cursor_page_up(list, win);
         break;
     case CMD_PLAY:
         mpd_run_play_id(mpd->connection, list->selected->id);

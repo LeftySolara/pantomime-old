@@ -91,6 +91,12 @@ static struct command commands[] = {
     {CMD_CURSOR_UP, {KEY_UP, 'k', 0}, "Cursor up",
     "Move the cursor up one line"},
 
+    {CMD_CURSOR_PAGE_DOWN, {KEY_NPAGE, 0, 0}, "Page Down",
+    "Page down"},
+
+    {CMD_CURSOR_PAGE_UP, {KEY_PPAGE, 0, 0}, "Page Up",
+    "Page up"},
+
     {CMD_CURSOR_BOTTOM, {'J', 0, 0}, "Move to bottom",
     "Move the cursor to the bottom of the screen."},
 
