@@ -104,7 +104,10 @@ static struct command commands[] = {
     "Move the cursor to the bottom of the screen."},
 
     {CMD_CURSOR_TOP, {'K', 0, 0}, "Move to top",
-    "Move the cursor to the top of the screen"}
+    "Move the cursor to the top of the screen"},
+
+    {CMD_CURSOR_MIDDLE, {'M', 0, 0}, "Move to middle",
+    "Move the cursor to the middle of the screen"}
 };
 
 /**

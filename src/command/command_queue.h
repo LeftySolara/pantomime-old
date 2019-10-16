@@ -31,6 +31,7 @@ void move_cursor_down(struct queue_menu_list *list);
 void move_cursor_up(struct queue_menu_list *list);
 void move_cursor_page_down(struct queue_menu_list *list, WINDOW *win);
 void move_cursor_page_up(struct queue_menu_list *list, WINDOW *win);
+void move_cursor_middle(struct queue_menu_list *list, WINDOW *win);
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui);
 
 

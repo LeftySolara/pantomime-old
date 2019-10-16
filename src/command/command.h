@@ -48,6 +48,7 @@ enum command_type {
     CMD_CURSOR_PAGE_UP,
     CMD_CURSOR_BOTTOM,
     CMD_CURSOR_TOP,
+    CMD_CURSOR_MIDDLE,
     NUM_CMDS
 };
 

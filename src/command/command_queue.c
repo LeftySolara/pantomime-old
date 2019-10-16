@@ -86,6 +86,18 @@ void move_cursor_page_up(struct queue_menu_list *list, WINDOW *win)
         move_cursor_up(list);
 }
 
+void move_cursor_middle(struct queue_menu_list *list, WINDOW *win)
+{
+    if (!list || list->size == 0)
+        return;
+
+    int num_visible = getmaxy(win) - 2;
+    int limit = num_visible / 2;
+
+    list->selected = list->top_visible;
+    for (int i = 0; i < limit; ++i)
+        move_cursor_down(list);
+}
 
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
 {
@@ -115,6 +127,9 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         break;
     case CMD_CURSOR_TOP:
         list->selected = list->top_visible;
+        break;
+    case CMD_CURSOR_MIDDLE:
+        move_cursor_middle(list, queue_win);
         break;
     default:
         break;

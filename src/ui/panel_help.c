@@ -50,6 +50,7 @@ static enum command_type queue_panel_commands[] = {
     CMD_CURSOR_PAGE_UP,
     CMD_CURSOR_BOTTOM,
     CMD_CURSOR_TOP,
+    CMD_CURSOR_MIDDLE,
     CMD_RANDOM,
     CMD_REPEAT,
     CMD_SINGLE,
