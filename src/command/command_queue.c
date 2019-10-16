@@ -87,8 +87,11 @@ void move_cursor_page_up(struct queue_menu_list *list, WINDOW *win)
 }
 
 
-void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd,  struct queue_menu_list *list, WINDOW *win)
+void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
 {
+    WINDOW *queue_win = panel_window(ui->panels[QUEUE]);
+    struct queue_menu_list *list = ui->queue_list;
+
     switch (cmd) {
     case CMD_NULL:
         break;
@@ -99,10 +102,10 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd,  struct queue_menu
         move_cursor_up(list);
         break;
     case CMD_CURSOR_PAGE_DOWN:
-        move_cursor_page_down(list, win);
+        move_cursor_page_down(list, queue_win);
         break;
     case CMD_CURSOR_PAGE_UP:
-        move_cursor_page_up(list, win);
+        move_cursor_page_up(list, queue_win);
         break;
     case CMD_PLAY:
         mpd_run_play_id(mpd->connection, list->selected->id);

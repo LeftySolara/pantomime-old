@@ -53,7 +53,7 @@ int main()
         case HELP:
             break;
         case QUEUE:
-            cmd_queue(cmd, mpd, ui->queue_list, panel_window(ui->panels[QUEUE]));
+            cmd_queue(cmd, mpd, ui);
             break;
         default:
             break;
