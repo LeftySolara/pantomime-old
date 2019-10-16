@@ -22,12 +22,23 @@
  */
 
 #include "command_global.h"
+#include "../ui/statusbar.h"
 
 /**
  * @brief Checks the input command and executes the related functions.
  */
 
-void cmd_global(enum command_type cmd, struct ui *ui)
+void update_mpd_database(struct mpdwrapper *mpd, struct ui *ui)
+{
+    set_notification(ui->status_bar, "Starting database update...", 3);
+    
+    int rc = mpdwrapper_db_update(mpd);
+    char *msg = (rc > 0) ? "Music database updated successfully" : "Error updating music database";
+
+    set_notification(ui->status_bar, msg, 3);
+}
+
+void cmd_global(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
 {
     switch (cmd) {
     case CMD_PANEL_HELP:
@@ -35,6 +46,9 @@ void cmd_global(enum command_type cmd, struct ui *ui)
         break;
     case CMD_PANEL_QUEUE:
         set_visible_panel(ui, QUEUE);
+        break;
+    case CMD_DB_UPDATE:
+        update_mpd_database(mpd, ui);
         break;
     default:
         break;

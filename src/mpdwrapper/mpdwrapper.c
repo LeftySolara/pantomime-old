@@ -116,6 +116,17 @@ void mpdwrapper_update(struct mpdwrapper *mpd)
 }
 
 /**
+ * @brief Performs an update of the MPD music database.
+ */
+int mpdwrapper_db_update(struct mpdwrapper *mpd)
+{
+    int rc = mpd_run_update(mpd->connection, NULL);
+    mpd->last_error = mpd_connection_get_error(mpd->connection);
+
+    return rc;
+}
+
+/**
  * @brief Gets the title of the currently playing song.
  * 
  * @param mpd The mpd connection to parse.

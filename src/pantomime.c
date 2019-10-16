@@ -46,7 +46,7 @@ int main()
         ch = getch();
         cmd = find_key_command(ch);
 
-        cmd_global(cmd, ui);
+        cmd_global(cmd, mpd, ui);
         cmd_player(cmd, mpd, ui->status_bar);
 
         switch (ui->visible_panel) {

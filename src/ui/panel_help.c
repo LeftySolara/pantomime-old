@@ -32,7 +32,8 @@
 static enum command_type global_commands[] = {
     CMD_QUIT,
     CMD_PANEL_HELP,
-    CMD_PANEL_QUEUE
+    CMD_PANEL_QUEUE,
+    CMD_DB_UPDATE
 };
 
 static enum command_type queue_panel_commands[] = {

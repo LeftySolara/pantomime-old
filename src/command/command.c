@@ -37,6 +37,9 @@ static struct command commands[] = {
     {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit",
     "Quit Pantomime"},
 
+    {CMD_DB_UPDATE, {KEY_CTRL('u'), 0, 0}, "Update",
+    "Start a music database update"},
+
     {CMD_PLAY, {KEY_RETURN, 0, 0}, "Play",
     "Play the currently selected track"},
 

@@ -45,7 +45,8 @@ struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout);
 void mpdwrapper_free(struct mpdwrapper *mpd);
 
 void mpdwrapper_fetch_queue(struct mpdwrapper *mpd);
-void mpdwrapper_update(struct mpdwrapper *mpd);
+void mpdwrapper_update(struct mpdwrapper *mpd); /* TODO: rename this */
+int  mpdwrapper_db_update(struct mpdwrapper *mpd);
 
 int get_current_song_duration(struct mpdwrapper *mpd);
 int get_current_song_elapsed(struct mpdwrapper *mpd);

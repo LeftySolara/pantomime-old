@@ -20,4 +20,6 @@
 #include "command.h"
 #include "../ui/ui.h"
 
-void cmd_global(enum command_type cmd, struct ui *ui);
+void update_mpd_database(struct mpdwrapper *mpd, struct ui *ui);
+
+void cmd_global(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui);
