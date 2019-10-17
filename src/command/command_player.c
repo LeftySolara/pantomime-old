@@ -110,7 +110,7 @@ void toggle_consume(struct mpdwrapper *mpd, struct status_bar *status_bar)
     bool consume = mpd_status_get_consume(mpd->status);
     mpd_run_consume(mpd->connection, !consume);
 
-    char *notification = !consume ? "Consume mode is on" : "Consume mpde is off";
+    char *notification = !consume ? "Consume mode is on" : "Consume mode is off";
     set_notification(status_bar, notification, 3);
 }
 
