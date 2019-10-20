@@ -111,10 +111,10 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         pmenu_select_prev(ui->queue_menu);
         break;
     case CMD_CURSOR_PAGE_DOWN:
-        /* move_cursor_page_down(list, queue_win); */
+        pmenu_scroll_page_down(ui->queue_menu);
         break;
     case CMD_CURSOR_PAGE_UP:
-        /* move_cursor_page_up(list, queue_win); */
+        pmenu_scroll_page_up(ui->queue_menu);
         break;
     case CMD_PLAY:
         /* mpd_run_play_id(mpd->connection, list->selected->id); */

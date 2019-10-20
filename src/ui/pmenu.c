@@ -282,6 +282,35 @@ void pmenu_select_middle_visible(struct pmenu *menu)
 }
 
 /**
+ * @brief Scrolls up one page.
+ */
+void pmenu_scroll_page_up(struct pmenu *menu)
+{
+    if (!menu || menu->length == 0)
+        return;
+    
+    for (int i = 0; i <= menu->max_visible; ++i)
+        pmenu_select_prev(menu);
+}
+
+/**
+ * @brief Scrolls one page down.
+ */
+void pmenu_scroll_page_down(struct pmenu *menu)
+{
+    if (!menu || menu->length == 0)
+        return;
+
+    pmenu_select_bottom_visible(menu);
+    if (!menu->selected->next)
+        return;
+
+    pmenu_select_next(menu);
+    menu->top_visible = menu->selected;
+    pmenu_find_bottom(menu);
+}
+
+/**
  * @brief Calculates which menu item is the bottommost visible.
  */
 void pmenu_find_bottom(struct pmenu *menu)

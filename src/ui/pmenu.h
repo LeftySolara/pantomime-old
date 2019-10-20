@@ -70,6 +70,9 @@ void pmenu_select_top_visible(struct pmenu *menu);
 void pmenu_select_bottom_visible(struct pmenu *menu);
 void pmenu_select_middle_visible(struct pmenu *menu);
 
+void pmenu_scroll_page_up(struct pmenu *menu);
+void pmenu_scroll_page_down(struct pmenu *menu);
+
 void pmenu_find_bottom(struct pmenu *menu);
 
 void pmenu_item_draw(struct pmenu_item *item, WINDOW *win, unsigned y);
