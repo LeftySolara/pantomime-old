@@ -120,7 +120,7 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         /* mpd_run_play_id(mpd->connection, list->selected->id); */
         break;
     case CMD_CURSOR_BOTTOM:
-        ui->queue_menu->selected = ui->queue_menu->bottem_visible;
+        ui->queue_menu->selected = ui->queue_menu->bottom_visible;
         break;
     case CMD_CURSOR_TOP:
         ui->queue_menu->selected = ui->queue_menu->top_visible;

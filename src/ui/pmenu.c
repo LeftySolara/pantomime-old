@@ -85,7 +85,7 @@ struct pmenu *pmenu_init(WINDOW *win, char *header)
     menu->tail = NULL;
     menu->selected = NULL;
     menu->top_visible = NULL;
-    menu->bottem_visible = NULL;
+    menu->bottom_visible = NULL;
 
     menu->length = 0;
     menu->selected_pos = -1;
@@ -117,7 +117,7 @@ void pmenu_append(struct pmenu *menu, char *item_text, int bold, int highlight)
         menu->head = new_item;
         menu->selected = new_item;
         menu->top_visible = new_item;
-        menu->bottem_visible = new_item;
+        menu->bottom_visible = new_item;
         menu->selected_pos = 0;
     }
     else {
@@ -151,7 +151,7 @@ void pmenu_clear(struct pmenu *menu)
     menu->tail = NULL;
     menu->selected = NULL;
     menu->top_visible = NULL;
-    menu->bottem_visible = NULL;
+    menu->bottom_visible = NULL;
     menu->length = 0;
     menu->selected_pos = 0;
 }
@@ -171,7 +171,7 @@ void pmenu_find_bottom(struct pmenu *menu)
             break;
         current = current->next;
     }
-    menu->bottem_visible = current;
+    menu->bottom_visible = current;
 }
 
 /**
@@ -216,7 +216,7 @@ void pmenu_draw(struct pmenu *menu)
 
     int y = 1;
     struct pmenu_item *current = menu->top_visible;
-    while (current != menu->bottem_visible->next) {
+    while (current != menu->bottom_visible->next) {
         pmenu_item_draw(current, menu->win, y++);
         current = current->next;
     }

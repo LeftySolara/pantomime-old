@@ -45,7 +45,7 @@ struct pmenu {
     struct pmenu_item *selected;
 
     struct pmenu_item *top_visible;      /**< First item visible on the screen. */
-    struct pmenu_item *bottem_visible;   /**< Last item visible on the screen. */
+    struct pmenu_item *bottom_visible;   /**< Last item visible on the screen. */
 
     char *header;               /**< The text to display above the list of items. */
     unsigned int length;        /**< The number of items in the menu. */
