@@ -104,6 +104,33 @@ void menu_free(struct menu *menu)
 }
 
 /**
+ * @brief Adds a new item to the end of a menu.
+ */
+void menu_append(struct menu *menu, char *item_text, int bold, int highlight)
+{
+    if (!menu)
+        return;
+    
+    struct menu_item *new_item = menu_item_init(item_text, bold, highlight);
+
+    if (!menu->head) {
+        menu->head = new_item;
+        menu->selected = new_item;
+        menu->top_visible = new_item;
+        menu->bottem_visible = new_item;
+        menu->selected_pos = 0;
+    }
+    else {
+        struct menu_item *tmp = menu->tail;
+        tmp->next = new_item;
+        new_item->prev = tmp;
+    }
+
+    menu->tail = new_item;
+    menu->length++;
+}
+
+/**
  * @brief Removes all items from a menu.
  * 
  * Removes all items from a menu and frees them.

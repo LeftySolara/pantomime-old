@@ -59,6 +59,8 @@ void menu_item_free(struct menu_item *item);
 struct menu *menu_init(WINDOW *win, char *header);
 void menu_free(struct menu *menu);
 
+void menu_append(struct menu *menu, char *item_text, int bold, int highlight);
+
 void menu_clear(struct menu *menu);
 
 void menu_find_bottom(struct menu *menu);
