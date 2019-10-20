@@ -20,7 +20,6 @@
 #include "ui.h"
 
 #include "panel_help.h"
-#include "panel_queue.h"
 #include "statusbar.h"
 
 #include <locale.h>
@@ -93,7 +92,7 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     ui->visible_panel = QUEUE;
     top_panel(ui->panels[ui->visible_panel]);
 
-    ui->queue_list = queue_menu_list_init(mpd->queue);
+    ui->queue_menu = pmenu_init(panel_window(ui->panels[QUEUE]), "Test header");
     ui->status_bar = status_bar_init();
 
     return ui;
@@ -101,7 +100,7 @@ struct ui *ui_init(struct mpdwrapper *mpd)
 
 void ui_free(struct ui *ui)
 {
-    queue_menu_list_free(ui->queue_list);
+    pmenu_free(ui->queue_menu);
     status_bar_free(ui->status_bar);
     free(ui);
 }
@@ -119,7 +118,7 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
         break;
     case QUEUE:
         current_song_id = get_current_song_id(mpd);
-        draw_queue(win, ui->queue_list, current_song_id);
+        pmenu_draw(ui->queue_menu);
         break;
     default:
         break;
