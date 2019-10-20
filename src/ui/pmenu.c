@@ -130,6 +130,24 @@ void menu_clear(struct menu *menu)
 }
 
 /**
+ * @brief Calculates which menu item is the bottommost visible.
+ */
+void menu_find_bottom(struct menu *menu)
+{
+    int rows = getmaxy(menu->win);
+    struct menu_item *current = menu->top_visible;
+
+    /* Only iterate up to rows-2 to account for the header and
+     * off-by-one errors. */
+    for (int i = 0; i < rows - 2; ++i) {
+        if (!current->next)
+            break;
+        current = current->next;
+    }
+    menu->bottem_visible = current;
+}
+
+/**
  * @brief Draws a menu item on the screen.
  * 
  * @param item  The item to draw.
