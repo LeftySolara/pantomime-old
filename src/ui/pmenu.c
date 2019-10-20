@@ -196,6 +196,9 @@ void pmenu_item_draw(struct pmenu_item *item, WINDOW *win, unsigned y)
     wattr_off(win, A_STANDOUT, 0);
 }
 
+/**
+ * @brief Draws a menu on the screen.
+ */
 void pmenu_draw(struct pmenu *menu)
 {
     werase(menu->win);
