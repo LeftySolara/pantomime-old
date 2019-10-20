@@ -30,7 +30,7 @@
  * @brief Returns a pointer to a newly-created menu item.
  * 
  * Creates a new item to be used in a menu.
- * The item can be freed with menu_item_free().
+ * The item can be freed with pmenu_item_free().
  * 
  * @param text      The text to display in the item.
  * @param bold      Whether to print the item's text in bold.
@@ -38,9 +38,9 @@
  * 
  * @return A pointer to a menu item containing the specified text.
  */
-struct menu_item *menu_item_init(char *text, int bold, int highlight)
+struct pmenu_item *pmenu_item_init(char *text, int bold, int highlight)
 {
-    struct menu_item *item = malloc(sizeof(*item));
+    struct pmenu_item *item = malloc(sizeof(*item));
 
     item->text = malloc((strlen(text) + 1) * sizeof(char));
     sprintf(item->text, "%s", text);
@@ -56,7 +56,7 @@ struct menu_item *menu_item_init(char *text, int bold, int highlight)
 /**
  * @brief Frees memory allocated by a menu item.
  */
-void menu_item_free(struct menu_item *item)
+void pmenu_item_free(struct pmenu_item *item)
 {
     free(item->text);
     free(item);
@@ -67,16 +67,16 @@ void menu_item_free(struct menu_item *item)
  * @brief Returns a pointer to a newly-created menu.
  * 
  * Creates a new menu with the specified header.
- * The menu can be freed with menu_free().
+ * The menu can be freed with pmenu_free().
  * 
  * @param win       The window to draw menu contents on. 
  * @param header    The text to print above the list of items. 
  * 
  * @return          A pointer to a new menu.
  */
-struct menu *menu_init(WINDOW *win, char *header)
+struct pmenu *pmenu_init(WINDOW *win, char *header)
 {
-    struct menu *menu = malloc(sizeof(*menu));
+    struct pmenu *menu = malloc(sizeof(*menu));
 
     menu->win = win;
     menu->header = malloc((strlen(header) + 1) * sizeof(char));
@@ -96,9 +96,9 @@ struct menu *menu_init(WINDOW *win, char *header)
 /**
  * @brief Frees memory allocated by a menu.
  */
-void menu_free(struct menu *menu)
+void pmenu_free(struct pmenu *menu)
 {
-    menu_clear(menu);
+    pmenu_clear(menu);
     free(menu->header);
     free(menu);
 }
@@ -106,12 +106,12 @@ void menu_free(struct menu *menu)
 /**
  * @brief Adds a new item to the end of a menu.
  */
-void menu_append(struct menu *menu, char *item_text, int bold, int highlight)
+void pmenu_append(struct pmenu *menu, char *item_text, int bold, int highlight)
 {
     if (!menu)
         return;
     
-    struct menu_item *new_item = menu_item_init(item_text, bold, highlight);
+    struct pmenu_item *new_item = pmenu_item_init(item_text, bold, highlight);
 
     if (!menu->head) {
         menu->head = new_item;
@@ -121,7 +121,7 @@ void menu_append(struct menu *menu, char *item_text, int bold, int highlight)
         menu->selected_pos = 0;
     }
     else {
-        struct menu_item *tmp = menu->tail;
+        struct pmenu_item *tmp = menu->tail;
         tmp->next = new_item;
         new_item->prev = tmp;
     }
@@ -136,14 +136,14 @@ void menu_append(struct menu *menu, char *item_text, int bold, int highlight)
  * Removes all items from a menu and frees them.
  * This does not free the menu's memory or remove its header.
  */
-void menu_clear(struct menu *menu)
+void pmenu_clear(struct pmenu *menu)
 {
-    struct menu_item *current = menu->head;
-    struct menu_item *next;
+    struct pmenu_item *current = menu->head;
+    struct pmenu_item *next;
 
     while (current) {
         next = current->next;
-        menu_item_free(current);
+        pmenu_item_free(current);
         current = next;
     }
 
@@ -159,10 +159,10 @@ void menu_clear(struct menu *menu)
 /**
  * @brief Calculates which menu item is the bottommost visible.
  */
-void menu_find_bottom(struct menu *menu)
+void pmenu_find_bottom(struct pmenu *menu)
 {
     int rows = getmaxy(menu->win);
-    struct menu_item *current = menu->top_visible;
+    struct pmenu_item *current = menu->top_visible;
 
     /* Only iterate up to rows-2 to account for the header and
      * off-by-one errors. */
@@ -181,7 +181,7 @@ void menu_find_bottom(struct menu *menu)
  * @param win   The window to draw the item on.
  * @param y     The y-position for drawing the item.
  */
-void menu_item_draw(struct menu_item *item, WINDOW *win, unsigned y)
+void pmenu_item_draw(struct pmenu_item *item, WINDOW *win, unsigned y)
 {
     if (item->bold)
         wattr_on(win, A_BOLD, 0);
@@ -196,7 +196,7 @@ void menu_item_draw(struct menu_item *item, WINDOW *win, unsigned y)
     wattr_off(win, A_STANDOUT, 0);
 }
 
-void menu_draw(struct menu *menu)
+void pmenu_draw(struct pmenu *menu)
 {
     werase(menu->win);
 
@@ -212,9 +212,9 @@ void menu_draw(struct menu *menu)
     }
 
     int y = 1;
-    struct menu_item *current = menu->top_visible;
+    struct pmenu_item *current = menu->top_visible;
     while (current != menu->bottem_visible->next) {
-        menu_item_draw(current, menu->win, y++);
+        pmenu_item_draw(current, menu->win, y++);
         current = current->next;
     }
 

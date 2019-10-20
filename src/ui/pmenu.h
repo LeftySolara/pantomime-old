@@ -28,24 +28,24 @@
 
 #include <ncurses.h>
 
-struct menu_item {
+struct pmenu_item {
     char *text;     /**< The text to display. */
     int bold;       /**< Whether to print the text in bold. */
     int highlight;  /**< Whether to highlight this item after printing. */
 
-    struct menu_item *prev;
-    struct menu_item *next;
+    struct pmenu_item *prev;
+    struct pmenu_item *next;
 };
 
-struct menu {
+struct pmenu {
     WINDOW *win;
 
-    struct menu_item *head;
-    struct menu_item *tail;
-    struct menu_item *selected;
+    struct pmenu_item *head;
+    struct pmenu_item *tail;
+    struct pmenu_item *selected;
 
-    struct menu_item *top_visible;      /**< First item visible on the screen. */
-    struct menu_item *bottem_visible;   /**< Last item visible on the screen. */
+    struct pmenu_item *top_visible;      /**< First item visible on the screen. */
+    struct pmenu_item *bottem_visible;   /**< Last item visible on the screen. */
 
     char *header;               /**< The text to display above the list of items. */
     unsigned int length;        /**< The number of items in the menu. */
@@ -53,19 +53,19 @@ struct menu {
     unsigned int max_visible;   /**< The maximum number of items that can be displayed with the current window size. */
 };
 
-struct menu_item *menu_item_init(char *text, int bold, int highlight);
-void menu_item_free(struct menu_item *item);
+struct pmenu_item *pmenu_item_init(char *text, int bold, int highlight);
+void pmenu_item_free(struct pmenu_item *item);
 
-struct menu *menu_init(WINDOW *win, char *header);
-void menu_free(struct menu *menu);
+struct pmenu *pmenu_init(WINDOW *win, char *header);
+void pmenu_free(struct pmenu *menu);
 
-void menu_append(struct menu *menu, char *item_text, int bold, int highlight);
+void pmenu_append(struct pmenu *menu, char *item_text, int bold, int highlight);
 
-void menu_clear(struct menu *menu);
+void pmenu_clear(struct pmenu *menu);
 
-void menu_find_bottom(struct menu *menu);
+void pmenu_find_bottom(struct pmenu *menu);
 
-void menu_item_draw(struct menu_item *item, WINDOW *win, unsigned y);
-void menu_draw(struct menu *menu);
+void pmenu_item_draw(struct pmenu_item *item, WINDOW *win, unsigned y);
+void pmenu_draw(struct pmenu *menu);
 
 #endif /* PMENU_H */
