@@ -117,7 +117,7 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         pmenu_scroll_page_up(ui->queue_menu);
         break;
     case CMD_PLAY:
-        /* mpd_run_play_id(mpd->connection, list->selected->id); */
+        mpd_run_play_pos(mpd->connection, ui->queue_menu->selected_pos);
         break;
     case CMD_CURSOR_BOTTOM:
         pmenu_select_bottom_visible(ui->queue_menu);
