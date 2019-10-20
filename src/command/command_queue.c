@@ -105,10 +105,10 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
     case CMD_NULL:
         break;
     case CMD_CURSOR_DOWN:
-        /* move_cursor_down(list); */
+        pmenu_select_next(ui->queue_menu);
         break;
     case CMD_CURSOR_UP:
-        /* move_cursor_up(list); */
+        pmenu_select_prev(ui->queue_menu);
         break;
     case CMD_CURSOR_PAGE_DOWN:
         /* move_cursor_page_down(list, queue_win); */
@@ -120,13 +120,13 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         /* mpd_run_play_id(mpd->connection, list->selected->id); */
         break;
     case CMD_CURSOR_BOTTOM:
-        ui->queue_menu->selected = ui->queue_menu->bottom_visible;
+        pmenu_select_bottom_visible(ui->queue_menu);
         break;
     case CMD_CURSOR_TOP:
-        ui->queue_menu->selected = ui->queue_menu->top_visible;
+        pmenu_select_top_visible(ui->queue_menu);
         break;
     case CMD_CURSOR_MIDDLE:
-        /* move_cursor_middle(list, queue_win); */
+        pmenu_select_middle_visible(ui->queue_menu);
         break;
     default:
         break;

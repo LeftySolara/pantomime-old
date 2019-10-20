@@ -140,6 +140,8 @@ void set_visible_panel(struct ui *ui, enum ui_panel panel)
 
 void populate_queue_menu(struct ui *ui, struct mpdwrapper *mpd)
 {
+    pmenu_clear(ui->queue_menu);
+
     char *title;
     struct songnode *current = mpd->queue->head;
     while (current) {
@@ -147,6 +149,8 @@ void populate_queue_menu(struct ui *ui, struct mpdwrapper *mpd)
         pmenu_append(ui->queue_menu, title, 0, 0);
         current = current->next;
     }
+
+    pmenu_set_selected(ui->queue_menu, 0);
 
     free(title);
 }

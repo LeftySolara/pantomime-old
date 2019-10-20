@@ -91,6 +91,7 @@ struct pmenu *pmenu_init(WINDOW *win, char *header)
 
     menu->length = 0;
     menu->selected_pos = -1;
+    menu->max_visible = getmaxy(win) - 2;
 
     return menu;
 }
@@ -156,6 +157,128 @@ void pmenu_clear(struct pmenu *menu)
     menu->bottom_visible = NULL;
     menu->length = 0;
     menu->selected_pos = 0;
+}
+
+/**
+ * @brief Sets the item at the specified position as the currently selected item.
+ */
+void pmenu_set_selected(struct pmenu *menu, unsigned int pos)
+{
+    if (pos >= menu->length)
+        return;
+
+    struct pmenu_item *current = menu->head;
+    for (int i = 0; i < pos; ++i)
+        current = current->next;
+
+    menu->selected = current;
+    menu->selected_pos = pos;
+    current->highlight = 1;
+
+    current = current->next;
+    while (current) {
+        current->highlight = 0;
+        current = current->next;
+    }
+}
+
+/**
+ * @brief Selects the previous item in the menu.
+ */
+void pmenu_select_prev(struct pmenu *menu)
+{
+    if (!menu || menu->selected == menu->head)
+        return;
+
+    struct pmenu_item *current = menu->selected;
+    current->highlight = 0;
+    if (current == menu->top_visible) {
+        menu->top_visible = current->prev;
+        pmenu_find_bottom(menu);
+    }
+
+    current = current->prev;
+    current->highlight = 1;
+
+    menu->selected = menu->selected->prev;
+    menu->selected_pos--;
+}
+
+/**
+ * @brief Selects the next item in the menu.
+ */
+void pmenu_select_next(struct pmenu *menu)
+{
+    if (!menu || menu->selected == menu->tail)
+        return;
+
+    struct pmenu_item *current = menu->selected;
+    current->highlight = 0;
+    if (current == menu->bottom_visible && current->next) {
+        menu->top_visible = menu->top_visible->next;
+        pmenu_find_bottom(menu);
+    }
+
+    current = current->next;
+    current->highlight = 1;
+
+    menu->selected = menu->selected->next;
+    menu->selected_pos++;
+}
+
+/**
+ * @brief Selects the first visible item in the menu.
+ */
+void pmenu_select_top_visible(struct pmenu *menu)
+{
+    if (!menu || menu->selected == menu->top_visible)
+        return;
+    
+    struct pmenu_item *current = menu->selected;
+    current->highlight = 0;
+
+    while (current != menu->top_visible) {
+        current = current->prev;
+        menu->selected_pos--;
+    }
+
+    current->highlight = 1;
+    menu->selected = current;
+}
+
+/**
+ * @brief Selects the last visible item in the menu.
+ */
+void pmenu_select_bottom_visible(struct pmenu *menu)
+{
+    if (!menu || menu->selected == menu->bottom_visible)
+        return;
+    
+    struct pmenu_item *current = menu->selected;
+    current->highlight = 0;
+
+    while (current != menu->bottom_visible) {
+        current = current->next;
+        menu->selected_pos++;
+    }
+
+    current->highlight = 1;
+    menu->selected = current;
+}
+
+/**
+ * @brief Selects the item in the middle of the visible portion of the menu.
+ */
+void pmenu_select_middle_visible(struct pmenu *menu)
+{
+    if (!menu || menu->length == 0)
+        return;
+    
+    int midpoint = menu->max_visible / 2;
+
+    pmenu_select_top_visible(menu);
+    for (int i = 0; i < midpoint; ++i)
+        pmenu_select_next(menu);
 }
 
 /**

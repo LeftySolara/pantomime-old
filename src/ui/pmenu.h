@@ -63,6 +63,13 @@ void pmenu_append(struct pmenu *menu, char *item_text, int bold, int highlight);
 
 void pmenu_clear(struct pmenu *menu);
 
+void pmenu_set_selected(struct pmenu *menu, unsigned int pos);
+void pmenu_select_prev(struct pmenu *menu);
+void pmenu_select_next(struct pmenu *menu);
+void pmenu_select_top_visible(struct pmenu *menu);
+void pmenu_select_bottom_visible(struct pmenu *menu);
+void pmenu_select_middle_visible(struct pmenu *menu);
+
 void pmenu_find_bottom(struct pmenu *menu);
 
 void pmenu_item_draw(struct pmenu_item *item, WINDOW *win, unsigned y);
