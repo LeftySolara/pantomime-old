@@ -99,6 +99,7 @@ struct menu *menu_init(WINDOW *win, char *header)
 void menu_free(struct menu *menu)
 {
     menu_clear(menu);
+    free(menu->header);
     free(menu);
 }
 
@@ -126,4 +127,51 @@ void menu_clear(struct menu *menu)
     menu->bottem_visible = NULL;
     menu->length = 0;
     menu->selected_pos = 0;
+}
+
+/**
+ * @brief Draws a menu item on the screen.
+ * 
+ * @param item  The item to draw.
+ * @param win   The window to draw the item on.
+ * @param y     The y-position for drawing the item.
+ */
+void menu_item_draw(struct menu_item *item, WINDOW *win, unsigned y)
+{
+    if (item->bold)
+        wattr_on(win, A_BOLD, 0);
+    if (item->highlight)
+        wattr_on(win, A_STANDOUT, 0);
+
+    mvwprintw(win, y, 0, "%s\n", item->text);
+
+    if (item->highlight)
+        mvwchgat(win, y, 0, -1, A_STANDOUT, 0, NULL);
+    wattr_off(win, A_BOLD, 0);
+    wattr_off(win, A_STANDOUT, 0);
+}
+
+void menu_draw(struct menu *menu)
+{
+    werase(menu->win);
+
+    wattr_on(menu->win, A_BOLD, NULL);
+    mvwprintw(menu->win, 0, 0, menu->header);
+    wattr_off(menu->win, A_BOLD, NULL);
+
+    if (menu->length <= 0)
+        return;
+    if (!menu->selected) {
+        menu->selected = menu->head;
+        menu->selected_pos = 0;
+    }
+
+    int y = 1;
+    struct menu_item *current = menu->top_visible;
+    while (current != menu->bottem_visible->next) {
+        menu_item_draw(current, menu->win, y++);
+        current = current->next;
+    }
+
+    wnoutrefresh(menu->win);
 }

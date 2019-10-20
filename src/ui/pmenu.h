@@ -61,4 +61,7 @@ void menu_free(struct menu *menu);
 
 void menu_clear(struct menu *menu);
 
+void menu_item_draw(struct menu_item *item, WINDOW *win, unsigned y);
+void menu_draw(struct menu *menu);
+
 #endif /* PMENU_H */
