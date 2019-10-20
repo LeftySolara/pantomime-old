@@ -79,7 +79,9 @@ struct pmenu *pmenu_init(WINDOW *win, char *header)
     struct pmenu *menu = malloc(sizeof(*menu));
 
     menu->win = win;
+
     menu->header = malloc((strlen(header) + 1) * sizeof(char));
+    sprintf(menu->header, "%s\n", header);
     
     menu->head = NULL;
     menu->tail = NULL;
