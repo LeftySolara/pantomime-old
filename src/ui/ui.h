@@ -51,4 +51,6 @@ void ui_free(struct ui *ui);
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd);
 void set_visible_panel(struct ui *ui, enum ui_panel panel);
 
+void populate_queue_menu(struct ui *ui, struct mpdwrapper *mpd);
+
 #endif /* UI_H */

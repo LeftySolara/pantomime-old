@@ -95,6 +95,9 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     ui->queue_menu = pmenu_init(panel_window(ui->panels[QUEUE]), "Test header");
     ui->status_bar = status_bar_init();
 
+    populate_queue_menu(ui, mpd);
+    pmenu_find_bottom(ui->queue_menu);
+
     return ui;
 }
 
@@ -133,4 +136,17 @@ void set_visible_panel(struct ui *ui, enum ui_panel panel)
 {
     ui->visible_panel = panel;
     top_panel(ui->panels[panel]);
+}
+
+void populate_queue_menu(struct ui *ui, struct mpdwrapper *mpd)
+{
+    char *title;
+    struct songnode *current = mpd->queue->head;
+    while (current) {
+        title = mpdwrapper_get_song_tag(current->song, MPD_TAG_TITLE);
+        pmenu_append(ui->queue_menu, title, 0, 0);
+        current = current->next;
+    }
+
+    free(title);
 }
