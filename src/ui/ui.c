@@ -20,6 +20,7 @@
 #include "ui.h"
 
 #include "panel_help.h"
+#include "queue.h"
 #include "statusbar.h"
 
 #include <locale.h>
@@ -92,7 +93,8 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     ui->visible_panel = QUEUE;
     top_panel(ui->panels[ui->visible_panel]);
 
-    ui->queue_menu = pmenu_init(panel_window(ui->panels[QUEUE]), "Test header");
+    char *queue_header = create_queue_header(panel_window(ui->panels[QUEUE]));
+    ui->queue_menu = pmenu_init(panel_window(ui->panels[QUEUE]), queue_header);
     ui->status_bar = status_bar_init();
 
     populate_queue_menu(ui, mpd);
