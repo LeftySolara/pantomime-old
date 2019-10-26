@@ -161,6 +161,7 @@ void playlist_populate(struct playlist *playlist, struct songlist *songlist)
     playlist->idx_selected = 0;
     playlist->selected = playlist->head;
     playlist->top_visible = playlist->head;
+    playlist->selected->highlight = 1;
     playlist_find_bottom(playlist);
 }
 
