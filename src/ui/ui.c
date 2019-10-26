@@ -93,19 +93,16 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     ui->visible_panel = QUEUE;
     top_panel(ui->panels[ui->visible_panel]);
 
-    char *queue_header = create_queue_header(panel_window(ui->panels[QUEUE]));
-    ui->queue_menu = pmenu_init(panel_window(ui->panels[QUEUE]), queue_header);
+    ui->queue = playlist_init(panel_window(ui->panels[QUEUE]));
     ui->status_bar = status_bar_init();
 
-    populate_queue_menu(ui, mpd);
-    pmenu_find_bottom(ui->queue_menu);
-
+    playlist_populate(ui->queue, mpd->queue);
     return ui;
 }
 
 void ui_free(struct ui *ui)
 {
-    pmenu_free(ui->queue_menu);
+    playlist_free(ui->queue);
     status_bar_free(ui->status_bar);
     free(ui);
 }
@@ -123,7 +120,7 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
         break;
     case QUEUE:
         current_song_id = get_current_song_id(mpd);
-        pmenu_draw(ui->queue_menu);
+        playlist_draw(ui->queue, current_song_id);
         break;
     default:
         break;
@@ -138,21 +135,4 @@ void set_visible_panel(struct ui *ui, enum ui_panel panel)
 {
     ui->visible_panel = panel;
     top_panel(ui->panels[panel]);
-}
-
-void populate_queue_menu(struct ui *ui, struct mpdwrapper *mpd)
-{
-    pmenu_clear(ui->queue_menu);
-
-    char *title;
-    struct songnode *current = mpd->queue->head;
-    while (current) {
-        title = mpdwrapper_get_song_tag(current->song, MPD_TAG_TITLE);
-        pmenu_append(ui->queue_menu, title, 0, 0);
-        current = current->next;
-    }
-
-    pmenu_set_selected(ui->queue_menu, 0);
-
-    free(title);
 }

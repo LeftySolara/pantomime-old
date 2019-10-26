@@ -105,28 +105,28 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
     case CMD_NULL:
         break;
     case CMD_CURSOR_DOWN:
-        pmenu_select_next(ui->queue_menu);
+        playlist_select_next(ui->queue);
         break;
     case CMD_CURSOR_UP:
-        pmenu_select_prev(ui->queue_menu);
+        playlist_select_prev(ui->queue);
         break;
     case CMD_CURSOR_PAGE_DOWN:
-        pmenu_scroll_page_down(ui->queue_menu);
+        playlist_scroll_page_down(ui->queue);
         break;
     case CMD_CURSOR_PAGE_UP:
-        pmenu_scroll_page_up(ui->queue_menu);
+        playlist_scroll_page_up(ui->queue);
         break;
     case CMD_PLAY:
-        mpd_run_play_pos(mpd->connection, ui->queue_menu->selected_pos);
+        mpd_run_play_pos(mpd->connection, ui->queue->idx_selected);
         break;
     case CMD_CURSOR_BOTTOM:
-        pmenu_select_bottom_visible(ui->queue_menu);
+        playlist_select_bottom_visible(ui->queue);
         break;
     case CMD_CURSOR_TOP:
-        pmenu_select_top_visible(ui->queue_menu);
+        playlist_select_top_visible(ui->queue);
         break;
     case CMD_CURSOR_MIDDLE:
-        pmenu_select_middle_visible(ui->queue_menu);
+        playlist_select_middle_visible(ui->queue);
         break;
     default:
         break;

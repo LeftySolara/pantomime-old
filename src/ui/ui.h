@@ -20,7 +20,7 @@
 #ifndef UI_H
 #define UI_H
 
-#include "pmenu.h"
+#include "playlist.h"
 #include "../mpdwrapper/mpdwrapper.h"
 
 #include <ncurses.h>
@@ -32,7 +32,7 @@ struct ui {
     PANEL **panels;
     enum ui_panel visible_panel; /* Only one panel should be visible at a time. */
 
-    struct pmenu *queue_menu;
+    struct playlist *queue;
     struct status_bar *status_bar;
 
     int maxx;
@@ -50,7 +50,5 @@ void ui_free(struct ui *ui);
 
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd);
 void set_visible_panel(struct ui *ui, enum ui_panel panel);
-
-void populate_queue_menu(struct ui *ui, struct mpdwrapper *mpd);
 
 #endif /* UI_H */
