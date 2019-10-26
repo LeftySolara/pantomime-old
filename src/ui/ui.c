@@ -20,7 +20,6 @@
 #include "ui.h"
 
 #include "panel_help.h"
-#include "queue.h"
 #include "statusbar.h"
 
 #include <locale.h>
