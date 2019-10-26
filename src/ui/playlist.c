@@ -375,9 +375,9 @@ void playlist_item_draw(struct playlist_item *item, WINDOW *win, unsigned y, uns
     if (item->highlight)
         wattr_on(win, A_STANDOUT, 0);
 
-    mvwprintw(win, y, 0, "%s\n", item->artist);
-    mvwprintw(win, y, field_width + 1, "%s\n", item->title);
-    mvwprintw(win, y, (field_width * 2) + 1, "%s\n", item->album);
+    mvwprintw(win, y, 0, "%.*s\n", field_width - 2, item->artist);
+    mvwprintw(win, y, field_width + 1, "%.*s\n", field_width - 2, item->title);
+    mvwprintw(win, y, (field_width * 2) + 1, "%.*s\n", field_width - 2, item->album);
     mvwprintw(win, y, maxx - 8, "%d:%02d\n", item->time / 60, item->time % 60);
 
     if (item->highlight)
