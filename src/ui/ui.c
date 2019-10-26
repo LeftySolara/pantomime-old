@@ -118,7 +118,8 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
         draw_help_screen(win);
         break;
     case QUEUE:
-        current_song_id = get_current_song_id(mpd);
+        current_song_id = (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE) ?
+                          get_current_song_id(mpd) : 0;
         playlist_draw(ui->queue, current_song_id);
         break;
     default:
