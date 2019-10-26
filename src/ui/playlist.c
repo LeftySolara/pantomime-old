@@ -398,8 +398,8 @@ void playlist_deaw_header(struct playlist *playlist, unsigned field_width)
 
     wattr_on(playlist->win, A_BOLD, NULL);
     mvwprintw(playlist->win, 0, 0, "Artist\n");
-    mvwprintw(playlist->win, 0, field_width + 1, " Title\n");
-    mvwprintw(playlist->win, 0, (field_width * 2) + 1, " Album\n");
+    mvwprintw(playlist->win, 0, field_width, " Title\n");
+    mvwprintw(playlist->win, 0, (field_width * 2), " Album\n");
     mvwprintw(playlist->win, 0, maxx - 9, " Length\n");
     wattr_off(playlist->win, A_BOLD, NULL);
 }
