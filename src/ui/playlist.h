@@ -32,6 +32,7 @@ struct playlist_item {
     char *title;    /**< The song's title */
     char *album;    /**< The song's album */
     int time;       /**< Length of the song in seconds */
+    unsigned id;    /**< The MPD ID of the song. */
 
     int bold;       /**< Whether to print this item's text in bold */
     int highlight;  /**< Whether to highlight this item after printing */
@@ -55,7 +56,7 @@ struct playlist {
     int max_visible;    /**< Max number of items that can be displayed at the current window size */
 };
 
-struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time);
+struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time, unsigned id);
 void playlist_item_free(struct playlist_item *item);
 
 struct playlist *playlist_init(WINDOW *win);
@@ -77,5 +78,9 @@ void playlist_scroll_page_up(struct playlist *playlist);
 void playlist_scroll_page_down(struct playlist *playlist);
 
 void playlist_find_bottom(struct playlist *playlist);
+
+void playlist_item_draw(struct playlist_item *item, WINDOW *win, unsigned y, unsigned field_width);
+void playlist_deaw_header(struct playlist *playlist, unsigned field_width);
+void playlist_draw(struct playlist *playlist, unsigned playing_id);
 
 #endif /* PLAYLIST_H */

@@ -32,9 +32,10 @@
  * @param title  The song's title
  * @param album  The song's album
  * @param time   The song's length in seconds
+ * @param id     The song's MPD id
  * @return       Pointer to a playlist item, or NULL on error.
  */
-struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time)
+struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time, unsigned id)
 {
     struct playlist_item *item = malloc(sizeof(*item));
     if (!item)
@@ -44,6 +45,7 @@ struct playlist_item *playlist_item_init(char *artist, char *title, char *album,
     item->title = title;
     item->album = album;
     item->time = time;
+    item->id = id;
 
     item->bold = 0;
     item->highlight = 0;
@@ -140,6 +142,7 @@ void playlist_populate(struct playlist *playlist, struct songlist *songlist)
     char *title;
     char *album;
     int time;
+    unsigned id;
 
     struct songnode *current = songlist->head;
     while (current) {
@@ -147,8 +150,9 @@ void playlist_populate(struct playlist *playlist, struct songlist *songlist)
         title = mpdwrapper_get_song_tag(current->song, MPD_TAG_TITLE);
         album = mpdwrapper_get_song_tag(current->song, MPD_TAG_ALBUM);
         time = mpd_song_get_duration(current->song);
+        id = mpd_song_get_id(current->song);
 
-        item = playlist_item_init(artist, title, album, time);
+        item = playlist_item_init(artist, title, album, time, id);
         playlist_append(playlist, item);
 
         current = current->next;
@@ -351,4 +355,86 @@ void playlist_find_bottom(struct playlist *playlist)
         current = current->next;
     }
     playlist->bottom_visible = current;
+}
+
+/**
+ * @brief Draws a playlist item on the specified window.
+ * 
+ * @param item          The item to draw
+ * @param win           The window to draw on
+ * @param y             The y-position for drawing
+ * @param field_width   The number of characters in each column
+ */
+void playlist_item_draw(struct playlist_item *item, WINDOW *win, unsigned y, unsigned field_width)
+{
+    int maxx = getmaxx(win);
+
+    if (item->bold)
+        wattr_on(win, A_BOLD, 0);
+    if (item->highlight)
+        wattr_on(win, A_STANDOUT, 0);
+
+    mvwprintw(win, y, 0, "%s\n", item->artist);
+    mvwprintw(win, y, field_width + 1, "%s\n", item->title);
+    mvwprintw(win, y, (field_width * 2) + 1, "%s\n", item->album);
+    mvwprintw(win, y, maxx - 8, "%d:%02d\n", item->time / 60, item->time % 60);
+
+    if (item->highlight)
+        mvwchgat(win, y, 0, -1, A_STANDOUT, 0, NULL);
+    wattr_off(win, A_BOLD, 0);
+    wattr_off(win, A_STANDOUT, 0);
+}
+
+/**
+ * @brief Draws the playlist header.
+ * 
+ * @param playlist      The playlist whose header to draw
+ * @param field_width   The number of characters in each column
+ */
+void playlist_deaw_header(struct playlist *playlist, unsigned field_width)
+{
+    int maxx = getmaxx(playlist->win);
+
+    wattr_on(playlist->win, A_BOLD, NULL);
+    mvwprintw(playlist->win, 0, 0, "Artist\n");
+    mvwprintw(playlist->win, 0, field_width + 1, " Title\n");
+    mvwprintw(playlist->win, 0, (field_width * 2) + 1, " Album\n");
+    mvwprintw(playlist->win, 0, maxx - 9, " Length\n");
+    wattr_off(playlist->win, A_BOLD, NULL);
+}
+
+/**
+ * @brief Draws a playlist on the screen.
+ * 
+ * @param playlist      The playlist to draw
+ * @param playing_id    The MPD id of the currently playing song
+ */
+void playlist_draw(struct playlist *playlist, unsigned playing_id)
+{
+    werase(playlist->win);
+
+    int maxx = getmaxx(playlist->win);
+    int field_width = (maxx - 8) / 3;
+    playlist_deaw_header(playlist, field_width);
+
+    if (playlist->length <= 0)
+        return;
+    if (!playlist->selected)
+        playlist_select_top_visible(playlist);
+
+    struct playlist_item *current = playlist->top_visible;
+    playlist_find_bottom(playlist);
+
+    int y = 1;
+    while (current != playlist->bottom_visible->next) {
+        if (current->id == playing_id)
+            current->bold = 1;
+        else
+            current->bold = 0;
+        
+        playlist_item_draw(current, playlist->win, y++, field_width);
+        current = current->next;
+    }
+
+    wnoutrefresh(playlist->win);
 }
