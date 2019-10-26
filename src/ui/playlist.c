@@ -184,6 +184,128 @@ void playlist_clear(struct playlist *playlist)
 }
 
 /**
+ * @brief Set the item at the specified index as the currently selected item.
+ */
+void playlist_set_selected(struct playlist *playlist, int idx)
+{
+    if (idx < 0 || idx >= playlist->length)
+        return;
+    
+    struct playlist_item *current = playlist->head;
+    for (int i = 0; i < idx; ++i)
+        current = current->next;
+
+    playlist->selected = current;
+    playlist->idx_selected = idx;
+    current->highlight = 1;
+
+    current = current->next;
+    while (current) {
+        current->highlight = 0;
+        current = current->next;
+    }
+}
+
+/**
+ * @brief Selects the previous item in the playlist.
+ */
+void playlist_select_prev(struct playlist *playlist)
+{
+    if (!playlist || playlist->selected == playlist->head)
+        return;
+
+    struct playlist_item *current = playlist->selected;
+    current->highlight = 0;
+    if (current == playlist->top_visible) {
+        playlist->top_visible = current->prev;
+        playlist_find_bottom(playlist);
+    }
+
+    current = current->prev;
+    current->highlight = 1;
+
+    playlist->selected = playlist->selected->prev;
+    playlist->idx_selected--;
+}
+
+/**
+ * @brief Selects the next item in the playlist.
+ */
+void playlist_select_next(struct playlist *playlist)
+{
+    if (!playlist || playlist->selected == playlist->tail)
+        return;
+
+    struct playlist_item *current = playlist->selected;
+    current->highlight = 0;
+    if (current == playlist->bottom_visible && current->next) {
+        playlist->top_visible = playlist->top_visible->next;
+        playlist_find_bottom(playlist);
+    }
+
+    current = current->next;
+    current->highlight = 1;
+
+    playlist->selected = playlist->selected->next;
+    playlist->idx_selected++;
+}
+
+/**
+ * @brief Selects the first visible item in the playlist.
+ */
+void playlist_select_top_visible(struct playlist *playlist)
+{
+    if (!playlist || playlist->selected == playlist->top_visible)
+        return;
+
+    struct playlist_item *current = playlist->selected;
+    current->highlight = 0;
+
+    while (current != playlist->top_visible) {
+        current = current->prev;
+        playlist->idx_selected--;
+    }
+
+    current->highlight = 1;
+    playlist->selected = current;
+}
+
+/**
+ * @brief Selects the last visible item in the playlist.
+ */
+void playlist_select_bottom_visible(struct playlist *playlist)
+{
+    if (!playlist || playlist->selected == playlist->bottom_visible)
+        return;
+    
+    struct playlist_item *current = playlist->selected;
+    current->highlight = 0;
+
+    while (current != playlist->bottom_visible) {
+        current = current->next;
+        playlist->idx_selected++;
+    }
+
+    current->highlight = 1;
+    playlist->selected = current;
+}
+
+/**
+ * @brief Selects the item in the middle of the visible playlist items.
+ */
+void playlist_select_middle_visible(struct playlist *playlist)
+{
+    if (!playlist || playlist->length == 0)
+        return;
+
+    int midpoint = playlist->max_visible / 2;
+
+    playlist_select_top_visible(playlist);
+    for (int i = 0; i < midpoint; ++i)
+        playlist_select_next(playlist);
+}
+
+/**
  * @brief Calculates which playlist item is the bottommost visible.
  */
 void playlist_find_bottom(struct playlist *playlist)

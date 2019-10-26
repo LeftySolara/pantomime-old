@@ -66,6 +66,13 @@ void playlist_append(struct playlist *playlist, struct playlist_item *item);
 void playlist_populate(struct playlist *playlist, struct songlist *songlist);
 void playlist_clear(struct playlist *playlist);
 
+void playlist_set_selected(struct playlist *playlist, int idx);
+void playlist_select_prev(struct playlist *playlist);
+void playlist_select_next(struct playlist *playlist);
+void playlist_select_top_visible(struct playlist *playlist);
+void playlist_select_bottom_visible(struct playlist *playlist);
+void playlist_select_middle_visible(struct playlist *playlist);
+
 void playlist_find_bottom(struct playlist *playlist);
 
 #endif /* PLAYLIST_H */
