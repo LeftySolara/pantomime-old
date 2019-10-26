@@ -306,6 +306,35 @@ void playlist_select_middle_visible(struct playlist *playlist)
 }
 
 /**
+ * @brief Scrolls up one page in the playlist.
+ */
+void playlist_scroll_page_up(struct playlist *playlist)
+{
+    if (!playlist || playlist->length == 0)
+        return;
+
+    for (int i = 0; i <= playlist->max_visible; ++i)
+        playlist_select_prev(playlist);
+}
+
+/**
+ * @brief Scrolls down one page in the playlist.
+ */
+void playlist_scroll_page_down(struct playlist *playlist)
+{
+    if (!playlist || playlist->length == 0)
+        return;
+
+    playlist_select_bottom_visible(playlist);
+    if (!playlist->selected->next)
+        return;
+
+    playlist_select_next(playlist);
+    playlist->top_visible = playlist->selected;
+    playlist_find_bottom(playlist);
+}
+
+/**
  * @brief Calculates which playlist item is the bottommost visible.
  */
 void playlist_find_bottom(struct playlist *playlist)

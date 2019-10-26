@@ -73,6 +73,9 @@ void playlist_select_top_visible(struct playlist *playlist);
 void playlist_select_bottom_visible(struct playlist *playlist);
 void playlist_select_middle_visible(struct playlist *playlist);
 
+void playlist_scroll_page_up(struct playlist *playlist);
+void playlist_scroll_page_down(struct playlist *playlist);
+
 void playlist_find_bottom(struct playlist *playlist);
 
 #endif /* PLAYLIST_H */
