@@ -93,7 +93,7 @@ struct playlist *playlist_init(WINDOW *win)
     
     playlist->length = 0;
     playlist->idx_selected = -1;
-    playlist->max_visible = getmaxx(win) - 1; /* Account for header row */
+    playlist->max_visible = getmaxy(win) - 1; /* Account for header row */
 
     return playlist;
 }
