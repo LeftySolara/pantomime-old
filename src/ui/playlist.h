@@ -78,6 +78,7 @@ void playlist_scroll_page_up(struct playlist *playlist);
 void playlist_scroll_page_down(struct playlist *playlist);
 
 void playlist_find_bottom(struct playlist *playlist);
+int playlist_find_cursor_pos(struct playlist *playlist);
 
 void playlist_item_draw(struct playlist_item *item, WINDOW *win, unsigned y, unsigned field_width);
 void playlist_deaw_header(struct playlist *playlist, unsigned field_width);

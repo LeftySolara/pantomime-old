@@ -318,8 +318,19 @@ void playlist_scroll_page_up(struct playlist *playlist)
     if (!playlist || playlist->length == 0)
         return;
 
-    for (int i = 0; i <= playlist->max_visible; ++i)
+    /* For restoring the cursor position, if necessary. */
+    int y_pos = playlist_find_cursor_pos(playlist);
+
+    playlist_select_top_visible(playlist);
+    if (!playlist->selected->prev)
+        return;
+
+    for (int i = 0; i <= playlist->max_visible - 1; ++i)
         playlist_select_prev(playlist);
+
+    /* Restore cursor position */
+    for (int i = 0; i < y_pos; ++i)
+        playlist_select_next(playlist);
 }
 
 /**
@@ -330,6 +341,9 @@ void playlist_scroll_page_down(struct playlist *playlist)
     if (!playlist || playlist->length == 0)
         return;
 
+    /* For restoring cursor position, if necessary. */
+    int y_pos = playlist_find_cursor_pos(playlist);
+
     playlist_select_bottom_visible(playlist);
     if (!playlist->selected->next)
         return;
@@ -337,6 +351,11 @@ void playlist_scroll_page_down(struct playlist *playlist)
     playlist_select_next(playlist);
     playlist->top_visible = playlist->selected;
     playlist_find_bottom(playlist);
+
+    /* Restore cursor position */
+    playlist_select_top_visible(playlist);
+    for (int i = 0; i < y_pos; ++i)
+        playlist_select_next(playlist);
 }
 
 /**
@@ -356,6 +375,25 @@ void playlist_find_bottom(struct playlist *playlist)
         current = current->next;
     }
     playlist->bottom_visible = current;
+}
+
+/**
+ * @brief Finds the y-position of the cursor on-screen.
+ */
+int playlist_find_cursor_pos(struct playlist *playlist)
+{
+    if (!playlist->top_visible)
+        return -1;
+
+    struct playlist_item *current = playlist->top_visible;
+    int i = 0;
+
+    while (current != playlist->selected) {
+        ++i;
+        current = current->next;
+    }
+
+    return i;
 }
 
 /**
