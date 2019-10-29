@@ -18,6 +18,25 @@
  ******************************************************************************/
 
 #include "command_queue.h"
+#include "../ui/statusbar.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+void queue_remove_selected(struct mpdwrapper *mpd, struct ui *ui)
+{
+    char *title = ui->queue->selected->title;
+    int len_msg = strlen(title) + strlen("Removed '' from play queue") + 1;
+
+    char *msg = malloc(len_msg * sizeof(char));
+    snprintf(msg, len_msg, "Removed '%s' from play queue", title);
+
+    mpdwrapper_delete_from_queue(mpd, ui->queue->idx_selected);
+    playlist_remove_selected(ui->queue);
+    set_notification(ui->status_bar, msg, 3);
+
+    free(msg);
+}
 
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
 {
@@ -47,6 +66,9 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         break;
     case CMD_CURSOR_MIDDLE:
         playlist_select_middle_visible(ui->queue);
+        break;
+    case CMD_DELETE:
+        queue_remove_selected(mpd, ui);
         break;
     default:
         break;

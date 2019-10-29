@@ -92,6 +92,17 @@ void mpdwrapper_fetch_queue(struct mpdwrapper *mpd)
 }
 
 /**
+ * @brief Removes a song from the play queue. Does not update the queue version.
+ * 
+ * @param mpd The mpd connection
+ * @param pos The position of the song in the queue
+ */
+void mpdwrapper_delete_from_queue(struct mpdwrapper *mpd, unsigned pos)
+{
+    mpd_run_delete(mpd->connection, pos);
+}
+
+/**
  * @brief Fetches the current state from the MPD server.
  * 
  * @param mpd Pointer to an mpdwrapper struct.

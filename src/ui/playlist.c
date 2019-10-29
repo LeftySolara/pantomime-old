@@ -133,6 +133,65 @@ void playlist_append(struct playlist *playlist, struct playlist_item *item)
 }
 
 /**
+ * @brief Removes the currently selected song from the playlist.
+ * 
+ * This function removes the selected song's entry from the playlist display.
+ * This is meant to be used alongside mpdwrapper_delete_from_queue(), which
+ * tells the MPD connection to remove the song on the back-end.
+ * 
+ * @return True on success, or false on error
+ */
+bool playlist_remove_selected(struct playlist *playlist)
+{
+    if (!playlist->head)
+        return false;
+
+    if (playlist->selected == playlist->head) {
+        if (!playlist->head->next) /* Only one song in the list */
+            playlist_clear(playlist);
+        else {
+            struct playlist_item *current = playlist->head;
+            playlist_select_next(playlist);
+            playlist->top_visible = playlist->selected;
+            playlist_find_bottom(playlist);
+            playlist->head->prev = NULL;
+
+            playlist_item_free(current);
+            playlist->head = playlist->selected;
+        }
+        playlist->length--;
+        playlist->idx_selected = 0;
+    }
+    else {
+        struct playlist_item *current = playlist->selected;
+
+        if (current->next)
+            playlist_select_next(playlist);
+        else
+            playlist_select_prev(playlist);
+
+        if (current == playlist->top_visible)
+            playlist->top_visible = playlist->selected;
+        if (current == playlist->tail) {
+            playlist->tail = playlist->tail->prev;
+            playlist->idx_selected++; /* Fixes weird off-by-one error */
+        }
+
+        if (current->prev)
+            current->prev->next = current->next;
+        if (current->next)
+            current->next->prev = current->prev;
+
+        playlist_item_free(current);
+        playlist->length--;
+        playlist->idx_selected--;
+        playlist_find_bottom(playlist);
+    }
+
+    return true;
+}
+
+/**
  * @brief Populates the playlist with info from an MPD songlist.
  */
 void playlist_populate(struct playlist *playlist, struct songlist *songlist)

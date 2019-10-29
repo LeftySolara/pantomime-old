@@ -63,6 +63,7 @@ struct playlist *playlist_init(WINDOW *win);
 void playlist_free(struct playlist *playlist);
 
 void playlist_append(struct playlist *playlist, struct playlist_item *item);
+bool playlist_remove_selected(struct playlist *playlist);
 
 void playlist_populate(struct playlist *playlist, struct songlist *songlist);
 void playlist_clear(struct playlist *playlist);

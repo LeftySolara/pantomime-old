@@ -56,6 +56,7 @@ static enum command_type queue_panel_commands[] = {
     CMD_SINGLE,
     CMD_CONSUME,
     CMD_CROSSFADE,
+    CMD_DELETE,
     CMD_VOL_DOWN,
     CMD_VOL_UP
 };

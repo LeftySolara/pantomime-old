@@ -82,6 +82,9 @@ static struct command commands[] = {
     {CMD_VOL_UP, {'l', KEY_RIGHT, 0}, "Volume up",
     "Increase the playback volume"},
 
+    {CMD_DELETE, {'d', 0, 0}, "Delete",
+    "Deletes a song from the playlist"},
+
     {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help",
     "Show the help screen"},
 
