@@ -79,6 +79,31 @@ void list_view_initialize(struct list_view *this, int height, int width)
 
 void list_view_free(struct list_view *this)
 {
-     /* list_view_clear(this);  Not implemented yet */
+     list_view_clear(this);
      free(this);
+}
+
+/**
+ * @brief Removes all items from a list view.
+ * 
+ * @param this The list view to clear.
+ */
+void list_view_clear(struct list_view *this)
+{
+    struct list_view_item *current = this->head;
+    struct list_view_item *next;
+
+    while (current) {
+        next = current->next;
+        list_view_item_free(current);
+        current = next;
+    }
+
+    this->head = NULL;
+    this->tail = NULL;
+    this->selected = NULL;
+    this->top_visible = NULL;
+    this->bottom_visible = NULL;
+    this->item_count = 0;
+    this->idx_selected = -1;
 }

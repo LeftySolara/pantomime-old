@@ -25,4 +25,6 @@ struct list_view;
 struct list_view *list_view_new(int height, int width);
 void list_view_free(struct list_view *this);
 
+void list_view_clear(struct list_view *this);
+
 #endif /* LIST_VIEW_H */
