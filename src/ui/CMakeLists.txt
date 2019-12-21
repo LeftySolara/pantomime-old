@@ -4,4 +4,5 @@ add_library(ui STATIC
     playlist.c
     panel_help.c
     views/list_view.c
+    views/playlist_view.c
 )
