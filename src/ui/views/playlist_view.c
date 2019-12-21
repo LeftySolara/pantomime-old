@@ -34,7 +34,7 @@ struct playlist_view_item *playlist_view_item_new(char *artist, char *title, cha
 
 void playlist_view_item_initialize(struct playlist_view_item *this, char *artist, char *title, char *album, int time, unsigned id)
 {
-    list_view_item_initialize(this, NULL);
+    list_view_item_initialize((struct list_view_item *)this, NULL);
     this->artist = artist;
     this->title = title;
     this->album = album;
@@ -57,7 +57,7 @@ struct playlist_view *playlist_view_new(int height, int width)
 {
     struct playlist_view *view = malloc(sizeof(*view));
     if (!view)
-        return;
+        return NULL;
 
     playlist_view_initialize(view, height, width);
 
@@ -66,7 +66,7 @@ struct playlist_view *playlist_view_new(int height, int width)
 
 void playlist_view_initialize(struct playlist_view *this, int height, int width)
 {
-    list_view_initialize(this, height, width);
+    list_view_initialize((struct list_view *)this, height, width);
 }
 
 void playlist_view_free(struct playlist_view *this)
