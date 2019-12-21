@@ -51,6 +51,28 @@ struct list_view {
     int item_count;     /**< The number of items in the list. */
     int idx_selected;   /**< The index of the currently selected item. */
     int max_visible;    /**< Max number of items that can be displayed with the current window dimensions. */
+
+    struct list_view_ops *lv_ops;
+};
+
+struct list_view_ops {
+    void (*lv_append)(struct list_view *, char *);
+
+    void (*lv_remove_selected)(struct list_view *);
+    void (*lv_remove_at)(struct list_view *, int);
+    void (*lv_clear)(struct list_view *);
+
+    void (*lv_select)(struct list_view *, int);
+    void (*lv_select_prev)(struct list_view *);
+    void (*lv_select_next)(struct list_view *);
+    void (*lv_select_top_visible)(struct list_view *);
+    void (*lv_select_bottom_visible)(struct list_view *);
+    void (*lv_select_middle_visible)(struct list_view *);
+
+    void (*lv_scroll_page_up)(struct list_view *);
+    void (*lv_scroll_page_down)(struct list_view *);
+
+    void (*lv_draw)(struct list_view *);
 };
 
 

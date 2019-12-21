@@ -75,6 +75,20 @@ void list_view_initialize(struct list_view *this, int height, int width)
     this->item_count = 0;
     this->idx_selected = -1;
     this->max_visible = getmaxy(this->win) - 1;
+
+    this->lv_ops->lv_append = &list_view_append;
+    this->lv_ops->lv_remove_selected = &list_view_remove_selected;
+    this->lv_ops->lv_remove_at = &list_view_remove_at;
+    this->lv_ops->lv_clear = &list_view_clear;
+    this->lv_ops->lv_select = &list_view_select;
+    this->lv_ops->lv_select_prev = &list_view_select_prev;
+    this->lv_ops->lv_select_next = &list_view_select_next;
+    this->lv_ops->lv_select_top_visible = &list_view_select_top_visible;
+    this->lv_ops->lv_select_bottom_visible = &list_view_select_bottom_visible;
+    this->lv_ops->lv_select_middle_visible = &list_view_select_middle_visible;
+    this->lv_ops->lv_scroll_page_up = &list_view_scroll_page_up;
+    this->lv_ops->lv_scroll_page_down = &list_view_scroll_page_down;
+    this->lv_ops->lv_draw = &list_view_draw;
 }
 
 void list_view_free(struct list_view *this)
@@ -82,6 +96,11 @@ void list_view_free(struct list_view *this)
      list_view_clear(this);
      free(this);
 }
+
+void list_view_append(struct list_view *this, char *text) {}
+
+void list_view_remove_selected(struct list_view *this) {}
+void list_view_remove_at(struct list_view *this, int index) {}
 
 /**
  * @brief Removes all items from a list view.
@@ -107,3 +126,15 @@ void list_view_clear(struct list_view *this)
     this->item_count = 0;
     this->idx_selected = -1;
 }
+
+void list_view_select(struct list_view *this, int index) {}
+void list_view_select_prev(struct list_view *this) {}
+void list_view_select_next(struct list_view *this) {}
+void list_view_select_top_visible(struct list_view *this) {}
+void list_view_select_bottom_visible(struct list_view *this) {}
+void list_view_select_middle_visible(struct list_view *this) {}
+
+void list_view_scroll_page_up(struct list_view *this) {}
+void list_view_scroll_page_down(struct list_view *this) {}
+
+void list_view_draw(struct list_view *this) {}

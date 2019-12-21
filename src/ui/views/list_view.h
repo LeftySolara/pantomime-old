@@ -25,6 +25,22 @@ struct list_view;
 struct list_view *list_view_new(int height, int width);
 void list_view_free(struct list_view *this);
 
+void list_view_append(struct list_view *this, char *text);
+
+void list_view_remove_selected(struct list_view *this);
+void list_view_remove_at(struct list_view *this, int index);
 void list_view_clear(struct list_view *this);
+
+void list_view_select(struct list_view *this, int index);
+void list_view_select_prev(struct list_view *this);
+void list_view_select_next(struct list_view *this);
+void list_view_select_top_visible(struct list_view *this);
+void list_view_select_bottom_visible(struct list_view *this);
+void list_view_select_middle_visible(struct list_view *this);
+
+void list_view_scroll_page_up(struct list_view *this);
+void list_view_scroll_page_down(struct list_view *this);
+
+void list_view_draw(struct list_view *this);
 
 #endif /* LIST_VIEW_H */
