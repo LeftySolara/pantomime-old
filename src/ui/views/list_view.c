@@ -97,7 +97,29 @@ void list_view_free(struct list_view *this)
      free(this);
 }
 
-void list_view_append(struct list_view *this, char *text) {}
+void list_view_append(struct list_view *this, char *text)
+{
+    if (!this || !text)
+        return;
+
+    struct list_view_item *item = list_view_item_new(text);
+
+    if (!this->head) {
+        this->head = item;
+        this->selected = item;
+        this->top_visible = item;
+        this->bottom_visible = item;
+        this->idx_selected = 0;
+    }
+    else {
+        struct list_view_item *tmp = this->tail;
+        tmp->next = item;
+        item->prev = tmp;
+    }
+
+    this->tail = item;
+    this->item_count++;
+}
 
 void list_view_remove_selected(struct list_view *this) {}
 void list_view_remove_at(struct list_view *this, int index) {}
