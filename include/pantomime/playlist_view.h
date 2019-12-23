@@ -1,5 +1,5 @@
 /*******************************************************************************
- * playlist_view_internal.h
+ * playlist_view.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,31 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef PLAYLIST_VIEW_INTERNAL_H
-#define PLAYLIST_VIEW_INTERNAL_H
+#ifndef PLAYLIST_VIEW_H
+#define PLAYLIST_VIEW_H
 
-#include "pantomime/playlist_view.h"
-#include "list_view.h"
+struct playlist_view;
 
-
-struct playlist_view_item {
-    struct list_view_item base;
-
-    char *artist;   /* The song's artist. */
-    char *title;    /* The song's title. */
-    char *album;    /* The song's album. */
-    int time;       /* Length of the song in seconds. */
-    unsigned id;    /* The MPD ID of the song. */
-};
-
-struct playlist_view {
-    struct list_view base;
-};
-
-struct playlist_view_item *playlist_view_item_new(char *artist, char *title, char *album, int time, unsigned id);
-void playlist_view_item_initialize(struct playlist_view_item *this, char *artist, char *title, char *album, int time, unsigned id);
-void playlist_view_item_free(struct playlist_view_item *this);
-
-void playlist_view_initialize(struct playlist_view *this, int height, int width);
+struct playlist_view *playlist_view_new(int height, int width);
+void playlist_view_free(struct playlist_view *this);
 
 #endif

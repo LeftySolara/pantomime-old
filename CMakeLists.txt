@@ -20,6 +20,8 @@ set(CURSES_USE_NCURSES TRUE)
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
 enable_testing()
 add_subdirectory(src)
 add_subdirectory(test)

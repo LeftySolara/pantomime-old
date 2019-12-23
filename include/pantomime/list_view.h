@@ -1,5 +1,5 @@
 /*******************************************************************************
- * playlist_view_internal.h
+ * list_view.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,31 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef PLAYLIST_VIEW_INTERNAL_H
-#define PLAYLIST_VIEW_INTERNAL_H
+#ifndef LIST_VIEW_H
+#define LIST_VIEW_H
 
-#include "playlist_view.h"
-#include "list_view_internal.h"
+struct list_view;
 
+struct list_view *list_view_new(int height, int width);
+void list_view_free(struct list_view *this);
 
-struct playlist_view_item {
-    struct list_view_item base;
+void list_view_append(struct list_view *this, char *text);
 
-    char *artist;   /* The song's artist. */
-    char *title;    /* The song's title. */
-    char *album;    /* The song's album. */
-    int time;       /* Length of the song in seconds. */
-    unsigned id;    /* The MPD ID of the song. */
-};
+void list_view_remove_selected(struct list_view *this);
+void list_view_remove_at(struct list_view *this, int index);
+void list_view_clear(struct list_view *this);
 
-struct playlist_view {
-    struct list_view base;
-};
+void list_view_select(struct list_view *this, int index);
+void list_view_select_prev(struct list_view *this);
+void list_view_select_next(struct list_view *this);
+void list_view_select_top_visible(struct list_view *this);
+void list_view_select_bottom_visible(struct list_view *this);
+void list_view_select_middle_visible(struct list_view *this);
 
-struct playlist_view_item *playlist_view_item_new(char *artist, char *title, char *album, int time, unsigned id);
-void playlist_view_item_initialize(struct playlist_view_item *this, char *artist, char *title, char *album, int time, unsigned id);
-void playlist_view_item_free(struct playlist_view_item *this);
+void list_view_scroll_page_up(struct list_view *this);
+void list_view_scroll_page_down(struct list_view *this);
 
-void playlist_view_initialize(struct playlist_view *this, int height, int width);
+void list_view_draw(struct list_view *this);
 
-#endif
+#endif /* LIST_VIEW_H */

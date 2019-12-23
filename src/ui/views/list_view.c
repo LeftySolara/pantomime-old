@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "list_view_internal.h"
+#include "list_view.h"
 #include <stdlib.h>
 
 

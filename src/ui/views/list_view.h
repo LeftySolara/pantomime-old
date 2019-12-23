@@ -1,5 +1,5 @@
 /*******************************************************************************
- * list_view.h
+ * list_view_internal.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,30 +17,69 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef LIST_VIEW_H
-#define LIST_VIEW_H
+/**
+ * @file list_view.h
+ * @brief UI elements for displaying a navigable list.
+ */
 
-struct list_view;
+#ifndef LIST_VIEW_INTERNAL_H
+#define LIST_VIEW_INTERNAL_H
 
-struct list_view *list_view_new(int height, int width);
-void list_view_free(struct list_view *this);
+#include "pantomime/list_view.h"
+#include <ncurses.h>
 
-void list_view_append(struct list_view *this, char *text);
 
-void list_view_remove_selected(struct list_view *this);
-void list_view_remove_at(struct list_view *this, int index);
-void list_view_clear(struct list_view *this);
+struct list_view_item {
+    char *text;     /**< The text to display for this item. */
+    int bold;       /**< Whether to print the text in bold. */
+    int highlight;  /**< Whether this item should be highlighted. */
 
-void list_view_select(struct list_view *this, int index);
-void list_view_select_prev(struct list_view *this);
-void list_view_select_next(struct list_view *this);
-void list_view_select_top_visible(struct list_view *this);
-void list_view_select_bottom_visible(struct list_view *this);
-void list_view_select_middle_visible(struct list_view *this);
+    struct list_view_item *prev;    /**< The next item in the list. */
+    struct list_view_item *next;    /**< The previous item in the list. */
+};
 
-void list_view_scroll_page_up(struct list_view *this);
-void list_view_scroll_page_down(struct list_view *this);
+struct list_view {
+    WINDOW *win;    /**< The ncurses window to draw on. */
 
-void list_view_draw(struct list_view *this);
+    struct list_view_item *head;        /**< The first item in the list. */
+    struct list_view_item *tail;        /**< The last item in the list. */
+    struct list_view_item *selected;    /**< The currently selected item. */
 
-#endif /* LIST_VIEW_H */
+    struct list_view_item *top_visible;     /**< Topmost visible item in the list. */
+    struct list_view_item *bottom_visible;  /**< Bottommost visible item in the list. */
+
+    int item_count;     /**< The number of items in the list. */
+    int idx_selected;   /**< The index of the currently selected item. */
+    int max_visible;    /**< Max number of items that can be displayed with the current window dimensions. */
+
+    struct list_view_ops *lv_ops;
+};
+
+struct list_view_ops {
+    void (*lv_append)(struct list_view *, char *);
+
+    void (*lv_remove_selected)(struct list_view *);
+    void (*lv_remove_at)(struct list_view *, int);
+    void (*lv_clear)(struct list_view *);
+
+    void (*lv_select)(struct list_view *, int);
+    void (*lv_select_prev)(struct list_view *);
+    void (*lv_select_next)(struct list_view *);
+    void (*lv_select_top_visible)(struct list_view *);
+    void (*lv_select_bottom_visible)(struct list_view *);
+    void (*lv_select_middle_visible)(struct list_view *);
+
+    void (*lv_scroll_page_up)(struct list_view *);
+    void (*lv_scroll_page_down)(struct list_view *);
+
+    void (*lv_draw)(struct list_view *);
+};
+
+
+struct list_view_item *list_view_item_new(char *text);
+void list_view_item_initialize(struct list_view_item *this, char *text);
+void list_view_item_free(struct list_view_item *this);
+
+void list_view_initialize(struct list_view *this, int height, int width);
+
+#endif /* LIST_VIEW_INTERNAL_H */

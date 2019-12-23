@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "playlist_view_internal.h"
+#include "playlist_view.h"
 #include <stdlib.h>
 
 
