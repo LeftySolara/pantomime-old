@@ -1,5 +1,5 @@
 /*******************************************************************************
- * list_view_internal.h
+ * list_view.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -52,10 +52,10 @@ struct list_view {
     int idx_selected;   /**< The index of the currently selected item. */
     int max_visible;    /**< Max number of items that can be displayed with the current window dimensions. */
 
-    struct list_view_ops *lv_ops;
+    const struct list_view_operations *lv_ops; /* Callbacks for list view. */
 };
 
-struct list_view_ops {
+struct list_view_operations {
     void (*lv_append)(struct list_view *, char *);
 
     void (*lv_remove_selected)(struct list_view *);

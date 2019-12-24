@@ -69,6 +69,24 @@ void list_view_item_draw(struct list_view_item *this, WINDOW *win, unsigned y)
     wattr_off(win, A_STANDOUT, 0);
 }
 
+
+static const struct list_view_operations lv_ops = {
+    .lv_append = list_view_append,
+    .lv_remove_selected = list_view_remove_selected,
+    .lv_clear = list_view_clear,
+    .lv_select = list_view_select,
+    .lv_select_prev = list_view_select_prev,
+    .lv_select_next = list_view_select_next,
+    .lv_select_top_visible = list_view_select_top_visible,
+    .lv_select_bottom_visible = list_view_select_bottom_visible,
+    .lv_select_middle_visible = list_view_select_middle_visible,
+    .lv_scroll_page_up = list_view_scroll_page_up,
+    .lv_scroll_page_down = list_view_scroll_page_down,
+    .lv_find_bottom = list_view_find_bottom,
+    .lv_find_cursor_pos = list_view_find_cursor_pos,
+    .lv_draw = list_view_draw
+};
+
 struct list_view *list_view_new(int height, int width)
 {
     struct list_view *view = malloc(sizeof(*view));
@@ -95,20 +113,7 @@ void list_view_initialize(struct list_view *this, int height, int width)
     this->idx_selected = -1;
     this->max_visible = getmaxy(this->win) - 1;
 
-    this->lv_ops->lv_append = &list_view_append;
-    this->lv_ops->lv_remove_selected = &list_view_remove_selected;
-    this->lv_ops->lv_clear = &list_view_clear;
-    this->lv_ops->lv_select = &list_view_select;
-    this->lv_ops->lv_select_prev = &list_view_select_prev;
-    this->lv_ops->lv_select_next = &list_view_select_next;
-    this->lv_ops->lv_select_top_visible = &list_view_select_top_visible;
-    this->lv_ops->lv_select_bottom_visible = &list_view_select_bottom_visible;
-    this->lv_ops->lv_select_middle_visible = &list_view_select_middle_visible;
-    this->lv_ops->lv_scroll_page_up = &list_view_scroll_page_up;
-    this->lv_ops->lv_scroll_page_down = &list_view_scroll_page_down;
-    this->lv_ops->lv_find_bottom = &list_view_find_bottom;
-    this->lv_ops->lv_find_cursor_pos = &list_view_find_cursor_pos;
-    this->lv_ops->lv_draw = &list_view_draw;
+    this->lv_ops = &lv_ops;
 }
 
 void list_view_free(struct list_view *this)

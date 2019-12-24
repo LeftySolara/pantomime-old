@@ -21,12 +21,13 @@
 #define UI_H
 
 #include "playlist.h"
+#include "pantomime/list_view.h"
 #include "../mpdwrapper/mpdwrapper.h"
 
 #include <ncurses.h>
 #include <panel.h>
 
-enum ui_panel {HELP, QUEUE, NUM_PANELS};
+enum ui_panel {HELP, QUEUE, LIBRARY, NUM_PANELS};
 
 struct ui {
     PANEL **panels;
@@ -34,6 +35,7 @@ struct ui {
 
     struct playlist *queue;
     struct status_bar *status_bar;
+    struct list_view *library;
 
     int maxx;
     int maxy;

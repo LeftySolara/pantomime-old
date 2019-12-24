@@ -96,6 +96,15 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     ui->status_bar = status_bar_init();
 
     playlist_populate(ui->queue, mpd->queue);
+
+    /* FOR TESTING */
+    ui->library = list_view_new(ui->maxy - 2, ui->maxx);
+    list_view_append(ui->library, "0");
+    list_view_append(ui->library, "1");
+    list_view_append(ui->library, "2");
+    list_view_append(ui->library, "3");
+    list_view_append(ui->library, "4");
+
     return ui;
 }
 
@@ -103,6 +112,7 @@ void ui_free(struct ui *ui)
 {
     playlist_free(ui->queue);
     status_bar_free(ui->status_bar);
+    list_view_free(ui->library);
     free(ui);
 }
 
