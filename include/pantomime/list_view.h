@@ -17,6 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+/**
+ * @file list_view.h
+ */
+
 #ifndef LIST_VIEW_H
 #define LIST_VIEW_H
 
