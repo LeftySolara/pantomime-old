@@ -50,6 +50,21 @@ void list_view_item_free(struct list_view_item *this)
     free(this);
 }
 
+void list_view_item_draw(struct list_view_item *this, WINDOW *win, unsigned y)
+{
+    if (this->bold)
+        wattr_on(win, A_BOLD, 0);
+    if (this->highlight)
+        wattr_on(win, A_STANDOUT, 0);
+
+    mvwprintw(win, y, 0, this->text);
+
+    if (this->highlight)
+        mvwchgat(win, y, 0, -1, A_STANDOUT, 0, NULL);
+    wattr_off(win, A_BOLD, 0);
+    wattr_off(win, A_STANDOUT, 0);
+}
+
 struct list_view *list_view_new(int height, int width)
 {
     struct list_view *view = malloc(sizeof(*view));
@@ -78,7 +93,6 @@ void list_view_initialize(struct list_view *this, int height, int width)
 
     this->lv_ops->lv_append = &list_view_append;
     this->lv_ops->lv_remove_selected = &list_view_remove_selected;
-    this->lv_ops->lv_remove_at = &list_view_remove_at;
     this->lv_ops->lv_clear = &list_view_clear;
     this->lv_ops->lv_select = &list_view_select;
     this->lv_ops->lv_select_prev = &list_view_select_prev;
@@ -88,6 +102,8 @@ void list_view_initialize(struct list_view *this, int height, int width)
     this->lv_ops->lv_select_middle_visible = &list_view_select_middle_visible;
     this->lv_ops->lv_scroll_page_up = &list_view_scroll_page_up;
     this->lv_ops->lv_scroll_page_down = &list_view_scroll_page_down;
+    this->lv_ops->lv_find_bottom = &list_view_find_bottom;
+    this->lv_ops->lv_find_cursor_pos = &list_view_find_cursor_pos;
     this->lv_ops->lv_draw = &list_view_draw;
 }
 
@@ -121,8 +137,53 @@ void list_view_append(struct list_view *this, char *text)
     this->item_count++;
 }
 
-void list_view_remove_selected(struct list_view *this) {}
-void list_view_remove_at(struct list_view *this, int index) {}
+void list_view_remove_selected(struct list_view *this)
+{
+    if (!this || !this->head)
+        return;
+
+    if (this->selected == this->head) {
+        if (!this->head->next)  /* Only one item in the list. */
+            this->lv_ops->lv_clear(this);
+        else {
+            struct list_view_item *current = this->head;
+            this->lv_ops->lv_select_next(this);
+            this->top_visible = this->selected;
+            this->lv_ops->lv_find_bottom(this);
+            this->head->prev = NULL;
+
+            list_view_item_free(current);
+            this->head = this->selected;
+        }
+        this->item_count--;
+        this->idx_selected = 0;
+    }
+    else {
+        struct list_view_item *current = this->selected;
+
+        if (current->next)
+            this->lv_ops->lv_select_next(this);
+        else
+            this->lv_ops->lv_select_prev(this);
+
+        if (current == this->top_visible)
+            this->top_visible = this->selected;
+        if (current == this->tail) {
+            this->tail = this->tail->prev;
+            this->idx_selected++;
+        }
+
+        if (current->prev)
+            current->prev->next = current->next;
+        if (current->next)
+            current->next->prev = current->prev;
+
+        list_view_item_free(current);
+        this->item_count--;
+        this->idx_selected--;
+        this->lv_ops->lv_find_bottom(this);
+    }
+}
 
 /**
  * @brief Removes all items from a list view.
@@ -149,14 +210,244 @@ void list_view_clear(struct list_view *this)
     this->idx_selected = -1;
 }
 
-void list_view_select(struct list_view *this, int index) {}
-void list_view_select_prev(struct list_view *this) {}
-void list_view_select_next(struct list_view *this) {}
-void list_view_select_top_visible(struct list_view *this) {}
-void list_view_select_bottom_visible(struct list_view *this) {}
-void list_view_select_middle_visible(struct list_view *this) {}
+/**
+ * @brief Sets the item at the specified index as the currently selected item.
+ */
+void list_view_select(struct list_view *this, int index)
+{
+    if (index < 0 || index >= this->item_count)
+        return;
 
-void list_view_scroll_page_up(struct list_view *this) {}
-void list_view_scroll_page_down(struct list_view *this) {}
+    struct list_view_item *current = this->head;
+    for (int i = 0; i < index; ++i)
+        current = current->next;
 
-void list_view_draw(struct list_view *this) {}
+    this->selected = current;
+    this->idx_selected = index;
+    current->highlight = 1;
+
+    current = current->next;
+    while (current) {
+        current->highlight = 0;
+        current = current->next;
+    }
+}
+
+/**
+ * @brief Selects the previous item in the list.
+ */
+void list_view_select_prev(struct list_view *this)
+{
+    if (!this || this->selected == this->head)
+        return;
+
+    struct list_view_item *current = this->selected;
+    current->highlight = 0;
+    if (current == this->top_visible) {
+        this->top_visible = current->prev;
+        this->lv_ops->lv_find_bottom(this);
+    }
+    current = current->prev;
+    current->highlight = 1;
+
+    this->selected = this->selected->prev;
+    this->idx_selected--;
+}
+
+/**
+ * @brief Selects the next item in the list.
+ */
+void list_view_select_next(struct list_view *this)
+{
+    if (!this || this->selected == this->tail)
+        return;
+
+    struct list_view_item *current = this->selected;
+    current->highlight = 0;
+    if (current == this->bottom_visible && current->next) {
+        this->top_visible = this->top_visible->next;
+        this->lv_ops->lv_find_bottom(this);
+    }
+    
+    current = current->next;
+    current->highlight = 1;
+
+    this->selected = this->selected->next;
+    this->idx_selected++;
+}
+
+/**
+ * @brief Sets the first visible item in the list as the selected item.
+ */
+void list_view_select_top_visible(struct list_view *this)
+{
+    if (!this || this->selected == this->top_visible)
+        return;
+
+    struct list_view_item *current = this->selected;
+    current->highlight = 0;
+
+    while (current != this->top_visible) {
+        current = current->prev;
+        this->idx_selected--;
+    }
+
+    current->highlight = 1;
+    this->selected = current;
+}
+
+/**
+ * @brief Sets the last visible item in the list as the selected item.
+ */
+void list_view_select_bottom_visible(struct list_view *this)
+{
+    if (!this || this->selected == this->bottom_visible)
+        return;
+
+    struct list_view_item *current = this->selected;
+    current->highlight = 0;
+
+    while (current != this->bottom_visible) {
+        current = current->next;
+        this->idx_selected++;
+    }
+
+    current->highlight = 1;
+    this->selected = current;
+}
+
+/**
+ * @brief Sets the item in the middle of the window as the selected item.
+ */
+void list_view_select_middle_visible(struct list_view *this)
+{
+    if (!this || this->item_count == 0)
+        return;
+
+    int midpoint = this->item_count / 2;
+
+    this->lv_ops->lv_select_top_visible(this);
+    for (int i = 0; i < midpoint; ++i)
+        this->lv_ops->lv_select_next(this);
+}
+
+/**
+ * @brief Scrolls up one page in the list.
+ */
+void list_view_scroll_page_up(struct list_view *this)
+{
+    if (!this || this->item_count == 0)
+        return;
+
+    /* For restoring cursor position, if necessary. */
+    int y_pos = this->lv_ops->lv_find_cursor_pos(this);
+
+    this->lv_ops->lv_select_bottom_visible(this);
+    if (!this->selected->next)
+        return;
+
+    this->lv_ops->lv_select_next(this);
+    this->top_visible = this->selected;
+    this->lv_ops->lv_find_bottom(this);
+
+    /* Restore cursor position */
+    this->lv_ops->lv_select_top_visible(this);
+    for (int i = 0; i < y_pos; ++i)
+        this->lv_ops->lv_select_next(this);
+}
+
+/**
+ * @brief Scrolls down one page in the list.
+ */
+void list_view_scroll_page_down(struct list_view *this)
+{
+    if (!this || this->item_count == 0)
+        return;
+
+    /* For restoring cursor position, if necessary. */
+    int y_pos = this->lv_ops->lv_find_cursor_pos(this);
+
+    this->lv_ops->lv_select_bottom_visible(this);
+    if (!this->selected->next)
+        return;
+
+    this->lv_ops->lv_select_next(this);
+    this->top_visible = this->selected;
+    this->lv_ops->lv_find_bottom(this);
+
+    /* Restore cursor position. */
+    this->lv_ops->lv_select_top_visible(this);
+    for (int i = 0; i < y_pos; ++i)
+        this->lv_ops->lv_select_next(this);
+}
+
+/*
+ * Calculates which list item is the bottommost visible.
+ */
+void list_view_find_bottom(struct list_view *this)
+{
+    if (!this)
+        return;
+
+    int rows = getmaxy(this->win);
+    struct list_view_item *current = this->top_visible;
+
+    for (int i = 0; i < rows - 2; ++i) {
+        if (!current->next)
+            break;
+        current = current->next;
+    }
+    this->bottom_visible = current;
+}
+
+/*
+ * Finds the y-position of the cursor in the window.
+ */
+int list_view_find_cursor_pos(struct list_view *this)
+{
+    if (!this->top_visible)
+        return -1;
+
+    struct list_view_item *current = this->top_visible;
+    int y_pos = 0;
+
+    while (current != this->selected) {
+        ++y_pos;
+        current = current->next;
+    }
+
+    return y_pos;
+}
+
+/* Draws the list view on its window. */
+void list_view_draw(struct list_view *this)
+{
+    werase(this->win);
+
+    if (this->item_count <= 0)
+        return;
+    if (!this->selected)
+        this->lv_ops->lv_select_top_visible(this);
+
+    /* Trying to draw the whole list at once and scrolling thorugh it
+     * doesn't work because drawing past the bounds of an ncurses window
+     * does nothing (this can kind of work with an ncurses pad, but that doesn't
+     * allow for list selection, navigation, and manipulation in the way we want).
+     * Because of this, it's more efficient to just worry about the items
+     * that are currently visible and redraw manually when there's a change.
+     * 
+     * Since we know which item is displayed at the top and have the window dimensions,
+     * we can figure out which item will be the last one visible and only draw
+     * the ones in that range.
+     */
+    struct list_view_item *current = this->top_visible;
+    this->lv_ops->lv_find_bottom(this);
+
+    int y = 1;
+    while (current != this->bottom_visible->next) {
+        list_view_item_draw(current, this->win, y++);
+        current = current->next;
+    }
+
+    wnoutrefresh(this->win);
+}

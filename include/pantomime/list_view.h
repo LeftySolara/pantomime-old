@@ -28,7 +28,6 @@ void list_view_free(struct list_view *this);
 void list_view_append(struct list_view *this, char *text);
 
 void list_view_remove_selected(struct list_view *this);
-void list_view_remove_at(struct list_view *this, int index);
 void list_view_clear(struct list_view *this);
 
 void list_view_select(struct list_view *this, int index);

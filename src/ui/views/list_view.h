@@ -59,7 +59,6 @@ struct list_view_ops {
     void (*lv_append)(struct list_view *, char *);
 
     void (*lv_remove_selected)(struct list_view *);
-    void (*lv_remove_at)(struct list_view *, int);
     void (*lv_clear)(struct list_view *);
 
     void (*lv_select)(struct list_view *, int);
@@ -72,6 +71,9 @@ struct list_view_ops {
     void (*lv_scroll_page_up)(struct list_view *);
     void (*lv_scroll_page_down)(struct list_view *);
 
+    void (*lv_find_bottom)(struct list_view *);
+    int (*lv_find_cursor_pos)(struct list_view *);
+
     void (*lv_draw)(struct list_view *);
 };
 
@@ -79,7 +81,11 @@ struct list_view_ops {
 struct list_view_item *list_view_item_new(char *text);
 void list_view_item_initialize(struct list_view_item *this, char *text);
 void list_view_item_free(struct list_view_item *this);
+void list_view_item_draw(struct list_view_item *this, WINDOW *win, unsigned y);
 
 void list_view_initialize(struct list_view *this, int height, int width);
+
+void list_view_find_bottom(struct list_view *this);
+int list_view_find_cursor_pos(struct list_view *this);
 
 #endif /* LIST_VIEW_INTERNAL_H */
