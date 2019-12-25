@@ -91,6 +91,9 @@ static struct command commands[] = {
     {CMD_PANEL_QUEUE, {'2', KEY_F(2), 0}, "Queue",
     "Show the queue screen"},
 
+    {CMD_PANEL_LIBRARY, {'3', KEY_F(3), 0}, "Library",
+    "Show the library screen"},
+
     {CMD_CURSOR_DOWN, {KEY_DOWN, 'j', 0}, "Cursor down",
     "Move the cursor down one line"},
 

@@ -47,6 +47,9 @@ void cmd_global(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
     case CMD_PANEL_QUEUE:
         set_visible_panel(ui, QUEUE);
         break;
+    case CMD_PANEL_LIBRARY:
+        set_visible_panel(ui, LIBRARY);
+        break;
     case CMD_DB_UPDATE:
         update_mpd_database(mpd, ui);
         break;
