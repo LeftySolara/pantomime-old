@@ -24,7 +24,10 @@
 #include "list_view.h"
 #include <stdlib.h>
 
-
+/* Creates an item for use in a list view.
+ * The caller is responsible for freeing any dynamically
+ * allocated pointer that is passed here.
+ */
 struct list_view_item *list_view_item_new(char *text)
 {
     struct list_view_item *item = malloc(sizeof(*item));
@@ -50,7 +53,6 @@ void list_view_item_free(struct list_view_item *this)
     if (!this)
         return;
 
-    free(this->text);
     free(this);
 }
 
