@@ -21,6 +21,7 @@
 #include "command/command_global.h"
 #include "command/command_player.h"
 #include "command/command_queue.h"
+#include "command/command_library.h"
 #include "mpdwrapper/mpdwrapper.h"
 #include "ui/ui.h"
 
@@ -54,6 +55,9 @@ int main()
             break;
         case QUEUE:
             cmd_queue(cmd, mpd, ui);
+            break;
+        case LIBRARY:
+            cmd_library(cmd, ui);
             break;
         default:
             break;
