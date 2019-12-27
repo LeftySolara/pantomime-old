@@ -32,7 +32,7 @@ void update_mpd_database(struct mpdwrapper *mpd, struct ui *ui)
 {
     set_notification(ui->status_bar, "Starting database update...", 3);
     
-    int rc = mpdwrapper_db_update(mpd);
+    int rc = mpdwrapper_update_db(mpd);
     char *msg = (rc > 0) ? "Music database updated successfully" : "Error updating music database";
 
     set_notification(ui->status_bar, msg, 3);

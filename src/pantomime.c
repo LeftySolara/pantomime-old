@@ -32,7 +32,7 @@ int main()
     /* TODO: Allow user to specify connection settings as command line args
      *       or from a config file.
      */
-    struct mpdwrapper *mpd = mpdwrapper_init("localhost", 6600, 30000);
+    struct mpdwrapper *mpd = mpdwrapper_new("localhost", 6600, 30000);
 
     struct ui *ui = ui_init(mpd);
     ui_draw(ui, mpd);
@@ -41,7 +41,7 @@ int main()
     enum command_type cmd;
 
     while (cmd != CMD_QUIT) {
-        mpdwrapper_update(mpd);
+        mpdwrapper_refresh(mpd);
 
         ch = getch();
         cmd = find_key_command(ch);

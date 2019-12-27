@@ -197,24 +197,25 @@ bool playlist_remove_selected(struct playlist *playlist)
 void playlist_populate(struct playlist *playlist, struct songlist *songlist)
 {
     struct playlist_item *item;
+    struct mpd_song *song;
     char *artist;
     char *title;
     char *album;
     int time;
     unsigned id;
 
-    struct songnode *current = songlist->head;
-    while (current) {
-        artist = mpdwrapper_get_song_tag(current->song, MPD_TAG_ARTIST);
-        title = mpdwrapper_get_song_tag(current->song, MPD_TAG_TITLE);
-        album = mpdwrapper_get_song_tag(current->song, MPD_TAG_ALBUM);
-        time = mpd_song_get_duration(current->song);
-        id = mpd_song_get_id(current->song);
+    int length = songlist_get_size(songlist);
+    for (int i = 0; i < length; ++i) {
+        song = songlist_at(songlist, i);
+
+        artist = mpdwrapper_get_song_tag(song, MPD_TAG_ARTIST);
+        title = mpdwrapper_get_song_tag(song, MPD_TAG_TITLE);
+        album = mpdwrapper_get_song_tag(song, MPD_TAG_ALBUM);
+        time = mpd_song_get_duration(song);
+        id = mpd_song_get_id(song);
 
         item = playlist_item_init(artist, title, album, time, id);
         playlist_append(playlist, item);
-
-        current = current->next;
     }
 
     playlist->idx_selected = 0;

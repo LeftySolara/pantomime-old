@@ -39,7 +39,7 @@ void seek_backward(struct mpdwrapper *mpd)
     if (mpd->state != MPD_STATE_PLAY)
         return;
 
-    unsigned int elapsed_time = get_current_song_elapsed(mpd);
+    unsigned int elapsed_time = mpdwrapper_get_current_song_elapsed(mpd);
     if (elapsed_time > 0) {
         mpd_run_seek_pos(mpd->connection,
                          mpd_song_get_pos(mpd->current_song),
@@ -52,8 +52,8 @@ void seek_forward(struct mpdwrapper *mpd)
     if (mpd->state != MPD_STATE_PLAY)
         return;
 
-    unsigned int elapsed_time = get_current_song_elapsed(mpd);
-    unsigned int total_time = get_current_song_duration(mpd);
+    unsigned int elapsed_time = mpdwrapper_get_current_song_elapsed(mpd);
+    unsigned int total_time = mpdwrapper_get_current_song_duration(mpd);
 
     if (elapsed_time != total_time) {  /* Song hasn't finished playing */
         mpd_run_seek_pos(mpd->connection,

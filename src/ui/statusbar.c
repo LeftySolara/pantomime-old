@@ -70,16 +70,19 @@ void status_bar_free(struct status_bar *bar)
  */
 void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
 {
-    if (mpd->state == MPD_STATE_UNKNOWN)
+    enum mpd_state state = mpdwrapper_get_state(mpd);
+    struct mpd_status *status = mpdwrapper_get_status(mpd);
+
+    if (state == MPD_STATE_UNKNOWN)
         return;
 
     werase(status_bar->win);
-    draw_modes(status_bar, mpd->status);
-    draw_volume(status_bar, mpd->status);
+    draw_modes(status_bar, status);
+    draw_volume(status_bar, status);
 
-    if (mpd->state != MPD_STATE_STOP) {
-        double song_length = get_current_song_duration(mpd);
-        double time_elapsed = get_current_song_elapsed(mpd);
+    if (state != MPD_STATE_STOP) {
+        double song_length = mpdwrapper_get_current_song_duration(mpd);
+        double time_elapsed = mpdwrapper_get_current_song_elapsed(mpd);
 
         draw_progress_bar(status_bar, time_elapsed, song_length);
         draw_progress_label(status_bar, time_elapsed, song_length);
@@ -88,8 +91,8 @@ void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
     /* Either the song or a notification is displayed, not both. */
     if (status_bar->notification && time(NULL) <= status_bar->notify_end)
         draw_notification(status_bar);
-    else if (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE)
-        draw_song_label(status_bar, mpd->current_song);
+    else if (state == MPD_STATE_PLAY || state == MPD_STATE_PAUSE)
+        draw_song_label(status_bar, mpdwrapper_get_current_song(mpd));
 
     wnoutrefresh(status_bar->win);
 }

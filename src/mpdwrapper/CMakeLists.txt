@@ -1,1 +1,1 @@
-add_library(mpdwrapper mpdwrapper.c songlist.c)
+add_library(mpdwrapper mpdwrapper.c)

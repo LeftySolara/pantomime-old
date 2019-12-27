@@ -20,7 +20,7 @@
 #ifndef STATUSBAR_H
 #define STATUSBAR_H
 
-#include "../mpdwrapper/mpdwrapper.h"
+#include "pantomime/mpdwrapper.h"
 
 #include <ncurses.h>
 #include <time.h>

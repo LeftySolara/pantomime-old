@@ -34,8 +34,7 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
-#include "../mpdwrapper/mpdwrapper.h"
-
+#include "pantomime/mpdwrapper.h"
 #include <ncurses.h>
 
 /**
