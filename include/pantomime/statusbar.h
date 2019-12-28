@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ui.h
+ * statusbar.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,41 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef UI_H
-#define UI_H
+/**
+ * @file statusbar.h
+ */
 
-#include "playlist.h"
-#include "pantomime/statusbar.h"
-#include "pantomime/list_view.h"
-#include "../mpdwrapper/mpdwrapper.h"
+#ifndef STATUSBAR_H
+#define STATUSBAR_H
 
-#include <ncurses.h>
-#include <panel.h>
+#include "pantomime/mpdwrapper.h"
 
-enum ui_panel {HELP, QUEUE, LIBRARY, NUM_PANELS};
+struct statusbar;
 
-struct ui {
-    PANEL **panels;
-    enum ui_panel visible_panel; /* Only one panel should be visible at a time. */
+struct statusbar *statusbar_new();
+void statusbar_free(struct statusbar *statusbar);
 
-    struct playlist *queue;
-    struct statusbar *statusbar;
-    struct list_view *library;
+void statusbar_draw(struct statusbar *statusbar, struct mpdwrapper *mpd);
+void statusbar_set_notification(struct statusbar *statusbar, char *msg, int duration);
 
-    int maxx;
-    int maxy;
-};
-
-void start_curses();
-void end_curses();
-
-PANEL **create_panels(int num_panels, int width, int height);
-void destroy_panels(PANEL **panels, int num_panels);
-
-struct ui *ui_init(struct mpdwrapper *mpd);
-void ui_free(struct ui *ui);
-
-void ui_draw(struct ui *ui, struct mpdwrapper *mpd);
-void set_visible_panel(struct ui *ui, enum ui_panel panel);
-
-#endif /* UI_H */
+#endif /* STATUSBAR_H */

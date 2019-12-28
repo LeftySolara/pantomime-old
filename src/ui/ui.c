@@ -20,7 +20,6 @@
 #include "ui.h"
 
 #include "panel_help.h"
-#include "statusbar.h"
 
 #include <locale.h>
 #include <stdlib.h>
@@ -93,7 +92,7 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     top_panel(ui->panels[ui->visible_panel]);
 
     ui->queue = playlist_init(panel_window(ui->panels[QUEUE]));
-    ui->statusbar = statusbar_init();
+    ui->statusbar = statusbar_new();
 
     playlist_populate(ui->queue, mpd->queue);
 

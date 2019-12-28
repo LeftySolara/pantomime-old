@@ -33,10 +33,23 @@
 #define MODES_LABEL_LENGTH 6
 #define PROGRESS_LABEL_LENGTH 16
 
-struct statusbar *statusbar_init()
+
+/**
+ * @brief Allocates memory for a new status bar.
+ */
+struct statusbar *statusbar_new()
 {
     struct statusbar *statusbar = malloc(sizeof(*statusbar));
+    if (!statusbar)
+        return NULL;
 
+    statusbar_initialize(statusbar);
+
+    return statusbar;
+}
+
+void statusbar_initialize(struct statusbar *statusbar)
+{
     statusbar->win = newwin(2, COLS, LINES - 2, 0);
     statusbar->song_label = NULL;
 
@@ -45,17 +58,15 @@ struct statusbar *statusbar_init()
 
     statusbar->progress_label = malloc(PROGRESS_LABEL_LENGTH * sizeof(char));
     snprintf(statusbar->progress_label, strlen("[00:00]")+1, "[00:00]");
-
-    return statusbar;
 }
 
-void statusbar_free(struct statusbar *bar)
+void statusbar_free(struct statusbar *statusbar)
 {
-    delwin(bar->win);
-    free(bar->modes_label);
-    free(bar->progress_label);
-    free(bar->song_label);
-    free(bar);
+    delwin(statusbar->win);
+    free(statusbar->modes_label);
+    free(statusbar->progress_label);
+    free(statusbar->song_label);
+    free(statusbar);
 }
 
 /**
