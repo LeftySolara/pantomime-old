@@ -93,7 +93,7 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     top_panel(ui->panels[ui->visible_panel]);
 
     ui->queue = playlist_init(panel_window(ui->panels[QUEUE]));
-    ui->status_bar = status_bar_init();
+    ui->statusbar = statusbar_init();
 
     playlist_populate(ui->queue, mpd->queue);
 
@@ -111,14 +111,14 @@ struct ui *ui_init(struct mpdwrapper *mpd)
 void ui_free(struct ui *ui)
 {
     playlist_free(ui->queue);
-    status_bar_free(ui->status_bar);
+    statusbar_free(ui->statusbar);
     list_view_free(ui->library);
     free(ui);
 }
 
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
 {
-    draw_statusbar(ui->status_bar, mpd);
+    draw_statusbar(ui->statusbar, mpd);
     
     WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
     int current_song_id;

@@ -62,59 +62,59 @@ void seek_forward(struct mpdwrapper *mpd)
     }
 }
 
-void prev_song(struct mpdwrapper *mpd, struct status_bar *status_bar)
+void prev_song(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     if (mpd->state == MPD_STATE_STOP)
-        set_notification(status_bar, "Not playing", 3);
+        set_notification(statusbar, "Not playing", 3);
     else
         mpd_run_previous(mpd->connection);
 }
 
-void next_song(struct mpdwrapper *mpd, struct status_bar *status_bar)
+void next_song(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     if (mpd->state == MPD_STATE_STOP)
-        set_notification(status_bar, "Not playing", 3);
+        set_notification(statusbar, "Not playing", 3);
     else
         mpd_run_next(mpd->connection);
 }
 
-void toggle_repeat(struct mpdwrapper *mpd, struct status_bar *status_bar)
+void toggle_repeat(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     bool repeat = mpd_status_get_repeat(mpd->status);
     mpd_run_repeat(mpd->connection, !repeat);
 
     char *notification = !repeat ? "Repeat mode is on" : "Repeat mode is off";
-    set_notification(status_bar, notification, 3);
+    set_notification(statusbar, notification, 3);
 }
 
-void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar)
+void toggle_random(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     bool random = mpd_status_get_random(mpd->status);
     mpd_run_random(mpd->connection, !random);
 
     char *notification = !random ? "Random mode is on" : "Random mode is off";
-    set_notification(status_bar, notification, 3);
+    set_notification(statusbar, notification, 3);
 }
 
-void toggle_single(struct mpdwrapper *mpd, struct status_bar *status_bar)
+void toggle_single(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     bool single = mpd_status_get_single(mpd->status);
     mpd_run_single(mpd->connection, !single);
 
     char *notification = !single ? "Single mode is on" : "Single mode is off";
-    set_notification(status_bar, notification, 3);
+    set_notification(statusbar, notification, 3);
 }
 
-void toggle_consume(struct mpdwrapper *mpd, struct status_bar *status_bar)
+void toggle_consume(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     bool consume = mpd_status_get_consume(mpd->status);
     mpd_run_consume(mpd->connection, !consume);
 
     char *notification = !consume ? "Consume mode is on" : "Consume mode is off";
-    set_notification(status_bar, notification, 3);
+    set_notification(statusbar, notification, 3);
 }
 
-void toggle_crossfade(struct mpdwrapper *mpd, struct status_bar *status_bar)
+void toggle_crossfade(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     unsigned int crossfade = mpd_status_get_crossfade(mpd->status);
     char *notification;
@@ -128,7 +128,7 @@ void toggle_crossfade(struct mpdwrapper *mpd, struct status_bar *status_bar)
         notification = "Crossfade set to 0 seconds";
     }
 
-    set_notification(status_bar, notification, 3);
+    set_notification(statusbar, notification, 3);
 }
 
 void decrease_volume(struct mpd_connection *connection)
@@ -147,7 +147,7 @@ void increase_volume(struct mpd_connection *connection)
  * @param cmd The command to execute.
  * @param mpd The MPD connection to run the command on.
  */
-void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar *status_bar)
+void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     switch (cmd) {
     case CMD_NULL:
@@ -165,25 +165,25 @@ void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar
         seek_forward(mpd);
         break;
     case CMD_PREV_SONG:
-        prev_song(mpd, status_bar);
+        prev_song(mpd, statusbar);
         break;
     case CMD_NEXT_SONG:
-        next_song(mpd, status_bar);
+        next_song(mpd, statusbar);
         break;
     case CMD_RANDOM:
-        toggle_random(mpd, status_bar);
+        toggle_random(mpd, statusbar);
         break;
     case CMD_REPEAT:
-        toggle_repeat(mpd, status_bar);
+        toggle_repeat(mpd, statusbar);
         break;
     case CMD_SINGLE:
-        toggle_single(mpd, status_bar);
+        toggle_single(mpd, statusbar);
         break;
     case CMD_CONSUME:
-        toggle_consume(mpd, status_bar);
+        toggle_consume(mpd, statusbar);
         break;
     case CMD_CROSSFADE:
-        toggle_crossfade(mpd, status_bar);
+        toggle_crossfade(mpd, statusbar);
         break;
     case CMD_VOL_DOWN:
         decrease_volume(mpd->connection);

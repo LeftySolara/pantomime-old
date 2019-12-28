@@ -36,18 +36,18 @@ void stop_playback(struct mpd_connection *connection);
 void seek_backward(struct mpdwrapper *mpd);
 void seek_forward(struct mpdwrapper *mpd);
 
-void prev_song(struct mpdwrapper *mpd, struct status_bar *status_bar);
-void next_song(struct mpdwrapper *mpd, struct status_bar *status_bar);
+void prev_song(struct mpdwrapper *mpd, struct statusbar *statusbar);
+void next_song(struct mpdwrapper *mpd, struct statusbar *statusbar);
 
-void toggle_repeat(struct mpdwrapper *mpd, struct status_bar *status_bar);
-void toggle_random(struct mpdwrapper *mpd, struct status_bar *status_bar);
-void toggle_single(struct mpdwrapper *mpd, struct status_bar *status_bar);
-void toggle_consume(struct mpdwrapper *mpd, struct status_bar *status_bar);
-void toggle_crossfade(struct mpdwrapper *mpd, struct status_bar *status_bar);
+void toggle_repeat(struct mpdwrapper *mpd, struct statusbar *statusbar);
+void toggle_random(struct mpdwrapper *mpd, struct statusbar *statusbar);
+void toggle_single(struct mpdwrapper *mpd, struct statusbar *statusbar);
+void toggle_consume(struct mpdwrapper *mpd, struct statusbar *statusbar);
+void toggle_crossfade(struct mpdwrapper *mpd, struct statusbar *statusbar);
 
 void decrease_volume(struct mpd_connection *connection);
 void increase_volume(struct mpd_connection *connection);
 
-void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct status_bar *status_bar);
+void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct statusbar *statusbar);
 
 #endif

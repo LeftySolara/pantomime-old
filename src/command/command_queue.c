@@ -33,7 +33,7 @@ void queue_remove_selected(struct mpdwrapper *mpd, struct ui *ui)
 
     mpdwrapper_delete_from_queue(mpd, ui->queue->idx_selected);
     playlist_remove_selected(ui->queue);
-    set_notification(ui->status_bar, msg, 3);
+    set_notification(ui->statusbar, msg, 3);
 
     free(msg);
 }

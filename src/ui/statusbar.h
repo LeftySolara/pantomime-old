@@ -25,7 +25,7 @@
 #include <ncurses.h>
 #include <time.h>
 
-struct status_bar {
+struct statusbar {
     WINDOW *win;
     char *modes_label;
     char *progress_label;
@@ -34,18 +34,18 @@ struct status_bar {
     time_t notify_end;
 };
 
-struct status_bar *status_bar_init();
-void status_bar_free(struct status_bar *bar);
+struct statusbar *statusbar_init();
+void statusbar_free(struct statusbar *bar);
 
-void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd);
-void draw_modes(struct status_bar *status_bar, struct mpd_status *status);
-void draw_volume(struct status_bar *status_bar, struct mpd_status *status);
-void draw_progress_bar(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length);
-void draw_progress_label(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length);
-void draw_song_label(struct status_bar *status_bar, struct mpd_song *song);
-void draw_notification(struct status_bar *status_bar);
+void draw_statusbar(struct statusbar *statusbar, struct mpdwrapper *mpd);
+void draw_modes(struct statusbar *statusbar, struct mpd_status *status);
+void draw_volume(struct statusbar *statusbar, struct mpd_status *status);
+void draw_progress_bar(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length);
+void draw_progress_label(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length);
+void draw_song_label(struct statusbar *statusbar, struct mpd_song *song);
+void draw_notification(struct statusbar *statusbar);
 
-void set_notification(struct status_bar *status_bar, char *msg, int duration);
+void set_notification(struct statusbar *statusbar, char *msg, int duration);
 
 char *create_label_modes(char *buffer, struct mpd_status *status);
 char *create_label_progress(char *buffer, unsigned int time_elapsed, unsigned int song_length);

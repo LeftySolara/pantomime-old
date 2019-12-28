@@ -33,23 +33,23 @@
 #define MODES_LABEL_LENGTH 6
 #define PROGRESS_LABEL_LENGTH 16
 
-struct status_bar *status_bar_init()
+struct statusbar *statusbar_init()
 {
-    struct status_bar *status_bar = malloc(sizeof(*status_bar));
+    struct statusbar *statusbar = malloc(sizeof(*statusbar));
 
-    status_bar->win = newwin(2, COLS, LINES - 2, 0);
-    status_bar->song_label = NULL;
+    statusbar->win = newwin(2, COLS, LINES - 2, 0);
+    statusbar->song_label = NULL;
 
-    status_bar->modes_label = malloc(MODES_LABEL_LENGTH * sizeof(char));
-    memset(status_bar->modes_label, '-', MODES_LABEL_LENGTH - 1);
+    statusbar->modes_label = malloc(MODES_LABEL_LENGTH * sizeof(char));
+    memset(statusbar->modes_label, '-', MODES_LABEL_LENGTH - 1);
 
-    status_bar->progress_label = malloc(PROGRESS_LABEL_LENGTH * sizeof(char));
-    snprintf(status_bar->progress_label, strlen("[00:00]")+1, "[00:00]");
+    statusbar->progress_label = malloc(PROGRESS_LABEL_LENGTH * sizeof(char));
+    snprintf(statusbar->progress_label, strlen("[00:00]")+1, "[00:00]");
 
-    return status_bar;
+    return statusbar;
 }
 
-void status_bar_free(struct status_bar *bar)
+void statusbar_free(struct statusbar *bar)
 {
     delwin(bar->win);
     free(bar->modes_label);
@@ -68,7 +68,7 @@ void status_bar_free(struct status_bar *bar)
  * @param win The ncurses window to draw on.
  * @param mpd The mpd connection to parse data from.
  */
-void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
+void draw_statusbar(struct statusbar *statusbar, struct mpdwrapper *mpd)
 {
     enum mpd_state state = mpdwrapper_get_state(mpd);
     struct mpd_status *status = mpdwrapper_get_status(mpd);
@@ -76,58 +76,58 @@ void draw_statusbar(struct status_bar *status_bar, struct mpdwrapper *mpd)
     if (state == MPD_STATE_UNKNOWN)
         return;
 
-    werase(status_bar->win);
-    draw_modes(status_bar, status);
-    draw_volume(status_bar, status);
+    werase(statusbar->win);
+    draw_modes(statusbar, status);
+    draw_volume(statusbar, status);
 
     if (state != MPD_STATE_STOP) {
         double song_length = mpdwrapper_get_current_song_duration(mpd);
         double time_elapsed = mpdwrapper_get_current_song_elapsed(mpd);
 
-        draw_progress_bar(status_bar, time_elapsed, song_length);
-        draw_progress_label(status_bar, time_elapsed, song_length);
+        draw_progress_bar(statusbar, time_elapsed, song_length);
+        draw_progress_label(statusbar, time_elapsed, song_length);
     }
 
     /* Either the song or a notification is displayed, not both. */
-    if (status_bar->notification && time(NULL) <= status_bar->notify_end)
-        draw_notification(status_bar);
+    if (statusbar->notification && time(NULL) <= statusbar->notify_end)
+        draw_notification(statusbar);
     else if (state == MPD_STATE_PLAY || state == MPD_STATE_PAUSE)
-        draw_song_label(status_bar, mpdwrapper_get_current_song(mpd));
+        draw_song_label(statusbar, mpdwrapper_get_current_song(mpd));
 
-    wnoutrefresh(status_bar->win);
+    wnoutrefresh(statusbar->win);
 }
 
 /**
  * @brief Draws the playback modes label on the status bar.
  */
-void draw_modes(struct status_bar *status_bar, struct mpd_status *mpd_status)
+void draw_modes(struct statusbar *statusbar, struct mpd_status *mpd_status)
 {
-    status_bar->modes_label = create_label_modes(status_bar->modes_label, mpd_status);
+    statusbar->modes_label = create_label_modes(statusbar->modes_label, mpd_status);
 
-    int width = getmaxx(status_bar->win);
-    int begin_x = width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - 1;
+    int width = getmaxx(statusbar->win);
+    int begin_x = width - strlen(statusbar->modes_label) - strlen(statusbar->progress_label) - 1;
 
-    mvwaddnstr(status_bar->win, 1, begin_x, status_bar->modes_label, 5);
+    mvwaddnstr(statusbar->win, 1, begin_x, statusbar->modes_label, 5);
 }
 
 /**
  * @brief Draws the current MPD volume on the status bar.
  */
-void draw_volume(struct status_bar *status_bar, struct mpd_status *status)
+void draw_volume(struct statusbar *statusbar, struct mpd_status *status)
 {
     int volume = mpd_status_get_volume(status);
-    int width = getmaxx(status_bar->win);
-    int begin_x = width - strlen(status_bar->modes_label) - strlen(status_bar->progress_label) - strlen("100%%") - 1;
+    int width = getmaxx(statusbar->win);
+    int begin_x = width - strlen(statusbar->modes_label) - strlen(statusbar->progress_label) - strlen("100%%") - 1;
 
-    mvwprintw(status_bar->win, 1, begin_x, "%d%%", volume);
+    mvwprintw(statusbar->win, 1, begin_x, "%d%%", volume);
 }
 
 /**
  * @brief Draws the moving progress bar on the status bar area.
  */
-void draw_progress_bar(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length)
+void draw_progress_bar(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length)
 {
-    int width = getmaxx(status_bar->win);
+    int width = getmaxx(statusbar->win);
 
     /* Number of seconds that must elapse for the bar to progress. */
     double secs_per_tick = song_length / width;
@@ -136,35 +136,35 @@ void draw_progress_bar(struct status_bar *status_bar, unsigned int time_elapsed,
     /* Number of times the bar has moved. */
     double ticks_elapsed = time_elapsed / tick_size;
 
-    wmove(status_bar->win, 0, 0);
-    wattr_on(status_bar->win, A_BOLD, NULL);
-    whline(status_bar->win, '=', (tick_size * ticks_elapsed) / secs_per_tick);
-    mvwaddch(status_bar->win, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
-    wattr_off(status_bar->win, A_BOLD, NULL);
+    wmove(statusbar->win, 0, 0);
+    wattr_on(statusbar->win, A_BOLD, NULL);
+    whline(statusbar->win, '=', (tick_size * ticks_elapsed) / secs_per_tick);
+    mvwaddch(statusbar->win, 0, (tick_size * ticks_elapsed) / secs_per_tick, '>');
+    wattr_off(statusbar->win, A_BOLD, NULL);
 }
 
 /**
  * @brief Draws the current song progress on the status bar.
  */
-void draw_progress_label(struct status_bar *status_bar, unsigned int time_elapsed, unsigned int song_length)
+void draw_progress_label(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length)
 {
-    status_bar->progress_label = create_label_progress(status_bar->progress_label, time_elapsed, song_length);
-    int width = getmaxx(status_bar->win);
+    statusbar->progress_label = create_label_progress(statusbar->progress_label, time_elapsed, song_length);
+    int width = getmaxx(statusbar->win);
 
-    mvwaddstr(status_bar->win, 1, width - strlen(status_bar->progress_label), status_bar->progress_label);
+    mvwaddstr(statusbar->win, 1, width - strlen(statusbar->progress_label), statusbar->progress_label);
 }
 
 /**
  * @brief Draws the title and artist of the currently playing song in the status bar.
  */
-void draw_song_label(struct status_bar *status_bar, struct mpd_song *song)
+void draw_song_label(struct statusbar *statusbar, struct mpd_song *song)
 {
 
     char *title = mpdwrapper_get_song_tag(song, MPD_TAG_TITLE);
     char *artist = mpdwrapper_get_song_tag(song, MPD_TAG_ARTIST);
 
-    status_bar->song_label = create_label_song(status_bar->song_label, title, artist);
-    mvwaddstr(status_bar->win, 1, 0, status_bar->song_label);
+    statusbar->song_label = create_label_song(statusbar->song_label, title, artist);
+    mvwaddstr(statusbar->win, 1, 0, statusbar->song_label);
 
     free(title);
     free(artist);
@@ -173,25 +173,25 @@ void draw_song_label(struct status_bar *status_bar, struct mpd_song *song)
 /**
  * @brief Draws the current notification on the status bar.
  */
-void draw_notification(struct status_bar *status_bar)
+void draw_notification(struct statusbar *statusbar)
 {
-    wattr_on(status_bar->win, A_BOLD, NULL);
-    mvwaddstr(status_bar->win, 1, 0, status_bar->notification);
-    wattr_off(status_bar->win, A_BOLD, NULL);
+    wattr_on(statusbar->win, A_BOLD, NULL);
+    mvwaddstr(statusbar->win, 1, 0, statusbar->notification);
+    wattr_off(statusbar->win, A_BOLD, NULL);
 }
 
 /**
  * @brief Sets the notification to display in the status bar.
  * 
- * @param status_bar The status bar to set a notification for.
+ * @param statusbar The status bar to set a notification for.
  * @param msg The message to display.
  * @param duration The number of seconds to display the notification.
  */
-void set_notification(struct status_bar *status_bar, char *msg, int duration)
+void set_notification(struct statusbar *statusbar, char *msg, int duration)
 {
-    status_bar->notification = realloc(status_bar->notification, (strlen(msg) + 1) * sizeof(char));
-    sprintf(status_bar->notification, "%s", msg);
-    status_bar->notify_end = time(NULL) + duration;
+    statusbar->notification = realloc(statusbar->notification, (strlen(msg) + 1) * sizeof(char));
+    sprintf(statusbar->notification, "%s", msg);
+    statusbar->notify_end = time(NULL) + duration;
 }
 
 /**

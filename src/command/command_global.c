@@ -30,12 +30,12 @@
 
 void update_mpd_database(struct mpdwrapper *mpd, struct ui *ui)
 {
-    set_notification(ui->status_bar, "Starting database update...", 3);
+    set_notification(ui->statusbar, "Starting database update...", 3);
     
     int rc = mpdwrapper_update_db(mpd);
     char *msg = (rc > 0) ? "Music database updated successfully" : "Error updating music database";
 
-    set_notification(ui->status_bar, msg, 3);
+    set_notification(ui->statusbar, msg, 3);
 }
 
 void cmd_global(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)

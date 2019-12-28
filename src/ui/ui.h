@@ -34,7 +34,7 @@ struct ui {
     enum ui_panel visible_panel; /* Only one panel should be visible at a time. */
 
     struct playlist *queue;
-    struct status_bar *status_bar;
+    struct statusbar *statusbar;
     struct list_view *library;
 
     int maxx;
