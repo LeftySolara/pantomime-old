@@ -118,7 +118,7 @@ void ui_free(struct ui *ui)
 
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
 {
-    draw_statusbar(ui->statusbar, mpd);
+    statusbar_draw(ui->statusbar, mpd);
     
     WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
     int current_song_id;

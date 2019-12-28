@@ -65,7 +65,7 @@ void seek_forward(struct mpdwrapper *mpd)
 void prev_song(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     if (mpd->state == MPD_STATE_STOP)
-        set_notification(statusbar, "Not playing", 3);
+        statusbar_set_notification(statusbar, "Not playing", 3);
     else
         mpd_run_previous(mpd->connection);
 }
@@ -73,7 +73,7 @@ void prev_song(struct mpdwrapper *mpd, struct statusbar *statusbar)
 void next_song(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     if (mpd->state == MPD_STATE_STOP)
-        set_notification(statusbar, "Not playing", 3);
+        statusbar_set_notification(statusbar, "Not playing", 3);
     else
         mpd_run_next(mpd->connection);
 }
@@ -84,7 +84,7 @@ void toggle_repeat(struct mpdwrapper *mpd, struct statusbar *statusbar)
     mpd_run_repeat(mpd->connection, !repeat);
 
     char *notification = !repeat ? "Repeat mode is on" : "Repeat mode is off";
-    set_notification(statusbar, notification, 3);
+    statusbar_set_notification(statusbar, notification, 3);
 }
 
 void toggle_random(struct mpdwrapper *mpd, struct statusbar *statusbar)
@@ -93,7 +93,7 @@ void toggle_random(struct mpdwrapper *mpd, struct statusbar *statusbar)
     mpd_run_random(mpd->connection, !random);
 
     char *notification = !random ? "Random mode is on" : "Random mode is off";
-    set_notification(statusbar, notification, 3);
+    statusbar_set_notification(statusbar, notification, 3);
 }
 
 void toggle_single(struct mpdwrapper *mpd, struct statusbar *statusbar)
@@ -102,7 +102,7 @@ void toggle_single(struct mpdwrapper *mpd, struct statusbar *statusbar)
     mpd_run_single(mpd->connection, !single);
 
     char *notification = !single ? "Single mode is on" : "Single mode is off";
-    set_notification(statusbar, notification, 3);
+    statusbar_set_notification(statusbar, notification, 3);
 }
 
 void toggle_consume(struct mpdwrapper *mpd, struct statusbar *statusbar)
@@ -111,7 +111,7 @@ void toggle_consume(struct mpdwrapper *mpd, struct statusbar *statusbar)
     mpd_run_consume(mpd->connection, !consume);
 
     char *notification = !consume ? "Consume mode is on" : "Consume mode is off";
-    set_notification(statusbar, notification, 3);
+    statusbar_set_notification(statusbar, notification, 3);
 }
 
 void toggle_crossfade(struct mpdwrapper *mpd, struct statusbar *statusbar)
@@ -128,7 +128,7 @@ void toggle_crossfade(struct mpdwrapper *mpd, struct statusbar *statusbar)
         notification = "Crossfade set to 0 seconds";
     }
 
-    set_notification(statusbar, notification, 3);
+    statusbar_set_notification(statusbar, notification, 3);
 }
 
 void decrease_volume(struct mpd_connection *connection)

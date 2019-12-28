@@ -37,18 +37,18 @@ struct statusbar {
 struct statusbar *statusbar_init();
 void statusbar_free(struct statusbar *bar);
 
-void draw_statusbar(struct statusbar *statusbar, struct mpdwrapper *mpd);
-void draw_modes(struct statusbar *statusbar, struct mpd_status *status);
-void draw_volume(struct statusbar *statusbar, struct mpd_status *status);
-void draw_progress_bar(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length);
-void draw_progress_label(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length);
-void draw_song_label(struct statusbar *statusbar, struct mpd_song *song);
-void draw_notification(struct statusbar *statusbar);
+void statusbar_draw(struct statusbar *statusbar, struct mpdwrapper *mpd);
+void statusbar_draw_modes(struct statusbar *statusbar, struct mpd_status *status);
+void statusbar_draw_volume(struct statusbar *statusbar, struct mpd_status *status);
+void statusbar_draw_progress_bar(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length);
+void statusbar_draw_progress_label(struct statusbar *statusbar, unsigned int time_elapsed, unsigned int song_length);
+void statusbar_draw_song_label(struct statusbar *statusbar, struct mpd_song *song);
+void statusbar_draw_notification(struct statusbar *statusbar);
 
-void set_notification(struct statusbar *statusbar, char *msg, int duration);
+void statusbar_set_notification(struct statusbar *statusbar, char *msg, int duration);
 
-char *create_label_modes(char *buffer, struct mpd_status *status);
-char *create_label_progress(char *buffer, unsigned int time_elapsed, unsigned int song_length);
-char *create_label_song(char *buffer, const char *title, const char *artist);
+char *statusbar_create_label_modes(char *buffer, struct mpd_status *status);
+char *statusbar_create_label_progress(char *buffer, unsigned int time_elapsed, unsigned int song_length);
+char *statusbar_create_label_song(char *buffer, const char *title, const char *artist);
 
 #endif /* STATUSBAR_H */
