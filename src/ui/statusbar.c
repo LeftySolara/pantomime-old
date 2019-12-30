@@ -66,6 +66,7 @@ void statusbar_free(struct statusbar *statusbar)
     free(statusbar->modes_label);
     free(statusbar->progress_label);
     free(statusbar->song_label);
+    free(statusbar->notification);
     free(statusbar);
 }
 
