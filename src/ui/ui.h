@@ -23,10 +23,12 @@
 #include "playlist.h"
 #include "pantomime/statusbar.h"
 #include "pantomime/list_view.h"
-#include "../mpdwrapper/mpdwrapper.h"
+#include "pantomime/mpdwrapper.h"
 
 #include <ncurses.h>
 #include <panel.h>
+
+#define DEFAULT_NOTIFICATION_LENGTH 3
 
 enum ui_panel {HELP, QUEUE, LIBRARY, NUM_PANELS};
 

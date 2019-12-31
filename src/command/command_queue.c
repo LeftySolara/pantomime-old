@@ -38,6 +38,16 @@ void queue_remove_selected(struct mpdwrapper *mpd, struct ui *ui)
     free(msg);
 }
 
+void cmd_play_queue_pos(struct mpdwrapper *mpd, struct ui *ui)
+{
+    bool success = mpdwrapper_play_queue_pos(mpd, ui->queue->idx_selected);
+
+    if (!success) {
+       char *error_msg = mpdwrapper_get_last_error_message(mpd); 
+       statusbar_set_notification(ui->statusbar, error_msg, DEFAULT_NOTIFICATION_LENGTH);
+    }
+}
+
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
 {
     switch (cmd) {
@@ -56,7 +66,7 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         playlist_scroll_page_up(ui->queue);
         break;
     case CMD_PLAY:
-        mpd_run_play_pos(mpd->connection, ui->queue->idx_selected);
+        cmd_play_queue_pos(mpd, ui);
         break;
     case CMD_CURSOR_BOTTOM:
         playlist_select_bottom_visible(ui->queue);

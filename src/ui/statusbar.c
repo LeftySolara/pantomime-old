@@ -82,17 +82,16 @@ void statusbar_free(struct statusbar *statusbar)
  */
 void statusbar_draw(struct statusbar *statusbar, struct mpdwrapper *mpd)
 {
-    enum mpd_state state = mpdwrapper_get_state(mpd);
     struct mpd_status *status = mpdwrapper_get_status(mpd);
 
-    if (state == MPD_STATE_UNKNOWN)
+    if (!mpdwrapper_has_valid_state(mpd))
         return;
 
     werase(statusbar->win);
     statusbar_draw_modes(statusbar, status);
     statusbar_draw_volume(statusbar, status);
 
-    if (state != MPD_STATE_STOP) {
+    if (!mpdwrapper_is_stopped(mpd)) {
         double song_length = mpdwrapper_get_current_song_duration(mpd);
         double time_elapsed = mpdwrapper_get_current_song_elapsed(mpd);
 
@@ -101,9 +100,12 @@ void statusbar_draw(struct statusbar *statusbar, struct mpdwrapper *mpd)
     }
 
     /* Either the song or a notification is displayed, not both. */
+    bool playing = mpdwrapper_is_playing(mpd);
+    bool paused = mpdwrapper_is_paused(mpd);
+
     if (statusbar->notification && time(NULL) <= statusbar->notify_end)
         statusbar_draw_notification(statusbar);
-    else if (state == MPD_STATE_PLAY || state == MPD_STATE_PAUSE)
+    else if (playing || paused)
         statusbar_draw_song_label(statusbar, mpdwrapper_get_current_song(mpd));
 
     wnoutrefresh(statusbar->win);

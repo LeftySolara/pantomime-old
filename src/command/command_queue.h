@@ -25,6 +25,8 @@
 
 void queue_remove_selected(struct mpdwrapper *mpd, struct ui *ui);
 
+void cmd_play_queue_pos(struct mpdwrapper *mod, struct ui *ui);
+
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui);
 
 

@@ -37,8 +37,13 @@ void mpdwrapper_delete_from_queue(struct mpdwrapper *mpd, unsigned pos);
 void mpdwrapper_refresh(struct mpdwrapper *mpd);
 int mpdwrapper_update_db(struct mpdwrapper *mpd);
 
-enum mpd_state mpdwrapper_get_state(struct mpdwrapper *mpd);
 struct mpd_status *mpdwrapper_get_status(struct mpdwrapper *mpd);
+struct songlist *mpdwrapper_get_queue(struct mpdwrapper *mpd);
+
+bool mpdwrapper_is_playing(struct mpdwrapper *mpd);
+bool mpdwrapper_is_paused(struct mpdwrapper *mpd);
+bool mpdwrapper_is_stopped(struct mpdwrapper *mpd);
+bool mpdwrapper_has_valid_state(struct mpdwrapper *mpd);
 
 struct mpd_song *mpdwrapper_get_current_song(struct mpdwrapper *mpd);
 const char *mpdwrapper_get_current_song_title(struct mpdwrapper *mpd);
@@ -46,7 +51,12 @@ int mpdwrapper_get_current_song_duration(struct mpdwrapper *mpd);
 int mpdwrapper_get_current_song_elapsed(struct mpdwrapper *mpd);
 int mpdwrapper_get_current_song_id(struct mpdwrapper *mpd);
 
+/* TODO: Make this function internal? */
 char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag);
+
+char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd);
+
+bool mpdwrapper_play_queue_pos(struct mpdwrapper *mpd, unsigned pos);
 
 
 struct songlist *songlist_new();

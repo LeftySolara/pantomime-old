@@ -94,7 +94,8 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     ui->queue = playlist_init(panel_window(ui->panels[QUEUE]));
     ui->statusbar = statusbar_new();
 
-    playlist_populate(ui->queue, mpd->queue);
+    /* TODO: remove this once the playlist view gets refactored. */
+    playlist_populate(ui->queue, mpdwrapper_get_queue(mpd));
 
     /* FOR TESTING */
     ui->library = list_view_new(ui->maxy - 2, ui->maxx);
@@ -120,6 +121,8 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
     statusbar_draw(ui->statusbar, mpd);
     
     WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
+    int is_playing;
+    int is_paused;
     int current_song_id;
 
     switch (ui->visible_panel) {
@@ -127,7 +130,9 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
         draw_help_screen(win);
         break;
     case QUEUE:
-        current_song_id = (mpd->state == MPD_STATE_PLAY || mpd->state == MPD_STATE_PAUSE) ?
+        is_playing = mpdwrapper_is_playing(mpd);
+        is_paused = mpdwrapper_is_paused(mpd);
+        current_song_id = (is_playing || is_paused) ?
                           mpdwrapper_get_current_song_id(mpd) : 0;
         playlist_draw(ui->queue, current_song_id);
         break;

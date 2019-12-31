@@ -119,14 +119,64 @@ int mpdwrapper_update_db(struct mpdwrapper *mpd)
     return rc;
 }
 
-enum mpd_state mpdwrapper_get_state(struct mpdwrapper *mpd)
-{
-    return mpd->state;
-}
-
 struct mpd_status *mpdwrapper_get_status(struct mpdwrapper *mpd)
 {
     return mpd->status;
+}
+
+/*
+ * TEMP:
+ * This function only exists to be a placeholder until the playlist view
+ * gets rewritten. Once that happens this can go away. The plan is for
+ * certain other modules to not have direct access to the play queue.
+ */
+struct songlist *mpdwrapper_get_queue(struct mpdwrapper *mpd)
+{
+    return mpd->queue;
+}
+
+/**
+ * @brief Determines if MPD is currently playing a song.
+ * 
+ * @param mpd The MPD connection to query.
+ * @return bool true if a song is playing, false otherwise.
+ */
+bool mpdwrapper_is_playing(struct mpdwrapper *mpd)
+{
+    return mpd->state == MPD_STATE_PLAY;
+}
+
+/**
+ * @brief Determines if MPD playback is paused.
+ * 
+ * @param mpd The MPD connection to query.
+ * @return bool true if a song is paused, false otherwise.
+ */
+bool mpdwrapper_is_paused(struct mpdwrapper *mpd)
+{
+    return mpd->state == MPD_STATE_PAUSE;
+}
+
+/**
+ * @brief Determines if MPD playback is stopped.
+ * 
+ * @param mpd The MPD connection to query.
+ * @return bool true if no song is playing, false otherwise.
+ */
+bool mpdwrapper_is_stopped(struct mpdwrapper *mpd)
+{
+    return mpd->state == MPD_STATE_STOP;
+}
+
+/**
+ * @brief Determines if MPD playback is in a valid, known state.
+ * 
+ * @param mpd The MPD connection to query.
+ * @return bool true if playback state can be determined, false otherwise.
+ */
+bool mpdwrapper_has_valid_state(struct mpdwrapper *mpd)
+{
+    return mpd->state != MPD_STATE_UNKNOWN;
 }
 
 struct mpd_song *mpdwrapper_get_current_song(struct mpdwrapper *mpd)
@@ -206,6 +256,38 @@ char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag)
     memcpy(buffer, tag_val, len);
 
     return buffer;
+}
+
+/**
+ * @brief Returns an error message describing the last error encountered by MPD.
+ */
+char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd)
+{
+    return mpd_status_get_error(mpd->status);
+}
+
+/**
+ * @brief Begins playing the specified song from the queue.
+ * 
+ * Begins playing the specified song from the beginning.
+ * On error, the details can be fetched with mpdwrapper_get_last_error_message().
+ * 
+ * @param mpd The MPD connection to query.
+ * @param pos The position of the song in the queue.
+ * 
+ * @return bool true on success, or false on error.
+ */
+bool mpdwrapper_play_queue_pos(struct mpdwrapper *mpd, unsigned pos)
+{
+    bool success = mpd_run_play_pos(mpd->connection, pos);
+
+    if (!success) {
+        mpd->last_error = mpd_connection_get_error(mpd->connection);
+        mpd->status = mpd_run_status(mpd->connection);
+        mpd->state = mpd_status_get_state(mpd->status);
+    }
+
+    return success;
 }
 
 /**
