@@ -82,9 +82,22 @@ void destroy_panels(PANEL **panels, int num_panels)
     free(panels);
 }
 
-struct ui *ui_init(struct mpdwrapper *mpd)
+/**
+ * @brief Creates and initializes the program UI.
+ */
+struct ui *ui_new(struct mpdwrapper *mpd)
 {
     struct ui *ui = malloc(sizeof(*ui));
+    if (!ui)
+        return NULL;
+
+    ui_initialize(ui, mpd);
+
+    return ui;
+}
+
+void ui_initialize(struct ui *ui, struct mpdwrapper *mpd)
+{
     getmaxyx(stdscr, ui->maxy, ui->maxx);
 
     ui->panels = create_panels(NUM_PANELS, ui->maxy - 2, ui->maxx);
@@ -104,8 +117,6 @@ struct ui *ui_init(struct mpdwrapper *mpd)
     list_view_append(ui->library, "2");
     list_view_append(ui->library, "3");
     list_view_append(ui->library, "4");
-
-    return ui;
 }
 
 void ui_free(struct ui *ui)
@@ -148,7 +159,7 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
     doupdate();
 }
 
-void set_visible_panel(struct ui *ui, enum ui_panel panel)
+void ui_set_visible_panel(struct ui *ui, enum ui_panel panel)
 {
     ui->visible_panel = panel;
     top_panel(ui->panels[panel]);

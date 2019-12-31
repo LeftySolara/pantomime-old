@@ -21,8 +21,8 @@
 #include "command/command_global.h"
 #include "command/command_player.h"
 #include "command/command_queue.h"
-#include "mpdwrapper/mpdwrapper.h"
-#include "ui/ui.h"
+#include "pantomime/mpdwrapper.h"
+#include "pantomime/ui.h"
 
 int main()
 {
@@ -34,7 +34,7 @@ int main()
      */
     struct mpdwrapper *mpd = mpdwrapper_new("localhost", 6600, 30000);
 
-    struct ui *ui = ui_init(mpd);
+    struct ui *ui = ui_new(mpd);
     ui_draw(ui, mpd);
 
     int ch;
