@@ -22,7 +22,7 @@
 
 #include "pantomime/ui.h"
 #include "pantomime/statusbar.h"
-#include "pantomime/list_view.h"
+#include "views/list_view.h"
 #include "playlist.h"
 
 #include <ncurses.h>

@@ -392,6 +392,39 @@ void list_view_scroll_page_down(struct list_view *this)
         this->lv_ops->lv_select_next(this);
 }
 
+/* Draws the list view on its window. */
+void list_view_draw(struct list_view *this)
+{
+    werase(this->win);
+
+    if (this->item_count <= 0)
+        return;
+    if (!this->selected)
+        this->lv_ops->lv_select_top_visible(this);
+
+    /* Trying to draw the whole list at once and scrolling thorugh it
+     * doesn't work because drawing past the bounds of an ncurses window
+     * does nothing (this can kind of work with an ncurses pad, but that doesn't
+     * allow for list selection, navigation, and manipulation in the way we want).
+     * Because of this, it's more efficient to just worry about the items
+     * that are currently visible and redraw manually when there's a change.
+     * 
+     * Since we know which item is displayed at the top and have the window dimensions,
+     * we can figure out which item will be the last one visible and only draw
+     * the ones in that range.
+     */
+    struct list_view_item *current = this->top_visible;
+    this->lv_ops->lv_find_bottom(this);
+
+    int y = 1;
+    while (current != this->bottom_visible->next) {
+        list_view_item_draw(current, this->win, y++);
+        current = current->next;
+    }
+
+    wnoutrefresh(this->win);
+}
+
 /*
  * Calculates which list item is the bottommost visible.
  */
@@ -430,35 +463,3 @@ int list_view_find_cursor_pos(struct list_view *this)
     return y_pos;
 }
 
-/* Draws the list view on its window. */
-void list_view_draw(struct list_view *this)
-{
-    werase(this->win);
-
-    if (this->item_count <= 0)
-        return;
-    if (!this->selected)
-        this->lv_ops->lv_select_top_visible(this);
-
-    /* Trying to draw the whole list at once and scrolling thorugh it
-     * doesn't work because drawing past the bounds of an ncurses window
-     * does nothing (this can kind of work with an ncurses pad, but that doesn't
-     * allow for list selection, navigation, and manipulation in the way we want).
-     * Because of this, it's more efficient to just worry about the items
-     * that are currently visible and redraw manually when there's a change.
-     * 
-     * Since we know which item is displayed at the top and have the window dimensions,
-     * we can figure out which item will be the last one visible and only draw
-     * the ones in that range.
-     */
-    struct list_view_item *current = this->top_visible;
-    this->lv_ops->lv_find_bottom(this);
-
-    int y = 1;
-    while (current != this->bottom_visible->next) {
-        list_view_item_draw(current, this->win, y++);
-        current = current->next;
-    }
-
-    wnoutrefresh(this->win);
-}

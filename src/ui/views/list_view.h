@@ -1,7 +1,7 @@
 /*******************************************************************************
  * list_view.h
  *******************************************************************************
- * Copyright (C) 2019  Jalen Adams
+ * Copyright (C) 2017-2020  Jalen Adams
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,9 @@
  * @brief UI elements for displaying a navigable list.
  */
 
-#ifndef LIST_VIEW_INTERNAL_H
-#define LIST_VIEW_INTERNAL_H
+#ifndef LIST_VIEW_H
+#define LIST_VIEW_H
 
-#include "pantomime/list_view.h"
 #include <ncurses.h>
 
 
@@ -83,9 +82,28 @@ void list_view_item_initialize(struct list_view_item *this, char *text);
 void list_view_item_free(struct list_view_item *this);
 void list_view_item_draw(struct list_view_item *this, WINDOW *win, unsigned y);
 
+struct list_view *list_view_new(int height, int width);
 void list_view_initialize(struct list_view *this, int height, int width);
+void list_view_free(struct list_view *this);
+
+void list_view_append(struct list_view *this, char *text);
+
+void list_view_remove_selected(struct list_view *this);
+void list_view_clear(struct list_view *this);
+
+void list_view_select(struct list_view *this, int index);
+void list_view_select_prev(struct list_view *this);
+void list_view_select_next(struct list_view *this);
+void list_view_select_top_visible(struct list_view *this);
+void list_view_select_bottom_visible(struct list_view *this);
+void list_view_select_middle_visible(struct list_view *this);
+
+void list_view_scroll_page_up(struct list_view *this);
+void list_view_scroll_page_down(struct list_view *this);
+
+void list_view_draw(struct list_view *this);
 
 void list_view_find_bottom(struct list_view *this);
 int list_view_find_cursor_pos(struct list_view *this);
 
-#endif /* LIST_VIEW_INTERNAL_H */
+#endif /* LIST_VIEW_H */
