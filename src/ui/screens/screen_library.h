@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ui.h
+ * screen_library.h
  *******************************************************************************
  * Copyright (C) 2019  Jalen Adams
  *
@@ -17,38 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#ifndef UI_INTERNAL_H
-#define UI_INTERNAL_H
+/**
+ * @file screen_library.h
+ */
 
-#include "pantomime/ui.h"
-#include "pantomime/statusbar.h"
-#include "screens/screen_library.h"
-#include "playlist.h"
+#ifndef SCREEN_LIBRARY_H
+#define SCREEN_LIBRARY_H
 
-#include <ncurses.h>
-#include <panel.h>
+#include "../views/list_view.h"
+#include "pantomime/mpdwrapper.h"
 
-#define DEFAULT_NOTIFICATION_LENGTH 3
-
-struct ui {
-    PANEL **panels;
-    enum ui_panel visible_panel; /* Only one panel should be visible at a time. */
-
-    struct playlist *queue;
-    struct statusbar *statusbar;
-    struct screen_library *library;
-
-    int maxx;
-    int maxy;
+struct screen_library {
+    struct list_view *artist_list_view;
 };
 
-void start_curses();
-void end_curses();
+struct screen_library *screen_library_new(int height, int width);
+void screen_library_initialize(struct screen_library *screen, int height, int width);
+void screen_library_free(struct screen_library *screen);
 
-PANEL **create_panels(int num_panels, int width, int height);
-void destroy_panels(PANEL **panels, int num_panels);
+void screen_library_populate_artists(struct screen_library *screen, struct mpdwrapper *mpd);
 
-void ui_initialize(struct ui *ui, struct mpdwrapper *mpd);
-
-
-#endif /* UI_INTERNAL)H */
+#endif /* SCREEN_LIBRARY_H */

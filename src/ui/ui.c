@@ -106,24 +106,20 @@ void ui_initialize(struct ui *ui, struct mpdwrapper *mpd)
 
     ui->queue = playlist_init(panel_window(ui->panels[QUEUE]));
     ui->statusbar = statusbar_new();
+    ui->library = screen_library_new(ui->maxy - 2, ui->maxx);
+
+    screen_library_populate_artists(ui->library, mpd);
 
     /* TODO: remove this once the playlist view gets refactored. */
     playlist_populate(ui->queue, mpdwrapper_get_queue(mpd));
 
-    /* FOR TESTING */
-    ui->library = list_view_new(ui->maxy - 2, ui->maxx);
-    list_view_append(ui->library, "0");
-    list_view_append(ui->library, "1");
-    list_view_append(ui->library, "2");
-    list_view_append(ui->library, "3");
-    list_view_append(ui->library, "4");
 }
 
 void ui_free(struct ui *ui)
 {
     playlist_free(ui->queue);
     statusbar_free(ui->statusbar);
-    list_view_free(ui->library);
+    screen_library_free(ui->library);
     free(ui);
 }
 
@@ -148,7 +144,7 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
         playlist_draw(ui->queue, current_song_id);
         break;
     case LIBRARY:
-        list_view_draw(ui->library);
+        list_view_draw(ui->library->artist_list_view);
         break;
     default:
         break;
