@@ -21,6 +21,9 @@
  * @file stringlist.h
  */
 
+#ifndef STRINGLIST_H
+#define STRINGLIST_H
+
 struct stringlist_item {
     char *str;
     struct stringlist_item *next;
@@ -42,3 +45,5 @@ void stringlist_free(struct stringlist *list);
 void stringlist_append(struct stringlist *list, char *str);
 void stringlist_remove(struct stringlist *list, int pos);
 void stringlist_clear(struct stringlist *list);
+
+#endif /* STRINGLIST_H */
