@@ -22,9 +22,7 @@ include_directories(${CURSES_INCLUDE_DIR})
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-enable_testing()
 add_subdirectory(src)
-add_subdirectory(test)
 
 # Recursively add source files to the build tree
 file(GLOB_RECURSE SOURCE_FILES "src/*.c")
