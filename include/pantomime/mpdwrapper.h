@@ -24,6 +24,7 @@
 #ifndef MPDWRAPPER_H
 #define MPDWRAPPER_H
 
+#include "pantomime/stringlist.h"
 #include <mpd/client.h>
 
 struct mpdwrapper;
@@ -53,6 +54,8 @@ int mpdwrapper_get_current_song_id(struct mpdwrapper *mpd);
 
 /* TODO: Make this function internal? */
 char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag);
+
+struct stringlist *mpdwrapper_list_artists(struct mpdwrapper *mpd);
 
 char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd);
 

@@ -259,6 +259,33 @@ char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag)
 }
 
 /**
+ * @brief Gets a list of all artists in the MPD library.
+ * 
+ * @param mpd The MPD connection to query.
+ * @return stringlist* A list of strings containing the artists' names.
+ */
+struct stringlist *mpdwrapper_list_artists(struct mpdwrapper *mpd)
+{
+    bool artist_query_success = mpd_search_db_tags(mpd->connection, MPD_TAG_ARTIST);
+
+    /* No need to manually set an error code here, as the MPD connection
+     * will have one set automatically when the query is run. */
+    if (!artist_query_success)
+        return NULL;
+    mpd_search_commit(mpd->connection);
+
+    struct mpd_pair *pair;
+    struct stringlist *list = stringlist_new();
+
+    while ((pair = mpd_recv_pair_tag(mpd->connection, MPD_TAG_ARTIST)) != NULL) {
+        stringlist_append(list, pair->value);
+        mpd_return_pair(mpd->connection, pair);
+    }
+
+    return list;
+}
+
+/**
  * @brief Returns an error message describing the last error encountered by MPD.
  */
 char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd)
