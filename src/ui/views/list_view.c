@@ -23,6 +23,8 @@
 
 #include "list_view.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 /* Creates an item for use in a list view.
  * The caller is responsible for freeing any dynamically
@@ -41,7 +43,10 @@ struct list_view_item *list_view_item_new(char *text)
 
 void list_view_item_initialize(struct list_view_item *this, char *text)
 {
-    this->text = text;
+    const size_t text_len = strlen(text) + 1;
+    this->text = realloc(this->text, text_len * sizeof(char));
+    snprintf(this->text, text_len, "%s", text);
+
     this->bold = 0;
     this->highlight = 0;
     this->prev = NULL;
@@ -53,6 +58,7 @@ void list_view_item_free(struct list_view_item *this)
     if (!this)
         return;
 
+    free(this->text);
     free(this);
 }
 
