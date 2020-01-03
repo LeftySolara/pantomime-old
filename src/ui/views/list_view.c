@@ -143,6 +143,7 @@ void list_view_append(struct list_view *this, char *text)
         this->top_visible = item;
         this->bottom_visible = item;
         this->idx_selected = 0;
+        item->highlight = 1;
     }
     else {
         struct list_view_item *tmp = this->tail;

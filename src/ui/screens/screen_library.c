@@ -58,4 +58,5 @@ void screen_library_populate_artists(struct screen_library *screen, struct mpdwr
     }
 
     stringlist_free(artist_list);
+    list_view->lv_ops->lv_select_top_visible(list_view);
 }
