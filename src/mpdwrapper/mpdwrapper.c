@@ -286,6 +286,58 @@ struct stringlist *mpdwrapper_list_artists(struct mpdwrapper *mpd)
 }
 
 /**
+ * @brief Gets a list of album names belonging to an artist.
+ * 
+ * @param mpd The MPD connection to query.
+ * @param artist The artist whose albums to look up.
+ * @return struct stringlist* A list of strings containing the album names.
+ */
+struct stringlist *mpdwrapper_list_albums(struct mpdwrapper *mpd, char *artist)
+{
+    if (!mpd_search_db_tags(mpd->connection, MPD_TAG_ALBUM))
+        return NULL;
+
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist);
+    mpd_search_commit(mpd->connection);
+
+    struct mpd_pair *pair;
+    struct stringlist *list = stringlist_new();
+    while ((pair = mpd_recv_pair_tag(mpd->connection, MPD_TAG_ALBUM)) != NULL) {
+        stringlist_append(list, pair->value);
+        mpd_return_pair(mpd->connection, pair);
+    }
+
+    return list;
+}
+
+/**
+ * @brief Gets a list of song names belonging to an album.
+ * 
+ * @param mpd The MPD connection to query.
+ * @param artist The album's artist.
+ * @param album The album to find songs from.
+ * @return struct stringlist* A list of strings containing the song names.
+ */
+struct stringlist *mpdwrapper_list_songs(struct mpdwrapper *mpd, char *artist, char *album)
+{
+    if (!mpd_search_db_tags(mpd->connection, MPD_TAG_TITLE))
+        return NULL;
+
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist);
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album);
+    mpd_search_commit(mpd->connection);
+
+    struct mpd_pair *pair;
+    struct stringlist *list = stringlist_new();
+    while ((pair = mpd_recv_pair_tag(mpd->connection, MPD_TAG_TITLE)) != NULL) {
+        stringlist_append(list, pair->value);
+        mpd_return_pair(mpd->connection, pair);
+    }
+
+    return list;
+}
+
+/**
  * @brief Returns an error message describing the last error encountered by MPD.
  */
 char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd)

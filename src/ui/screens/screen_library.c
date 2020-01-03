@@ -38,12 +38,18 @@ struct screen_library *screen_library_new(int height, int width)
 void screen_library_initialize(struct screen_library *screen, int height, int width)
 {
     screen->artist_list_view = list_view_new(height, width);
+    screen->visible_view = screen->artist_list_view;
 }
 
 void screen_library_free(struct screen_library *screen)
 {
     list_view_free(screen->artist_list_view);
     free(screen);
+}
+
+void screen_library_draw(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_draw(screen->visible_view);
 }
 
 void screen_library_populate_artists(struct screen_library *screen, struct mpdwrapper *mpd)
@@ -58,5 +64,37 @@ void screen_library_populate_artists(struct screen_library *screen, struct mpdwr
     }
 
     stringlist_free(artist_list);
+    list_view->lv_ops->lv_select_top_visible(list_view);
+}
+
+void screen_library_populate_albums(struct screen_library *screen, char *artist, struct mpdwrapper *mpd)
+{
+    struct list_view *list_view = screen->album_list_view;
+    list_view->lv_ops->lv_clear(list_view);
+
+    struct stringlist *album_list = mpdwrapper_list_albums(mpd, artist);
+    struct stringlist_item *current = album_list->head;
+    while (current) {
+        list_view->lv_ops->lv_append(list_view, current->str);
+        current = current->next;
+    }
+
+    stringlist_free(album_list);
+    list_view->lv_ops->lv_select_top_visible(list_view);
+}
+
+void screen_library_populate_songs(struct screen_library *screen, char *artist, char *album, struct mpdwrapper *mpd)
+{
+    struct list_view *list_view = screen->song_list_view;
+    list_view->lv_ops->lv_clear(list_view);
+
+    struct stringlist *song_list = mpdwrapper_list_songs(mpd, artist, album);
+    struct stringlist_item *current = song_list->head;
+    while (current) {
+        list_view->lv_ops->lv_append(list_view, current->str);
+        current = current->next;
+    }
+
+    stringlist_free(song_list);
     list_view->lv_ops->lv_select_top_visible(list_view);
 }

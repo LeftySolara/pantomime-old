@@ -29,12 +29,19 @@
 
 struct screen_library {
     struct list_view *artist_list_view;
+    struct list_view *album_list_view;
+    struct list_view *song_list_view;
+    struct list_view *visible_view;
 };
 
 struct screen_library *screen_library_new(int height, int width);
 void screen_library_initialize(struct screen_library *screen, int height, int width);
 void screen_library_free(struct screen_library *screen);
 
+void screen_library_draw(struct screen_library *screen);
+
 void screen_library_populate_artists(struct screen_library *screen, struct mpdwrapper *mpd);
+void screen_library_populate_albums(struct screen_library *screen, char *artist, struct mpdwrapper *mpd);
+void screen_library_populate_songs(struct screen_library *screen, char *artist, char *album, struct mpdwrapper *mpd);
 
 #endif /* SCREEN_LIBRARY_H */

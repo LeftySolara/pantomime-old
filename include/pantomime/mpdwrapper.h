@@ -56,6 +56,8 @@ int mpdwrapper_get_current_song_id(struct mpdwrapper *mpd);
 char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag);
 
 struct stringlist *mpdwrapper_list_artists(struct mpdwrapper *mpd);
+struct stringlist *mpdwrapper_list_albums(struct mpdwrapper *mpd, char *artist);
+struct stringlist *mpdwrapper_list_songs(struct mpdwrapper *mpd, char *artist, char *album);
 
 char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd);
 
