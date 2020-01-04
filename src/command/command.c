@@ -40,6 +40,9 @@ static struct command commands[] = {
     {CMD_DB_UPDATE, {KEY_CTRL('u'), 0, 0}, "Update",
     "Start a music database update"},
 
+    {CMD_SELECT, {' ', 0, 0}, "Select",
+    "Select the currently highlighted menu item"},
+
     {CMD_PLAY, {KEY_RETURN, 0, 0}, "Play",
     "Play the currently selected track"},
 
@@ -76,10 +79,10 @@ static struct command commands[] = {
     {CMD_CROSSFADE, {'x', 0, 0}, "Crossfade",
     "Toggle crossfade"},
 
-    {CMD_VOL_DOWN, {'h', KEY_LEFT, 0}, "Volume down",
+    {CMD_VOL_DOWN, {KEY_LEFT, 0, 0}, "Volume down",
     "Decrease the playback volume"},
 
-    {CMD_VOL_UP, {'l', KEY_RIGHT, 0}, "Volume up",
+    {CMD_VOL_UP, {KEY_RIGHT, 0, 0}, "Volume up",
     "Increase the playback volume"},
 
     {CMD_DELETE, {'d', 0, 0}, "Delete",
@@ -99,6 +102,12 @@ static struct command commands[] = {
 
     {CMD_CURSOR_UP, {KEY_UP, 'k', 0}, "Cursor up",
     "Move the cursor up one line"},
+
+    {CMD_CURSOR_LEFT, {'h', 0, 0}, "Cursor left",
+    "Move the cursor left."},
+
+    {CMD_CURSOR_RIGHT, {'l', 0, 0}, "Cursor right",
+    "Move the cursor right."},
 
     {CMD_CURSOR_PAGE_DOWN, {KEY_NPAGE, 0, 0}, "Page Down",
     "Page down"},

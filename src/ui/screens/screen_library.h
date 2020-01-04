@@ -52,6 +52,9 @@ void screen_library_select_middle_visible(struct screen_library *screen);
 void screen_library_scroll_page_up(struct screen_library *screen);
 void screen_library_scroll_page_down(struct screen_library *screen);
 
+void screen_library_next_view(struct screen_library *screen, struct mpdwrapper *mpd);
+void screen_library_prev_view(struct screen_library *screen);
+
 void screen_library_draw(struct screen_library *screen);
 
 #endif /* SCREEN_LIBRARY_H */

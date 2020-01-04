@@ -19,7 +19,7 @@
 
 #include "command_library.h"
 
-void cmd_library(enum command_type cmd, struct screen_library *screen)
+void cmd_library(enum command_type cmd, struct screen_library *screen, struct mpdwrapper *mpd)
 {
     switch(cmd) {
     case CMD_NULL:
@@ -29,6 +29,12 @@ void cmd_library(enum command_type cmd, struct screen_library *screen)
         break;
     case CMD_CURSOR_UP:
         screen_library_select_prev(screen);
+        break;
+    case CMD_CURSOR_LEFT:
+        screen_library_prev_view(screen);
+        break;
+    case CMD_CURSOR_RIGHT:
+        screen_library_next_view(screen, mpd);
         break;
     case CMD_CURSOR_PAGE_DOWN:
         screen_library_scroll_page_down(screen);

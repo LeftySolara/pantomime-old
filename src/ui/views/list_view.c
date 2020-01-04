@@ -44,7 +44,7 @@ struct list_view_item *list_view_item_new(char *text)
 void list_view_item_initialize(struct list_view_item *this, char *text)
 {
     const size_t text_len = strlen(text) + 1;
-    this->text = realloc(this->text, text_len * sizeof(char));
+    this->text = malloc(text_len * sizeof(char));
     snprintf(this->text, text_len, "%s", text);
 
     this->bold = 0;
@@ -210,6 +210,9 @@ void list_view_remove_selected(struct list_view *this)
  */
 void list_view_clear(struct list_view *this)
 {
+    if (!this || !this->head)
+        return;
+
     struct list_view_item *current = this->head;
     struct list_view_item *next;
 

@@ -50,6 +50,10 @@ struct stringlist *stringlist_new()
     if (!list)
         return NULL;
     
+    list->head = NULL;
+    list->tail = NULL;
+    list->item_count = 0;
+    
     return list;
 }
 
@@ -66,8 +70,9 @@ void stringlist_append(struct stringlist *list, char *str)
 
     struct stringlist_item *item = stringlist_item_new(str);
 
-    if (!list->head)
+    if (!list->head) {
         list->head = item;
+    }
     else {
         struct stringlist_item *tmp = list->tail;
         tmp->next = item;

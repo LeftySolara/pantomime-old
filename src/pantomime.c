@@ -57,7 +57,7 @@ int main()
             cmd_queue(cmd, mpd, ui);
             break;
         case LIBRARY:
-            cmd_library(cmd, ui->library);
+            cmd_library(cmd, ui->library, mpd);
             break;
         default:
             break;

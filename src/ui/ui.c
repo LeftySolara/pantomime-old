@@ -144,7 +144,7 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
         playlist_draw(ui->queue, current_song_id);
         break;
     case LIBRARY:
-        list_view_draw(ui->library->artist_list_view);
+        list_view_draw(ui->library->visible_view);
         break;
     default:
         break;

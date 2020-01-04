@@ -23,6 +23,6 @@
 #include "command.h"
 #include "../ui/screens/screen_library.h"
 
-void cmd_library(enum command_type cmd, struct screen_library *screen);
+void cmd_library(enum command_type cmd, struct screen_library *screen, struct mpdwrapper *mpd);
 
 #endif /* COMMAND_LIBRARY_H */

@@ -38,12 +38,16 @@ struct screen_library *screen_library_new(int height, int width)
 void screen_library_initialize(struct screen_library *screen, int height, int width)
 {
     screen->artist_list_view = list_view_new(height, width);
+    screen->album_list_view = list_view_new(height, width);
+    screen->song_list_view = list_view_new(height, width);
     screen->visible_view = screen->artist_list_view;
 }
 
 void screen_library_free(struct screen_library *screen)
 {
     list_view_free(screen->artist_list_view);
+    list_view_free(screen->album_list_view);
+    list_view_free(screen->song_list_view);
     free(screen);
 }
 
@@ -132,6 +136,33 @@ void screen_library_scroll_page_up(struct screen_library *screen)
 void screen_library_scroll_page_down(struct screen_library *screen)
 {
     screen->visible_view->lv_ops->lv_scroll_page_down(screen->visible_view);
+}
+
+void screen_library_next_view(struct screen_library *screen, struct mpdwrapper *mpd)
+{
+    struct list_view *visible = screen->visible_view;
+
+    if (visible == screen->artist_list_view) {
+        char *artist = screen->artist_list_view->selected->text;
+        screen_library_populate_albums(screen, artist, mpd);
+        screen->visible_view = screen->album_list_view;
+    }
+    else if (visible == screen->album_list_view) {
+        char * artist = screen->artist_list_view->selected->text;
+        char *album = screen->album_list_view->selected->text;
+        screen_library_populate_songs(screen, artist, album, mpd);
+        screen->visible_view = screen->song_list_view;
+    }
+}
+
+void screen_library_prev_view(struct screen_library *screen)
+{
+    struct list_view *visible = screen->visible_view;
+
+    if (visible == screen->song_list_view)
+        screen->visible_view = screen->album_list_view;
+    else if (visible == screen->album_list_view)
+        screen->visible_view = screen->artist_list_view;
 }
 
 void screen_library_draw(struct screen_library *screen)
