@@ -47,11 +47,6 @@ void screen_library_free(struct screen_library *screen)
     free(screen);
 }
 
-void screen_library_draw(struct screen_library *screen)
-{
-    screen->visible_view->lv_ops->lv_draw(screen->visible_view);
-}
-
 void screen_library_populate_artists(struct screen_library *screen, struct mpdwrapper *mpd)
 {
     struct stringlist *artist_list = mpdwrapper_list_artists(mpd);
@@ -97,4 +92,49 @@ void screen_library_populate_songs(struct screen_library *screen, char *artist, 
 
     stringlist_free(song_list);
     list_view->lv_ops->lv_select_top_visible(list_view);
+}
+
+void screen_library_select(struct screen_library *screen, int index)
+{
+    screen->visible_view->lv_ops->lv_select(screen->visible_view, index);
+}
+
+void screen_library_select_prev(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_select_prev(screen->visible_view);
+}
+
+void screen_library_select_next(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_select_next(screen->visible_view);
+}
+
+void screen_library_select_top_visible(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_select_top_visible(screen->visible_view);
+}
+
+void screen_library_select_bottom_visible(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_select_bottom_visible(screen->visible_view);
+}
+
+void screen_library_select_middle_visible(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_select_middle_visible(screen->visible_view);
+}
+
+void screen_library_scroll_page_up(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_scroll_page_up(screen->visible_view);
+}
+
+void screen_library_scroll_page_down(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_scroll_page_down(screen->visible_view);
+}
+
+void screen_library_draw(struct screen_library *screen)
+{
+    screen->visible_view->lv_ops->lv_draw(screen->visible_view);
 }

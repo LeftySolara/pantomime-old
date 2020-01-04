@@ -38,10 +38,20 @@ struct screen_library *screen_library_new(int height, int width);
 void screen_library_initialize(struct screen_library *screen, int height, int width);
 void screen_library_free(struct screen_library *screen);
 
-void screen_library_draw(struct screen_library *screen);
-
 void screen_library_populate_artists(struct screen_library *screen, struct mpdwrapper *mpd);
 void screen_library_populate_albums(struct screen_library *screen, char *artist, struct mpdwrapper *mpd);
 void screen_library_populate_songs(struct screen_library *screen, char *artist, char *album, struct mpdwrapper *mpd);
+
+void screen_library_select(struct screen_library *screen, int index);
+void screen_library_select_prev(struct screen_library *screen);
+void screen_library_select_next(struct screen_library *screen);
+void screen_library_select_top_visible(struct screen_library *screen);
+void screen_library_select_bottom_visible(struct screen_library *screen);
+void screen_library_select_middle_visible(struct screen_library *screen);
+
+void screen_library_scroll_page_up(struct screen_library *screen);
+void screen_library_scroll_page_down(struct screen_library *screen);
+
+void screen_library_draw(struct screen_library *screen);
 
 #endif /* SCREEN_LIBRARY_H */
