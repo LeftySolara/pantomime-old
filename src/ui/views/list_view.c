@@ -360,16 +360,14 @@ void list_view_scroll_page_up(struct list_view *this)
     /* For restoring cursor position, if necessary. */
     int y_pos = this->lv_ops->lv_find_cursor_pos(this);
 
-    this->lv_ops->lv_select_bottom_visible(this);
-    if (!this->selected->next)
+    this->lv_ops->lv_select_top_visible(this);
+    if (!this->selected->prev)
         return;
 
-    this->lv_ops->lv_select_next(this);
-    this->top_visible = this->selected;
-    this->lv_ops->lv_find_bottom(this);
+    for (int i = 0; i < this->max_visible - 1; ++i)
+        this->lv_ops->lv_select_prev(this);
 
     /* Restore cursor position */
-    this->lv_ops->lv_select_top_visible(this);
     for (int i = 0; i < y_pos; ++i)
         this->lv_ops->lv_select_next(this);
 }
