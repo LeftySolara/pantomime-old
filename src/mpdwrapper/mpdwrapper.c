@@ -97,6 +97,9 @@ void mpdwrapper_refresh(struct mpdwrapper *mpd)
     mpd_status_free(mpd->status);
     mpd->status = mpd_run_status(mpd->connection);
 
+    if (!mpd->status)
+        fprintf(stderr, "%s\n", mpd_connection_get_error_message(mpd->connection));
+
     if (mpd->current_song)
         mpd_song_free(mpd->current_song);
     mpd->current_song = mpd_run_current_song(mpd->connection);
@@ -320,19 +323,23 @@ struct stringlist *mpdwrapper_list_albums(struct mpdwrapper *mpd, char *artist)
  */
 struct stringlist *mpdwrapper_list_songs(struct mpdwrapper *mpd, char *artist, char *album)
 {
-    if (!mpd_search_db_tags(mpd->connection, MPD_TAG_TITLE))
+    if (!mpd_search_db_songs(mpd->connection, true))
         return NULL;
 
     mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist);
     mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album);
+    mpd_search_add_sort_tag(mpd->connection, MPD_TAG_TRACK, false);
     mpd_search_commit(mpd->connection);
 
-    struct mpd_pair *pair;
+    struct mpd_song *song;
+    char *song_title;
     struct stringlist *list = stringlist_new();
-    while ((pair = mpd_recv_pair_tag(mpd->connection, MPD_TAG_TITLE)) != NULL) {
-        stringlist_append(list, pair->value);
-        mpd_return_pair(mpd->connection, pair);
+    while ((song = mpd_recv_song(mpd->connection)) != NULL) {
+        song_title = mpdwrapper_get_song_tag(song, MPD_TAG_TITLE);
+        stringlist_append(list, song_title);
+        mpd_song_free(song);
     }
+    mpd_response_finish(mpd->connection);
 
     return list;
 }
