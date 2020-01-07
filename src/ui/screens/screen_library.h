@@ -25,6 +25,7 @@
 #define SCREEN_LIBRARY_H
 
 #include "../views/list_view.h"
+#include "pantomime/statusbar.h"
 #include "pantomime/mpdwrapper.h"
 
 struct screen_library {

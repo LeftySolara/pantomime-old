@@ -21,8 +21,14 @@
 #define COMMAND_LIBRARY_H
 
 #include "command.h"
+#include "pantomime/statusbar.h"
 #include "../ui/screens/screen_library.h"
 
-void cmd_library(enum command_type cmd, struct screen_library *screen, struct mpdwrapper *mpd);
+void cmd_add_artist(struct screen_library *screen, struct statusbar *statusbar, struct mpdwrapper *mpd);
+void cmd_add_album(struct screen_library *screen, struct statusbar *statusbar, struct mpdwrapper *mpd);
+void cmd_add_song(struct screen_library *screen, struct statusbar *statusbar, struct mpdwrapper *mpd);
+void cmd_add_to_queue(struct screen_library *screen, struct statusbar *statusbar, struct mpdwrapper *mpd);
+
+void cmd_library(enum command_type cmd, struct screen_library *screen, struct statusbar *statusbar, struct mpdwrapper *mpd);
 
 #endif /* COMMAND_LIBRARY_H */

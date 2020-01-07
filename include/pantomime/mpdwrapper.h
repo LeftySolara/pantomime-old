@@ -62,7 +62,9 @@ struct stringlist *mpdwrapper_list_songs(struct mpdwrapper *mpd, char *artist, c
 char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd);
 
 bool mpdwrapper_play_queue_pos(struct mpdwrapper *mpd, unsigned pos);
-
+bool mpdwrapper_add_artist(struct mpdwrapper *mpd, char *artist);
+bool mpdwrapper_add_album(struct mpdwrapper *mpd, char *artist, char *album);
+bool mpdwrapper_add_song(struct mpdwrapper *mpd, char *artist, char *album, char *song);
 
 struct songlist *songlist_new();
 void songlist_free(struct songlist *songlist);

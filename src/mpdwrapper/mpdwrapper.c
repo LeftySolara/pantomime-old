@@ -370,6 +370,54 @@ bool mpdwrapper_play_queue_pos(struct mpdwrapper *mpd, unsigned pos)
 }
 
 /**
+ * @brief Finds all songs by the specified artist and adds them to the play queue.
+ */
+bool mpdwrapper_add_artist(struct mpdwrapper *mpd, char *artist)
+{
+    if (!mpd_search_add_db_songs(mpd->connection, true))
+        return false;
+
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist);
+
+    bool rc = mpd_search_commit(mpd->connection);
+    mpd_response_finish(mpd->connection);
+    return rc;
+}
+
+/**
+ * @brief Finds all songs in an album and adds them to the play queue.
+ */
+bool mpdwrapper_add_album(struct mpdwrapper *mpd, char *artist, char *album)
+{
+    if (!mpd_search_add_db_songs(mpd->connection, true))
+        return false;
+
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist);
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album);
+
+    bool rc =  mpd_search_commit(mpd->connection);
+    mpd_response_finish(mpd->connection);
+    return rc;
+}
+
+/**
+ * @brief Finds a song and adds it to the play queue.
+ */
+bool mpdwrapper_add_song(struct mpdwrapper *mpd, char *artist, char *album, char *song)
+{
+    if (!mpd_search_add_db_songs(mpd->connection, false))
+        return false;
+
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist);
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album);
+    mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_TITLE, song);
+
+    bool rc =  mpd_search_commit(mpd->connection);
+    mpd_response_finish(mpd->connection);
+    return rc;
+}
+
+/**
  * @brief Fetches the current MPD queue and stores it in a songlist struct.
  * 
  * @param mpd The MPD wrapper to fetch the queue for.
