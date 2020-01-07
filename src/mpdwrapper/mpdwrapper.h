@@ -60,6 +60,7 @@ struct mpdwrapper {
     enum mpd_error last_error;          /**< The most recent error encountered by MPD. */
     enum mpd_state state;               /**< Current player state (playing, paused, or stopped). */
     int queue_version;                  /**< The queue version number. Useful for checking if queue has changed. */
+    bool queue_changed;                 /**< Whether the queue has changed since the last refresh. */
 };
 
 struct songnode *songnode_new(struct mpd_song *song);
@@ -72,6 +73,5 @@ int songlist_get_size(struct songlist *songlist);
 
 void mpdwrapper_initialize(struct mpdwrapper *mpd, const char *host, int port, int timeout);
 void mpdwrapper_fetch_queue(struct mpdwrapper *mpd);
-
 
 #endif /* MPDWRAPPER_INTERNAL_H */

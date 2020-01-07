@@ -108,7 +108,10 @@ void mpdwrapper_refresh(struct mpdwrapper *mpd)
     if (mpd->queue_version != queue_version) {
         mpdwrapper_fetch_queue(mpd);
         mpd->queue_version = queue_version; 
+        mpd->queue_changed = true;
     }
+    else
+        mpd->queue_changed = false;
 }
 
 /**
@@ -443,6 +446,11 @@ void mpdwrapper_fetch_queue(struct mpdwrapper *mpd)
     
     mpd_response_finish(mpd->connection);
     mpd->queue_version = mpd_status_get_queue_version(mpd->status);
+}
+
+bool mpdwrapper_queue_changed(struct mpdwrapper *mpd)
+{
+    return mpd->queue_changed;
 }
 
 

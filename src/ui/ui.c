@@ -132,6 +132,11 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
     int is_paused;
     int current_song_id;
 
+    if (mpdwrapper_queue_changed(mpd)) {
+        playlist_clear(ui->queue);
+        playlist_populate(ui->queue, mpdwrapper_get_queue(mpd));
+    }
+
     switch (ui->visible_panel) {
     case HELP:
         draw_help_screen(win);

@@ -45,6 +45,7 @@ bool mpdwrapper_is_playing(struct mpdwrapper *mpd);
 bool mpdwrapper_is_paused(struct mpdwrapper *mpd);
 bool mpdwrapper_is_stopped(struct mpdwrapper *mpd);
 bool mpdwrapper_has_valid_state(struct mpdwrapper *mpd);
+bool mpdwrapper_queue_changed(struct mpdwrapper *mpd);
 
 struct mpd_song *mpdwrapper_get_current_song(struct mpdwrapper *mpd);
 const char *mpdwrapper_get_current_song_title(struct mpdwrapper *mpd);
