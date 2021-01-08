@@ -92,6 +92,7 @@ struct playlist *playlist_init(WINDOW *win)
     playlist->bottom_visible = NULL;
     
     playlist->length = 0;
+    playlist->idx_last_top = -1;
     playlist->idx_selected = -1;
     playlist->max_visible = getmaxy(win) - 1; /* -1 to account for header row */
 
@@ -218,9 +219,8 @@ void playlist_populate(struct playlist *playlist, struct songlist *songlist)
         playlist_append(playlist, item);
     }
 
-    playlist->idx_selected = 0;
-    playlist->selected = playlist->head;
-    playlist->top_visible = playlist->head;
+    playlist_restore_last_top(playlist);
+    playlist_set_selected(playlist, playlist->idx_last_selected);
     if (playlist->selected)
         playlist->selected->highlight = 1;
     playlist_find_bottom(playlist);
@@ -234,10 +234,14 @@ void playlist_clear(struct playlist *playlist)
     struct playlist_item *current = playlist->head;
     struct playlist_item *next;
 
+    int idx = 0;
     while (current) {
+        if (current == playlist->top_visible)
+            playlist->idx_last_top = idx;
         next = current->next;
         playlist_item_free(current);
         current = next;
+        ++idx;
     }
 
     playlist->head = NULL;
@@ -246,6 +250,7 @@ void playlist_clear(struct playlist *playlist)
     playlist->top_visible = NULL;
     playlist->bottom_visible = NULL;
     playlist->length = 0;
+    playlist->idx_last_selected = playlist->idx_selected;
     playlist->idx_selected = -1;
 }
 
@@ -455,6 +460,39 @@ int playlist_find_cursor_pos(struct playlist *playlist)
     }
 
     return i;
+}
+
+void playlist_restore_last_top(struct playlist *playlist)
+{
+    if (playlist->idx_last_top < 0)
+        playlist->top_visible = playlist->head;
+    else
+        playlist->top_visible = playlist_at(playlist, playlist->idx_last_top);
+}
+
+/**
+ * @brief Finds the playlist item at the given index.
+ * 
+ * @param playlist The playlist to search.
+ * @param idx The index to check.
+ * @return struct playlist_item* 
+ */
+struct playlist_item *playlist_at(struct playlist *playlist, int index)
+{
+    if (index >= playlist->length)
+        return NULL;
+
+    if (index == 0)
+        return playlist->head;
+    if (index == playlist->length-1)
+        return playlist->tail;
+
+    struct playlist_item *current = playlist->head;
+    for (int i = 0; i < index; ++i) {
+        current = current->next;
+    }
+
+    return current;
 }
 
 /**

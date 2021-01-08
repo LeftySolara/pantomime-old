@@ -71,9 +71,11 @@ struct playlist {
     struct playlist_item *top_visible;      /**< First visible item in the window. */
     struct playlist_item *bottom_visible;   /**< Last visible item in the window. */
 
-    int length;         /**< The number of items in the playlist. MPD's default maximum is 4096. */
-    int idx_selected;   /**< The index of the currently selected item. */
-    int max_visible;    /**< The maximum number of items that can be displayed with the current window size. */
+    int length;               /**< The number of items in the playlist. MPD's default maximum is 4096. */
+    int idx_selected;         /**< The index of the currently selected item. */
+    int idx_last_selected;    /**< The index of the last item selected before clearing the playlist. */
+    int idx_last_top;         /**< The index of the last item pointed to by top_visible. Useful for restoring scroll position on refresh. */
+    int max_visible;          /**< The maximum number of items that can be displayed with the current window size. */
 };
 
 struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time, unsigned id);
@@ -100,6 +102,9 @@ void playlist_scroll_page_down(struct playlist *playlist);
 
 void playlist_find_bottom(struct playlist *playlist);
 int playlist_find_cursor_pos(struct playlist *playlist);
+void playlist_restore_last_top(struct playlist *playlist);
+
+struct playlist_item *playlist_at(struct playlist *playlist, int index);
 
 void playlist_item_draw(struct playlist_item *item, WINDOW *win, unsigned y, unsigned field_width);
 void playlist_deaw_header(struct playlist *playlist, unsigned field_width);
