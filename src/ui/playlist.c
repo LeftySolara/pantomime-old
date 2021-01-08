@@ -221,7 +221,8 @@ void playlist_populate(struct playlist *playlist, struct songlist *songlist)
     playlist->idx_selected = 0;
     playlist->selected = playlist->head;
     playlist->top_visible = playlist->head;
-    playlist->selected->highlight = 1;
+    if (playlist->selected)
+        playlist->selected->highlight = 1;
     playlist_find_bottom(playlist);
 }
 
@@ -423,7 +424,7 @@ void playlist_scroll_page_down(struct playlist *playlist)
  */
 void playlist_find_bottom(struct playlist *playlist)
 {
-    if (!playlist)
+    if (!playlist || !playlist->head)
         return;
 
     int rows = getmaxy(playlist->win);
