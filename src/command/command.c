@@ -86,7 +86,7 @@ static struct command commands[] = {
     "Increase the playback volume"},
 
     {CMD_DELETE, {'d', 0, 0}, "Delete",
-    "Deletes a song from the playlist"},
+    "Deletes a song from the queue"},
 
     {CMD_CLEAR, {'C', 0, 0}, "Clear Queue",
     "Removes all songs from the queue"},
