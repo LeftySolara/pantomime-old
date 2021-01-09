@@ -34,6 +34,7 @@ struct mpdwrapper *mpdwrapper_new(const char *host, int port, int timeout);
 void mpdwrapper_free(struct mpdwrapper *mpd);
 
 void mpdwrapper_delete_from_queue(struct mpdwrapper *mpd, unsigned pos);
+void mpdwrapper_clear_queue(struct mpdwrapper *mpd);
 
 void mpdwrapper_refresh(struct mpdwrapper *mpd);
 int mpdwrapper_update_db(struct mpdwrapper *mpd);

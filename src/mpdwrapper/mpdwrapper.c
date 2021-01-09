@@ -23,8 +23,8 @@
 
 #include "mpdwrapper.h"
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /**
@@ -84,6 +84,16 @@ void mpdwrapper_free(struct mpdwrapper *mpd)
 void mpdwrapper_delete_from_queue(struct mpdwrapper *mpd, unsigned pos)
 {
     mpd_run_delete(mpd->connection, pos);
+}
+
+/**
+ * @brief Removes all songs from the play queue.
+ * 
+ * @param mpd The mpd connection.
+ */
+void mpdwrapper_clear_queue(struct mpdwrapper *mpd)
+{
+    mpd_run_clear(mpd->connection);
 }
 
 /**

@@ -20,10 +20,11 @@
 #ifndef COMMAND_QUEUE_H
 #define COMMAND_QUEUE_H
 
-#include "command.h"
 #include "../ui/ui.h"
+#include "command.h"
 
 void queue_remove_selected(struct mpdwrapper *mpd, struct ui *ui);
+void queue_clear(struct mpdwrapper *mpd, struct ui *ui);
 
 void cmd_play_queue_pos(struct mpdwrapper *mod, struct ui *ui);
 

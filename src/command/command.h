@@ -42,6 +42,7 @@ enum command_type {
     CMD_VOL_DOWN,
     CMD_VOL_UP,
     CMD_DELETE,
+    CMD_CLEAR,
     CMD_PANEL_HELP,
     CMD_PANEL_QUEUE,
     CMD_PANEL_LIBRARY,

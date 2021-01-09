@@ -38,6 +38,22 @@ void queue_remove_selected(struct mpdwrapper *mpd, struct ui *ui)
     free(msg);
 }
 
+/* TODO: prompt user to confirm they want to clear the queue. */
+void queue_clear(struct mpdwrapper *mpd, struct ui *ui)
+{
+    char *msg_content = "Queue cleared";
+    int len_msg = strlen(msg_content) + 1;
+
+    char *msg = malloc(len_msg * sizeof(char));
+    snprintf(msg, len_msg, msg_content);
+
+    mpdwrapper_clear_queue(mpd);
+    playlist_clear(ui->queue);
+    statusbar_set_notification(ui->statusbar, msg, 3);
+
+    free(msg);
+}
+
 void cmd_play_queue_pos(struct mpdwrapper *mpd, struct ui *ui)
 {
     bool success = mpdwrapper_play_queue_pos(mpd, ui->queue->idx_selected);
@@ -79,6 +95,9 @@ void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
         break;
     case CMD_DELETE:
         queue_remove_selected(mpd, ui);
+        break;
+    case CMD_CLEAR:
+        queue_clear(mpd, ui);
         break;
     default:
         break;

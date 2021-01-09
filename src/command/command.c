@@ -88,6 +88,9 @@ static struct command commands[] = {
     {CMD_DELETE, {'d', 0, 0}, "Delete",
     "Deletes a song from the playlist"},
 
+    {CMD_CLEAR, {'C', 0, 0}, "Clear Queue",
+    "Removes all songs from the queue"},
+
     {CMD_PANEL_HELP, {'1', KEY_F(1), 0}, "Help",
     "Show the help screen"},
 
