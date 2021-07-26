@@ -1,7 +1,7 @@
 /*******************************************************************************
  * mpdwrapper.c
  *******************************************************************************
- * Copyright (C) 2019  Jalen Adams
+ * Copyright (C) 2019-2021  Jalen Adams
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,10 @@
  */
 
 #include "mpdwrapper.h"
+#include "pantomime/mpdwrapper.h"
 
+#include <mpd/connection.h>
+#include <mpd/error.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -46,9 +49,24 @@ struct mpdwrapper *mpdwrapper_new(const char *host, int port, int timeout)
     return mpd;
 }
 
+/**
+ * @brief Initializes the mpdwrapper struct and attempts to create a connection to the provided host.
+ * 
+ * @param mpd An empty mpd struct to initialize. Assumes memory has already been allocated.
+ * @param host The IP address or UNIX socket to connect to.
+ * @param port The TCP port to connect to if using an IP address.
+ * @param timeout The timeout in milliseconds.
+ */
 void mpdwrapper_initialize(struct mpdwrapper *mpd, const char *host, int port, int timeout)
 {
     mpd->connection = mpd_connection_new(host, port, timeout);
+
+    /* Unable to connect to MPD */
+    if (mpd_connection_get_error(mpd->connection) != MPD_ERROR_SUCCESS) {
+        fprintf(stderr, "MPD error: %s\n", mpd_connection_get_error_message(mpd->connection));
+        exit(1);
+    }
+
     mpd->status = mpd_run_status(mpd->connection);
     mpd->current_song = mpd_run_current_song(mpd->connection);
     mpd->queue = songlist_new();

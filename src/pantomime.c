@@ -27,13 +27,13 @@
 
 int main()
 {
-    start_curses();
-    halfdelay(TRUE);
-
     /* TODO: Allow user to specify connection settings as command line args
      *       or from a config file.
      */
     struct mpdwrapper *mpd = mpdwrapper_new("localhost", 6600, 30000);
+
+    start_curses();
+    halfdelay(TRUE);
 
     struct ui *ui = ui_new(mpd);
     ui_draw(ui, mpd);
