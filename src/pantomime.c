@@ -17,6 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+ #include <argp.h>
+ #include <stdlib.h>
+
 #include "command/command.h"
 #include "command/command_global.h"
 #include "command/command_player.h"
@@ -25,12 +28,69 @@
 #include "pantomime/mpdwrapper.h"
 #include "pantomime/ui.h"
 
-int main()
+
+/* Argument Parsing */
+const char *argp_program_version = "pantomime 0.1";
+const char *argp_program_bug_address = "<julianne@julianneadams.info>";
+static char doc[] = "Pantomime -- An NCURSES MPD client";
+
+static struct argp_option options[] = {
+    {"host", 'h', "HOST", 0, "The IP address or socket path of the MPD host"},
+    {"port", 'p', "PORT", 0, "The port of the MPD host"},
+    {"timeout", 't', "TIMEOUT", 0, "The timeout in milliseconds"},
+    {0}
+};
+
+/* Used by main() to communicate with parse_opt. */
+struct arguments {
+    char *args[0];
+    char *host;
+    int port;
+    int timeout;
+};
+
+/* Parse a single option. */
+static error_t parse_opt(int key, char *arg, struct argp_state *state)
 {
-    /* TODO: Allow user to specify connection settings as command line args
-     *       or from a config file.
-     */
-    struct mpdwrapper *mpd = mpdwrapper_new("localhost", 6600, 30000);
+    /* Get the input argument from argp_parse */
+    struct arguments *arguments = state->input;
+
+    switch (key) {
+        case 'h':
+            arguments->host = arg;
+            break;
+        case 'p':
+            arguments->port = atoi(arg);
+            break;
+        case 't':
+            arguments->timeout = atoi(arg);
+            break;
+        case ARGP_KEY_ARG:
+            if (state->arg_num >= 0) {
+                /* Too many arguments. */
+                argp_usage(state);
+            }
+            break;
+        default:
+            return ARGP_ERR_UNKNOWN;
+    }
+    return 0;
+}
+
+/* Our argp parser. */
+static struct argp argp = {options, parse_opt, 0, doc};
+
+
+int main(int argc, char **argv)
+{
+    /* Default arguments. */
+    struct arguments arguments;
+    arguments.host = "localhost";
+    arguments.port = 6600;
+    arguments.timeout = 30000;
+    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+
+    struct mpdwrapper *mpd = mpdwrapper_new(arguments.host, arguments.port, arguments.timeout);
 
     start_curses();
     halfdelay(TRUE);
