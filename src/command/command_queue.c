@@ -18,10 +18,11 @@
  ******************************************************************************/
 
 #include "command_queue.h"
-#include "../ui/statusbar.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+#include "../ui/statusbar.h"
 
 void queue_remove_selected(struct mpdwrapper *mpd, struct ui *ui)
 {
@@ -59,47 +60,47 @@ void cmd_play_queue_pos(struct mpdwrapper *mpd, struct ui *ui)
     bool success = mpdwrapper_play_queue_pos(mpd, ui->queue->idx_selected);
 
     if (!success) {
-       char *error_msg = mpdwrapper_get_last_error_message(mpd); 
-       statusbar_set_notification(ui->statusbar, error_msg, DEFAULT_NOTIFICATION_LENGTH);
+        char *error_msg = mpdwrapper_get_last_error_message(mpd);
+        statusbar_set_notification(ui->statusbar, error_msg, DEFAULT_NOTIFICATION_LENGTH);
     }
 }
 
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
 {
     switch (cmd) {
-    case CMD_NULL:
-        break;
-    case CMD_CURSOR_DOWN:
-        playlist_select_next(ui->queue);
-        break;
-    case CMD_CURSOR_UP:
-        playlist_select_prev(ui->queue);
-        break;
-    case CMD_CURSOR_PAGE_DOWN:
-        playlist_scroll_page_down(ui->queue);
-        break;
-    case CMD_CURSOR_PAGE_UP:
-        playlist_scroll_page_up(ui->queue);
-        break;
-    case CMD_PLAY:
-        cmd_play_queue_pos(mpd, ui);
-        break;
-    case CMD_CURSOR_BOTTOM:
-        playlist_select_bottom_visible(ui->queue);
-        break;
-    case CMD_CURSOR_TOP:
-        playlist_select_top_visible(ui->queue);
-        break;
-    case CMD_CURSOR_MIDDLE:
-        playlist_select_middle_visible(ui->queue);
-        break;
-    case CMD_DELETE:
-        queue_remove_selected(mpd, ui);
-        break;
-    case CMD_CLEAR:
-        queue_clear(mpd, ui);
-        break;
-    default:
-        break;
+        case CMD_NULL:
+            break;
+        case CMD_CURSOR_DOWN:
+            playlist_select_next(ui->queue);
+            break;
+        case CMD_CURSOR_UP:
+            playlist_select_prev(ui->queue);
+            break;
+        case CMD_CURSOR_PAGE_DOWN:
+            playlist_scroll_page_down(ui->queue);
+            break;
+        case CMD_CURSOR_PAGE_UP:
+            playlist_scroll_page_up(ui->queue);
+            break;
+        case CMD_PLAY:
+            cmd_play_queue_pos(mpd, ui);
+            break;
+        case CMD_CURSOR_BOTTOM:
+            playlist_select_bottom_visible(ui->queue);
+            break;
+        case CMD_CURSOR_TOP:
+            playlist_select_top_visible(ui->queue);
+            break;
+        case CMD_CURSOR_MIDDLE:
+            playlist_select_middle_visible(ui->queue);
+            break;
+        case CMD_DELETE:
+            queue_remove_selected(mpd, ui);
+            break;
+        case CMD_CLEAR:
+            queue_clear(mpd, ui);
+            break;
+        default:
+            break;
     }
 }
