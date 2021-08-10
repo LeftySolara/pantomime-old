@@ -17,17 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
- #include <argp.h>
- #include <stdlib.h>
+#include <argp.h>
+#include <stdlib.h>
 
 #include "command/command.h"
 #include "command/command_global.h"
+#include "command/command_library.h"
 #include "command/command_player.h"
 #include "command/command_queue.h"
-#include "command/command_library.h"
 #include "pantomime/mpdwrapper.h"
 #include "pantomime/ui.h"
-
 
 /* Argument Parsing */
 const char *argp_program_version = "pantomime 0.1";
@@ -38,8 +37,7 @@ static struct argp_option options[] = {
     {"host", 'h', "HOST", 0, "The IP address or socket path of the MPD host"},
     {"port", 'p', "PORT", 0, "The port of the MPD host"},
     {"timeout", 't', "TIMEOUT", 0, "The timeout in milliseconds"},
-    {0}
-};
+    {0}};
 
 /* Used by main() to communicate with parse_opt. */
 struct arguments {
@@ -80,7 +78,6 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 /* Our argp parser. */
 static struct argp argp = {options, parse_opt, 0, doc};
 
-
 int main(int argc, char **argv)
 {
     /* Default arguments. */
@@ -111,16 +108,16 @@ int main(int argc, char **argv)
         cmd_player(cmd, mpd, ui->statusbar);
 
         switch (ui->visible_panel) {
-        case HELP:
-            break;
-        case QUEUE:
-            cmd_queue(cmd, mpd, ui);
-            break;
-        case LIBRARY:
-            cmd_library(cmd, ui->library, ui->statusbar, mpd);
-            break;
-        default:
-            break;
+            case HELP:
+                break;
+            case QUEUE:
+                cmd_queue(cmd, mpd, ui);
+                break;
+            case LIBRARY:
+                cmd_library(cmd, ui->library, ui->statusbar, mpd);
+                break;
+            default:
+                break;
         }
 
         ui_draw(ui, mpd);

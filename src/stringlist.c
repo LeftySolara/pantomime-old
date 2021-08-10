@@ -22,9 +22,9 @@
  */
 
 #include "pantomime/stringlist.h"
-#include <string.h>
-#include <stdlib.h>
 
+#include <stdlib.h>
+#include <string.h>
 
 struct stringlist_item *stringlist_item_new(char *str)
 {
@@ -49,11 +49,11 @@ struct stringlist *stringlist_new()
     struct stringlist *list = malloc(sizeof(*list));
     if (!list)
         return NULL;
-    
+
     list->head = NULL;
     list->tail = NULL;
     list->item_count = 0;
-    
+
     return list;
 }
 
@@ -103,10 +103,10 @@ void stringlist_remove(struct stringlist *list, int pos)
     }
     else {
         struct stringlist_item *current = list->head;
-        
+
         for (int i = 0; i < pos; ++i)
             current = current->next;
-        
+
         if (current == list->tail)
             list->tail = list->tail->prev;
         if (current->prev)
@@ -115,7 +115,7 @@ void stringlist_remove(struct stringlist *list, int pos)
             current->next->prev = current->prev;
 
         stringlist_item_free(current);
-        list->item_count--;;
+        list->item_count--;
     }
 }
 
