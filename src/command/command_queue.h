@@ -30,5 +30,4 @@ void cmd_play_queue_pos(struct mpdwrapper *mod, struct ui *ui);
 
 void cmd_queue(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui);
 
-
 #endif /* COMMAND_QUEUE_H */

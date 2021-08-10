@@ -22,7 +22,6 @@
  */
 
 #include "mpdwrapper.h"
-#include "pantomime/mpdwrapper.h"
 
 #include <mpd/connection.h>
 #include <mpd/error.h>
@@ -30,9 +29,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "pantomime/mpdwrapper.h"
+
 /**
  * @brief Creates a new connection to an MPD server.
- * 
+ *
  * @param host The MPD server host to connect to. Defaults to "localhost".
  * @param port The port MPD is running on. Defaults to 6600.
  * @param timeout The MPD timeout. Defaults to 30000ms.
@@ -50,8 +51,9 @@ struct mpdwrapper *mpdwrapper_new(const char *host, int port, int timeout)
 }
 
 /**
- * @brief Initializes the mpdwrapper struct and attempts to create a connection to the provided host.
- * 
+ * @brief Initializes the mpdwrapper struct and attempts to create a connection to the provided
+ * host.
+ *
  * @param mpd An empty mpd struct to initialize. Assumes memory has already been allocated.
  * @param host The IP address or UNIX socket to connect to.
  * @param port The TCP port to connect to if using an IP address.
@@ -95,7 +97,7 @@ void mpdwrapper_free(struct mpdwrapper *mpd)
 
 /**
  * @brief Removes a song from the play queue. Does not update the queue version.
- * 
+ *
  * @param mpd The mpd connection
  * @param pos The position of the song in the queue
  */
@@ -106,7 +108,7 @@ void mpdwrapper_delete_from_queue(struct mpdwrapper *mpd, unsigned pos)
 
 /**
  * @brief Removes all songs from the play queue.
- * 
+ *
  * @param mpd The mpd connection.
  */
 void mpdwrapper_clear_queue(struct mpdwrapper *mpd)
@@ -135,7 +137,7 @@ void mpdwrapper_refresh(struct mpdwrapper *mpd)
     int queue_version = mpd_status_get_queue_version(mpd->status);
     if (mpd->queue_version != queue_version) {
         mpdwrapper_fetch_queue(mpd);
-        mpd->queue_version = queue_version; 
+        mpd->queue_version = queue_version;
         mpd->queue_changed = true;
     }
     else
@@ -171,7 +173,7 @@ struct songlist *mpdwrapper_get_queue(struct mpdwrapper *mpd)
 
 /**
  * @brief Determines if MPD is currently playing a song.
- * 
+ *
  * @param mpd The MPD connection to query.
  * @return bool true if a song is playing, false otherwise.
  */
@@ -182,7 +184,7 @@ bool mpdwrapper_is_playing(struct mpdwrapper *mpd)
 
 /**
  * @brief Determines if MPD playback is paused.
- * 
+ *
  * @param mpd The MPD connection to query.
  * @return bool true if a song is paused, false otherwise.
  */
@@ -193,7 +195,7 @@ bool mpdwrapper_is_paused(struct mpdwrapper *mpd)
 
 /**
  * @brief Determines if MPD playback is stopped.
- * 
+ *
  * @param mpd The MPD connection to query.
  * @return bool true if no song is playing, false otherwise.
  */
@@ -204,7 +206,7 @@ bool mpdwrapper_is_stopped(struct mpdwrapper *mpd)
 
 /**
  * @brief Determines if MPD playback is in a valid, known state.
- * 
+ *
  * @param mpd The MPD connection to query.
  * @return bool true if playback state can be determined, false otherwise.
  */
@@ -220,7 +222,7 @@ struct mpd_song *mpdwrapper_get_current_song(struct mpdwrapper *mpd)
 
 /**
  * @brief Gets the title of the currently playing song.
- * 
+ *
  * @param mpd The mpd connection to parse.
  * @return The title of the currently playing song.
  */
@@ -231,7 +233,7 @@ const char *mpdwrapper_get_current_song_title(struct mpdwrapper *mpd)
 
 /**
  * @brief Gets the duration of the currently playing song.
- * 
+ *
  * @param mpd The mpd connection to parse.
  * @return The length of the song in seconds, or -1 on error.
  */
@@ -245,7 +247,7 @@ int mpdwrapper_get_current_song_duration(struct mpdwrapper *mpd)
 
 /**
  * @brief Gets the amount of time elapsed for the currently playing song.
- * 
+ *
  * @param mpd The mpd connection to parse.
  * @return The time elapsed in seconds, or -1 on error.
  */
@@ -270,12 +272,12 @@ int mpdwrapper_get_current_song_id(struct mpdwrapper *mpd)
 
 /**
  * @brief Gets a tag associated with the given song.
- * 
+ *
  * This function gets information about a song based on its MPD tags.
  * It allocates enough memory to hold a null-terminated string
  * containing the tag value. The caller is responsible for
  * freeing this memory.
- * 
+ *
  * @return A null-terminated string containing the tag value, or NULL on error.
  */
 char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag)
@@ -294,7 +296,7 @@ char *mpdwrapper_get_song_tag(struct mpd_song *song, enum mpd_tag_type tag)
 
 /**
  * @brief Gets a list of all artists in the MPD library.
- * 
+ *
  * @param mpd The MPD connection to query.
  * @return stringlist* A list of strings containing the artists' names.
  */
@@ -321,7 +323,7 @@ struct stringlist *mpdwrapper_list_artists(struct mpdwrapper *mpd)
 
 /**
  * @brief Gets a list of album names belonging to an artist.
- * 
+ *
  * @param mpd The MPD connection to query.
  * @param artist The artist whose albums to look up.
  * @return struct stringlist* A list of strings containing the album names.
@@ -346,7 +348,7 @@ struct stringlist *mpdwrapper_list_albums(struct mpdwrapper *mpd, char *artist)
 
 /**
  * @brief Gets a list of song names belonging to an album.
- * 
+ *
  * @param mpd The MPD connection to query.
  * @param artist The album's artist.
  * @param album The album to find songs from.
@@ -385,13 +387,13 @@ char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd)
 
 /**
  * @brief Begins playing the specified song from the queue.
- * 
+ *
  * Begins playing the specified song from the beginning.
  * On error, the details can be fetched with mpdwrapper_get_last_error_message().
- * 
+ *
  * @param mpd The MPD connection to query.
  * @param pos The position of the song in the queue.
- * 
+ *
  * @return bool true on success, or false on error.
  */
 bool mpdwrapper_play_queue_pos(struct mpdwrapper *mpd, unsigned pos)
@@ -433,7 +435,7 @@ bool mpdwrapper_add_album(struct mpdwrapper *mpd, char *artist, char *album)
     mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ARTIST, artist);
     mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album);
 
-    bool rc =  mpd_search_commit(mpd->connection);
+    bool rc = mpd_search_commit(mpd->connection);
     mpd_response_finish(mpd->connection);
     return rc;
 }
@@ -450,14 +452,14 @@ bool mpdwrapper_add_song(struct mpdwrapper *mpd, char *artist, char *album, char
     mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album);
     mpd_search_add_tag_constraint(mpd->connection, MPD_OPERATOR_DEFAULT, MPD_TAG_TITLE, song);
 
-    bool rc =  mpd_search_commit(mpd->connection);
+    bool rc = mpd_search_commit(mpd->connection);
     mpd_response_finish(mpd->connection);
     return rc;
 }
 
 /**
  * @brief Fetches the current MPD queue and stores it in a songlist struct.
- * 
+ *
  * @param mpd The MPD wrapper to fetch the queue for.
  */
 void mpdwrapper_fetch_queue(struct mpdwrapper *mpd)
@@ -466,12 +468,12 @@ void mpdwrapper_fetch_queue(struct mpdwrapper *mpd)
         return;
     if (mpd->queue)
         songlist_clear(mpd->queue);
-    
+
     struct mpd_song *song;
     mpd_send_list_queue_meta(mpd->connection);
     while ((song = mpd_recv_song(mpd->connection)))
         songlist_append(mpd->queue, song);
-    
+
     mpd_response_finish(mpd->connection);
     mpd->queue_version = mpd_status_get_queue_version(mpd->status);
 }
@@ -481,10 +483,9 @@ bool mpdwrapper_queue_changed(struct mpdwrapper *mpd)
     return mpd->queue_changed;
 }
 
-
 /**
  * @brief Allocates memory for a new song node.
- * 
+ *
  * @return struct songnode* A new song node.
  */
 struct songnode *songnode_new(struct mpd_song *song)
@@ -507,7 +508,7 @@ void songnode_initialize(struct songnode *node, struct mpd_song *song)
 
 /**
  * @brief Frees memory allocated by a songlist node.
- * 
+ *
  * @param node The node to free memory from.
  */
 void songnode_free(struct songnode *node)
@@ -522,7 +523,7 @@ void songnode_free(struct songnode *node)
 
 /**
  * @brief Allocates memory for a new songlist.
- * 
+ *
  * @return A pointer to a new song list, or NULL on error.
  */
 struct songlist *songlist_new()
@@ -545,7 +546,7 @@ void songlist_initialize(struct songlist *songlist)
 
 /**
  * @brief Frees memory allocated by a song list.
- * 
+ *
  * @param list The list to free memory from.
  */
 void songlist_free(struct songlist *songlist)
@@ -561,7 +562,7 @@ struct songnode *songlist_node_at(struct songlist *songlist, unsigned int index)
 
     if (index == 0)
         return songlist->head;
-    if (index == songlist->size-1)
+    if (index == songlist->size - 1)
         return songlist->tail;
 
     struct songnode *current = songlist->head;
@@ -573,10 +574,10 @@ struct songnode *songlist_node_at(struct songlist *songlist, unsigned int index)
 
 /**
  * @brief Gets the MPD song at the given index.
- * 
+ *
  * @param list The list to find a song from.
  * @param index The place in the list where the song is.
- * 
+ *
  * @return Pointer to the MPD song at the requested position, or NULL on error.
  */
 struct mpd_song *songlist_at(struct songlist *songlist, unsigned int index)
@@ -594,9 +595,9 @@ int songlist_get_size(struct songlist *songlist)
 
 /**
  * @brief Adds a song to the end of the list.
- * 
+ *
  * @param list The list to append a song to.
- * @param song The song to add to the list. 
+ * @param song The song to add to the list.
  *   If this is NULL, the function does nothing.
  */
 void songlist_append(struct songlist *songlist, struct mpd_song *song)
@@ -620,7 +621,7 @@ void songlist_append(struct songlist *songlist, struct mpd_song *song)
 
 /**
  * @brief Removes the song at the given index from a list.
- * 
+ *
  * @param list The list to remove a song from.
  * @param index The position of the song to remove.
  */
@@ -636,7 +637,7 @@ void songlist_remove(struct songlist *songlist, unsigned int index)
         songlist->head->prev = NULL;
         songnode_free(tmp);
     }
-    else if (index == songlist->size-1) {
+    else if (index == songlist->size - 1) {
         struct songnode *tmp = songlist->tail;
 
         songlist->tail = songlist->tail->prev;
@@ -656,7 +657,7 @@ void songlist_remove(struct songlist *songlist, unsigned int index)
 
 /**
  * @brief Removes all items from a songlist.
- * 
+ *
  * @param list The list to clear.
  */
 void songlist_clear(struct songlist *songlist)

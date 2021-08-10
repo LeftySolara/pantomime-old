@@ -20,13 +20,13 @@
 #ifndef UI_INTERNAL_H
 #define UI_INTERNAL_H
 
-#include "pantomime/ui.h"
-#include "pantomime/statusbar.h"
-#include "screens/screen_library.h"
-#include "playlist.h"
-
 #include <ncurses.h>
 #include <panel.h>
+
+#include "pantomime/statusbar.h"
+#include "pantomime/ui.h"
+#include "playlist.h"
+#include "screens/screen_library.h"
 
 #define DEFAULT_NOTIFICATION_LENGTH 3
 
@@ -49,6 +49,5 @@ PANEL **create_panels(int num_panels, int width, int height);
 void destroy_panels(PANEL **panels, int num_panels);
 
 void ui_initialize(struct ui *ui, struct mpdwrapper *mpd);
-
 
 #endif /* UI_INTERNAL)H */

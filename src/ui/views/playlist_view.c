@@ -18,10 +18,11 @@
  ******************************************************************************/
 
 #include "playlist_view.h"
+
 #include <stdlib.h>
 
-
-struct playlist_view_item *playlist_view_item_new(char *artist, char *title, char *album, int time, unsigned id)
+struct playlist_view_item *playlist_view_item_new(char *artist, char *title, char *album, int time,
+                                                  unsigned id)
 {
     struct playlist_view_item *item = malloc(sizeof(*item));
     if (!item)
@@ -32,7 +33,8 @@ struct playlist_view_item *playlist_view_item_new(char *artist, char *title, cha
     return item;
 }
 
-void playlist_view_item_initialize(struct playlist_view_item *this, char *artist, char *title, char *album, int time, unsigned id)
+void playlist_view_item_initialize(struct playlist_view_item *this, char *artist, char *title,
+                                   char *album, int time, unsigned id)
 {
     list_view_item_initialize((struct list_view_item *)this, NULL);
     this->artist = artist;

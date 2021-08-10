@@ -25,8 +25,8 @@
 #define SCREEN_LIBRARY_H
 
 #include "../views/list_view.h"
-#include "pantomime/statusbar.h"
 #include "pantomime/mpdwrapper.h"
+#include "pantomime/statusbar.h"
 
 struct screen_library {
     struct list_view *artist_list_view;
@@ -40,8 +40,10 @@ void screen_library_initialize(struct screen_library *screen, int height, int wi
 void screen_library_free(struct screen_library *screen);
 
 void screen_library_populate_artists(struct screen_library *screen, struct mpdwrapper *mpd);
-void screen_library_populate_albums(struct screen_library *screen, char *artist, struct mpdwrapper *mpd);
-void screen_library_populate_songs(struct screen_library *screen, char *artist, char *album, struct mpdwrapper *mpd);
+void screen_library_populate_albums(struct screen_library *screen, char *artist,
+                                    struct mpdwrapper *mpd);
+void screen_library_populate_songs(struct screen_library *screen, char *artist, char *album,
+                                   struct mpdwrapper *mpd);
 
 void screen_library_select(struct screen_library *screen, int index);
 void screen_library_select_prev(struct screen_library *screen);

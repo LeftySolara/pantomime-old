@@ -19,7 +19,7 @@
 
 /**
  * @file command_player.h
- * 
+ *
  */
 
 #include "command_player.h"
@@ -41,9 +41,7 @@ void seek_backward(struct mpdwrapper *mpd)
 
     unsigned int elapsed_time = mpdwrapper_get_current_song_elapsed(mpd);
     if (elapsed_time > 0) {
-        mpd_run_seek_pos(mpd->connection,
-                         mpd_song_get_pos(mpd->current_song),
-                         elapsed_time - 1);
+        mpd_run_seek_pos(mpd->connection, mpd_song_get_pos(mpd->current_song), elapsed_time - 1);
     }
 }
 
@@ -55,10 +53,8 @@ void seek_forward(struct mpdwrapper *mpd)
     unsigned int elapsed_time = mpdwrapper_get_current_song_elapsed(mpd);
     unsigned int total_time = mpdwrapper_get_current_song_duration(mpd);
 
-    if (elapsed_time != total_time) {  /* Song hasn't finished playing */
-        mpd_run_seek_pos(mpd->connection,
-                         mpd_song_get_pos(mpd->current_song),
-                         elapsed_time + 1);
+    if (elapsed_time != total_time) { /* Song hasn't finished playing */
+        mpd_run_seek_pos(mpd->connection, mpd_song_get_pos(mpd->current_song), elapsed_time + 1);
     }
 }
 
@@ -118,7 +114,7 @@ void toggle_crossfade(struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     unsigned int crossfade = mpd_status_get_crossfade(mpd->status);
     char *notification;
-    
+
     if (crossfade == 0) {
         mpd_run_crossfade(mpd->connection, 5);
         notification = "Crossfade set to 5 seconds";
@@ -143,55 +139,55 @@ void increase_volume(struct mpd_connection *connection)
 
 /**
  * @brief Finds the requested player command and executes it.
- * 
+ *
  * @param cmd The command to execute.
  * @param mpd The MPD connection to run the command on.
  */
 void cmd_player(enum command_type cmd, struct mpdwrapper *mpd, struct statusbar *statusbar)
 {
     switch (cmd) {
-    case CMD_NULL:
-        break;
-    case CMD_PAUSE:
-        toggle_pause(mpd->connection);
-        break;
-    case CMD_STOP:
-        stop_playback(mpd->connection);
-        break;
-    case CMD_SEEK_BACKWARD:
-        seek_backward(mpd);
-        break;
-    case CMD_SEEK_FORWARD:
-        seek_forward(mpd);
-        break;
-    case CMD_PREV_SONG:
-        prev_song(mpd, statusbar);
-        break;
-    case CMD_NEXT_SONG:
-        next_song(mpd, statusbar);
-        break;
-    case CMD_RANDOM:
-        toggle_random(mpd, statusbar);
-        break;
-    case CMD_REPEAT:
-        toggle_repeat(mpd, statusbar);
-        break;
-    case CMD_SINGLE:
-        toggle_single(mpd, statusbar);
-        break;
-    case CMD_CONSUME:
-        toggle_consume(mpd, statusbar);
-        break;
-    case CMD_CROSSFADE:
-        toggle_crossfade(mpd, statusbar);
-        break;
-    case CMD_VOL_DOWN:
-        decrease_volume(mpd->connection);
-        break;
-    case CMD_VOL_UP:
-        increase_volume(mpd->connection);
-        break;
-    default:
-        break;
+        case CMD_NULL:
+            break;
+        case CMD_PAUSE:
+            toggle_pause(mpd->connection);
+            break;
+        case CMD_STOP:
+            stop_playback(mpd->connection);
+            break;
+        case CMD_SEEK_BACKWARD:
+            seek_backward(mpd);
+            break;
+        case CMD_SEEK_FORWARD:
+            seek_forward(mpd);
+            break;
+        case CMD_PREV_SONG:
+            prev_song(mpd, statusbar);
+            break;
+        case CMD_NEXT_SONG:
+            next_song(mpd, statusbar);
+            break;
+        case CMD_RANDOM:
+            toggle_random(mpd, statusbar);
+            break;
+        case CMD_REPEAT:
+            toggle_repeat(mpd, statusbar);
+            break;
+        case CMD_SINGLE:
+            toggle_single(mpd, statusbar);
+            break;
+        case CMD_CONSUME:
+            toggle_consume(mpd, statusbar);
+            break;
+        case CMD_CROSSFADE:
+            toggle_crossfade(mpd, statusbar);
+            break;
+        case CMD_VOL_DOWN:
+            decrease_volume(mpd->connection);
+            break;
+        case CMD_VOL_UP:
+            increase_volume(mpd->connection);
+            break;
+        default:
+            break;
     }
 }
