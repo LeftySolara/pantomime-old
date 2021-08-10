@@ -22,6 +22,7 @@
  */
 
 #include "screen_library.h"
+
 #include <stdlib.h>
 
 struct screen_library *screen_library_new(int height, int width)
@@ -29,7 +30,7 @@ struct screen_library *screen_library_new(int height, int width)
     struct screen_library *screen = malloc(sizeof(*screen));
     if (!screen)
         return NULL;
-    
+
     screen_library_initialize(screen, height, width);
 
     return screen;
@@ -66,7 +67,8 @@ void screen_library_populate_artists(struct screen_library *screen, struct mpdwr
     list_view->lv_ops->lv_select_top_visible(list_view);
 }
 
-void screen_library_populate_albums(struct screen_library *screen, char *artist, struct mpdwrapper *mpd)
+void screen_library_populate_albums(struct screen_library *screen, char *artist,
+                                    struct mpdwrapper *mpd)
 {
     struct list_view *list_view = screen->album_list_view;
     list_view->lv_ops->lv_clear(list_view);
@@ -82,7 +84,8 @@ void screen_library_populate_albums(struct screen_library *screen, char *artist,
     list_view->lv_ops->lv_select_top_visible(list_view);
 }
 
-void screen_library_populate_songs(struct screen_library *screen, char *artist, char *album, struct mpdwrapper *mpd)
+void screen_library_populate_songs(struct screen_library *screen, char *artist, char *album,
+                                   struct mpdwrapper *mpd)
 {
     struct list_view *list_view = screen->song_list_view;
     list_view->lv_ops->lv_clear(list_view);
@@ -148,7 +151,7 @@ void screen_library_next_view(struct screen_library *screen, struct mpdwrapper *
         screen->visible_view = screen->album_list_view;
     }
     else if (visible == screen->album_list_view) {
-        char * artist = screen->artist_list_view->selected->text;
+        char *artist = screen->artist_list_view->selected->text;
         char *album = screen->album_list_view->selected->text;
         screen_library_populate_songs(screen, artist, album, mpd);
         screen->visible_view = screen->song_list_view;

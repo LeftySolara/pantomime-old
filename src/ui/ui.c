@@ -19,14 +19,14 @@
 
 #include "ui.h"
 
-#include "panel_help.h"
-
 #include <locale.h>
 #include <stdlib.h>
 
+#include "panel_help.h"
+
 /**
  * @file ui.h
- * 
+ *
  */
 
 void start_curses()
@@ -48,7 +48,7 @@ void end_curses()
 
 /**
  * @brief Create panels with the given width and height.
- * 
+ *
  * @param num_panels The number of panels to create.
  * @param width The desired width of all the panels.
  * @param height The desired height of all the panels.
@@ -69,7 +69,7 @@ PANEL **create_panels(int num_panels, int height, int width)
 
 /**
  * @brief Free memory allocated for the UI panels.
- * 
+ *
  * @param panels Pointer to an array of panels.
  * @param num_panels The number of panels to free.
  */
@@ -112,7 +112,6 @@ void ui_initialize(struct ui *ui, struct mpdwrapper *mpd)
 
     /* TODO: remove this once the playlist view gets refactored. */
     playlist_populate(ui->queue, mpdwrapper_get_queue(mpd));
-
 }
 
 void ui_free(struct ui *ui)
@@ -126,7 +125,7 @@ void ui_free(struct ui *ui)
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
 {
     statusbar_draw(ui->statusbar, mpd);
-    
+
     WINDOW *win = panel_window(ui->panels[ui->visible_panel]);
     int is_playing;
     int is_paused;
@@ -138,21 +137,20 @@ void ui_draw(struct ui *ui, struct mpdwrapper *mpd)
     }
 
     switch (ui->visible_panel) {
-    case HELP:
-        draw_help_screen(win);
-        break;
-    case QUEUE:
-        is_playing = mpdwrapper_is_playing(mpd);
-        is_paused = mpdwrapper_is_paused(mpd);
-        current_song_id = (is_playing || is_paused) ?
-                          mpdwrapper_get_current_song_id(mpd) : 0;
-        playlist_draw(ui->queue, current_song_id);
-        break;
-    case LIBRARY:
-        list_view_draw(ui->library->visible_view);
-        break;
-    default:
-        break;
+        case HELP:
+            draw_help_screen(win);
+            break;
+        case QUEUE:
+            is_playing = mpdwrapper_is_playing(mpd);
+            is_paused = mpdwrapper_is_paused(mpd);
+            current_song_id = (is_playing || is_paused) ? mpdwrapper_get_current_song_id(mpd) : 0;
+            playlist_draw(ui->queue, current_song_id);
+            break;
+        case LIBRARY:
+            list_view_draw(ui->library->visible_view);
+            break;
+        default:
+            break;
     }
 
     update_panels();

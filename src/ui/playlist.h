@@ -20,11 +20,11 @@
 /**
  * @file playlist.h
  * @brief UI elements for displaying a playlist.
- * 
+ *
  * The structures and functions in this file are used for drawing a playlist on-screen.
- * Text for UI elements is populated from a [songlist](@ref songlist.h) structure, which contains the underlying
- * MPD playlist.
- * 
+ * Text for UI elements is populated from a [songlist](@ref songlist.h) structure, which contains
+ * the underlying MPD playlist.
+ *
  * This is for displaying any type of playlist (stored playlists, the play queue, etc.).
  * MPD uses the terms "playlist" and "queue" interchangeably when referring to the current
  * play queue. Here we use "playlist" to mean any type of playlist, and only refer
@@ -34,21 +34,22 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
-#include "pantomime/mpdwrapper.h"
 #include <ncurses.h>
+
+#include "pantomime/mpdwrapper.h"
 
 /**
  * @brief A row in the playlist display, representing one song.
  */
 struct playlist_item {
-    char *artist;   /**< The song's artist. */
-    char *title;    /**< The song's title. */
-    char *album;    /**< The song's album. */
-    int time;       /**< Length of the song in seconds. */
-    unsigned id;    /**< The MPD ID of the song. */
+    char *artist; /**< The song's artist. */
+    char *title;  /**< The song's title. */
+    char *album;  /**< The song's album. */
+    int time;     /**< Length of the song in seconds. */
+    unsigned id;  /**< The MPD ID of the song. */
 
-    int bold;       /**< Whether to print this item's text in bold. */
-    int highlight;  /**< Whether to highlight this item after printing. */
+    int bold;      /**< Whether to print this item's text in bold. */
+    int highlight; /**< Whether to highlight this item after printing. */
 
     struct playlist_item *prev; /**< The next song in the playlist. */
     struct playlist_item *next; /**< The previous song in the playlist. */
@@ -56,29 +57,32 @@ struct playlist_item {
 
 /**
  * @brief A navigable playlist.
- * 
+ *
  * The playlist UI is drawn as a simple list with song information.
  * Functions that navigate through or manipulate the list are
  * triggered by the user with the [command interface](@ref command.h).
  */
 struct playlist {
-    WINDOW *win;  /**< The ncurses window to draw the playlist on. */
+    WINDOW *win; /**< The ncurses window to draw the playlist on. */
 
     struct playlist_item *head;     /**< The first item in the list. */
     struct playlist_item *tail;     /**< The last item in the list. */
     struct playlist_item *selected; /**< The currently selected item. */
 
-    struct playlist_item *top_visible;      /**< First visible item in the window. */
-    struct playlist_item *bottom_visible;   /**< Last visible item in the window. */
+    struct playlist_item *top_visible;    /**< First visible item in the window. */
+    struct playlist_item *bottom_visible; /**< Last visible item in the window. */
 
-    int length;               /**< The number of items in the playlist. MPD's default maximum is 4096. */
-    int idx_selected;         /**< The index of the currently selected item. */
-    int idx_last_selected;    /**< The index of the last item selected before clearing the playlist. */
-    int idx_last_top;         /**< The index of the last item pointed to by top_visible. Useful for restoring scroll position on refresh. */
-    int max_visible;          /**< The maximum number of items that can be displayed with the current window size. */
+    int length;       /**< The number of items in the playlist. MPD's default maximum is 4096. */
+    int idx_selected; /**< The index of the currently selected item. */
+    int idx_last_selected; /**< The index of the last item selected before clearing the playlist. */
+    int idx_last_top;      /**< The index of the last item pointed to by top_visible. Useful for
+                              restoring scroll position on refresh. */
+    int max_visible; /**< The maximum number of items that can be displayed with the current window
+                        size. */
 };
 
-struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time, unsigned id);
+struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time,
+                                         unsigned id);
 void playlist_item_free(struct playlist_item *item);
 
 struct playlist *playlist_init(WINDOW *win);

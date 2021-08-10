@@ -20,26 +20,27 @@
 #ifndef PLAYLIST_VIEW_INTERNAL_H
 #define PLAYLIST_VIEW_INTERNAL_H
 
-#include "pantomime/playlist_view.h"
 #include "list_view.h"
-
+#include "pantomime/playlist_view.h"
 
 struct playlist_view_item {
     struct list_view_item base;
 
-    char *artist;   /* The song's artist. */
-    char *title;    /* The song's title. */
-    char *album;    /* The song's album. */
-    int time;       /* Length of the song in seconds. */
-    unsigned id;    /* The MPD ID of the song. */
+    char *artist; /* The song's artist. */
+    char *title;  /* The song's title. */
+    char *album;  /* The song's album. */
+    int time;     /* Length of the song in seconds. */
+    unsigned id;  /* The MPD ID of the song. */
 };
 
 struct playlist_view {
     struct list_view base;
 };
 
-struct playlist_view_item *playlist_view_item_new(char *artist, char *title, char *album, int time, unsigned id);
-void playlist_view_item_initialize(struct playlist_view_item *this, char *artist, char *title, char *album, int time, unsigned id);
+struct playlist_view_item *playlist_view_item_new(char *artist, char *title, char *album, int time,
+                                                  unsigned id);
+void playlist_view_item_initialize(struct playlist_view_item *this, char *artist, char *title,
+                                   char *album, int time, unsigned id);
 void playlist_view_item_free(struct playlist_view_item *this);
 
 void playlist_view_initialize(struct playlist_view *this, int height, int width);

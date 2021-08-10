@@ -19,7 +19,7 @@
 
 /**
  * @file panel_help.h
- * 
+ *
  */
 
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof((x)[0]))
@@ -29,39 +29,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-static enum command_type global_commands[] = {
-    CMD_QUIT,
-    CMD_PANEL_HELP,
-    CMD_PANEL_QUEUE,
-    CMD_PANEL_LIBRARY,
-    CMD_DB_UPDATE
-};
+static enum command_type global_commands[] = {CMD_QUIT, CMD_PANEL_HELP, CMD_PANEL_QUEUE,
+                                              CMD_PANEL_LIBRARY, CMD_DB_UPDATE};
 
 static enum command_type queue_panel_commands[] = {
-    CMD_PLAY,
-    CMD_PAUSE,
-    CMD_STOP,
-    CMD_SEEK_BACKWARD,
-    CMD_SEEK_FORWARD,
-    CMD_PREV_SONG,
-    CMD_NEXT_SONG,
-    CMD_CURSOR_DOWN,
-    CMD_CURSOR_UP,
-    CMD_CURSOR_PAGE_DOWN,
-    CMD_CURSOR_PAGE_UP,
-    CMD_CURSOR_BOTTOM,
-    CMD_CURSOR_TOP,
-    CMD_CURSOR_MIDDLE,
-    CMD_RANDOM,
-    CMD_REPEAT,
-    CMD_SINGLE,
-    CMD_CONSUME,
-    CMD_CROSSFADE,
-    CMD_DELETE,
-    CMD_CLEAR,
-    CMD_VOL_DOWN,
-    CMD_VOL_UP
-};
+    CMD_PLAY,           CMD_PAUSE,         CMD_STOP,        CMD_SEEK_BACKWARD, CMD_SEEK_FORWARD,
+    CMD_PREV_SONG,      CMD_NEXT_SONG,     CMD_CURSOR_DOWN, CMD_CURSOR_UP,     CMD_CURSOR_PAGE_DOWN,
+    CMD_CURSOR_PAGE_UP, CMD_CURSOR_BOTTOM, CMD_CURSOR_TOP,  CMD_CURSOR_MIDDLE, CMD_RANDOM,
+    CMD_REPEAT,         CMD_SINGLE,        CMD_CONSUME,     CMD_CROSSFADE,     CMD_DELETE,
+    CMD_CLEAR,          CMD_VOL_DOWN,      CMD_VOL_UP};
 
 void draw_help_screen(WINDOW *win)
 {
@@ -83,14 +59,14 @@ void draw_help_screen(WINDOW *win)
 
 /**
  * @brief Prints the section name for a group of commands.
- * 
+ *
  * @param win The window to print onto,
  * @param begin_y The y-position of the text.
  * @param header_text The text to print.
  */
 void draw_help_header(WINDOW *win, int begin_y, char *header_text)
 {
-    const int begin_x = 6;  /* Arbitrary */
+    const int begin_x = 6; /* Arbitrary */
 
     wattr_on(win, A_BOLD, NULL);
     mvwaddstr(win, begin_y, begin_x, header_text);
@@ -109,7 +85,7 @@ void draw_command_info(WINDOW *win, int begin_y, enum command_type cmd)
 {
     if (cmd == CMD_NULL)
         return;
-    
+
     /* The x position of the character that separates the keys and desc. */
     int colon_pos = 17;
 

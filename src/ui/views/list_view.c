@@ -22,8 +22,9 @@
  */
 
 #include "list_view.h"
-#include <stdlib.h>
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* Creates an item for use in a list view.
@@ -77,7 +78,6 @@ void list_view_item_draw(struct list_view_item *this, WINDOW *win, unsigned y)
     wattr_off(win, A_STANDOUT, 0);
 }
 
-
 static const struct list_view_operations lv_ops = {
     .lv_append = list_view_append,
     .lv_remove_selected = list_view_remove_selected,
@@ -92,8 +92,7 @@ static const struct list_view_operations lv_ops = {
     .lv_scroll_page_down = list_view_scroll_page_down,
     .lv_find_bottom = list_view_find_bottom,
     .lv_find_cursor_pos = list_view_find_cursor_pos,
-    .lv_draw = list_view_draw
-};
+    .lv_draw = list_view_draw};
 
 struct list_view *list_view_new(int height, int width)
 {
@@ -126,8 +125,8 @@ void list_view_initialize(struct list_view *this, int height, int width)
 
 void list_view_free(struct list_view *this)
 {
-     list_view_clear(this);
-     free(this);
+    list_view_clear(this);
+    free(this);
 }
 
 void list_view_append(struct list_view *this, char *text)
@@ -161,7 +160,7 @@ void list_view_remove_selected(struct list_view *this)
         return;
 
     if (this->selected == this->head) {
-        if (!this->head->next)  /* Only one item in the list. */
+        if (!this->head->next) /* Only one item in the list. */
             this->lv_ops->lv_clear(this);
         else {
             struct list_view_item *current = this->head;
@@ -205,7 +204,7 @@ void list_view_remove_selected(struct list_view *this)
 
 /**
  * @brief Removes all items from a list view.
- * 
+ *
  * @param this The list view to clear.
  */
 void list_view_clear(struct list_view *this)
@@ -289,7 +288,7 @@ void list_view_select_next(struct list_view *this)
         this->top_visible = this->top_visible->next;
         this->lv_ops->lv_find_bottom(this);
     }
-    
+
     current = current->next;
     current->highlight = 1;
 
@@ -416,7 +415,7 @@ void list_view_draw(struct list_view *this)
      * allow for list selection, navigation, and manipulation in the way we want).
      * Because of this, it's more efficient to just worry about the items
      * that are currently visible and redraw manually when there's a change.
-     * 
+     *
      * Since we know which item is displayed at the top and have the window dimensions,
      * we can figure out which item will be the last one visible and only draw
      * the ones in that range.
@@ -470,4 +469,3 @@ int list_view_find_cursor_pos(struct list_view *this)
 
     return y_pos;
 }
-

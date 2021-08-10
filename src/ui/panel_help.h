@@ -20,9 +20,9 @@
 #ifndef PANEL_HELP_H
 #define PANEL_HELP_H
 
-#include "../command/command.h"
-
 #include <ncurses.h>
+
+#include "../command/command.h"
 
 void draw_help_screen(WINDOW *win);
 void draw_help_header(WINDOW *win, int begin_y, char *header_text);
