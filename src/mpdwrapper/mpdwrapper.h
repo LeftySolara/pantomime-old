@@ -24,43 +24,44 @@
 #ifndef MPDWRAPPER_INTERNAL_H
 #define MPDWRAPPER_INTERNAL_H
 
-#include "pantomime/mpdwrapper.h"
 #include <mpd/client.h>
+
+#include "pantomime/mpdwrapper.h"
 
 /**
  * @brief A node in a linked list of MPD songs.
  */
 struct songnode {
-    struct mpd_song *song;  /**< The MPD song at this node. */
-    struct songnode *next;  /**< The next song in the list. */
-    struct songnode *prev;  /**< The previous song in the list. */
+    struct mpd_song *song; /**< The MPD song at this node. */
+    struct songnode *next; /**< The next song in the list. */
+    struct songnode *prev; /**< The previous song in the list. */
 };
 
 /**
  * @brief A doubly-linked list of MPD songs.
  */
 struct songlist {
-    struct songnode *head;  /**< The first item in the list. */
-    struct songnode *tail;  /**< The last item in the list. */
-    int size;               /**< The number of items in the list. */
+    struct songnode *head; /**< The first item in the list. */
+    struct songnode *tail; /**< The last item in the list. */
+    int size;              /**< The number of items in the list. */
 };
 
 /**
  * @brief Holds information about the current MPD server connection.
- * 
+ *
  * This struct contains information about the current MPD server connection.
  * With this struct, we are able to keep track of the connection state
  * without having to make continual (often unnecessary) server requests.
  */
 struct mpdwrapper {
-    struct mpd_connection *connection;  /**< The MPD server connection. */
-    struct mpd_status *status;          /**< Holds info about MPD's status. */
-    struct mpd_song *current_song;      /**< The currently playing song. */
-    struct songlist *queue;             /**< A songlist struct representing the current play queue. */
-    enum mpd_error last_error;          /**< The most recent error encountered by MPD. */
-    enum mpd_state state;               /**< Current player state (playing, paused, or stopped). */
-    int queue_version;                  /**< The queue version number. Useful for checking if queue has changed. */
-    bool queue_changed;                 /**< Whether the queue has changed since the last refresh. */
+    struct mpd_connection *connection; /**< The MPD server connection. */
+    struct mpd_status *status;         /**< Holds info about MPD's status. */
+    struct mpd_song *current_song;     /**< The currently playing song. */
+    struct songlist *queue;    /**< A songlist struct representing the current play queue. */
+    enum mpd_error last_error; /**< The most recent error encountered by MPD. */
+    enum mpd_state state;      /**< Current player state (playing, paused, or stopped). */
+    int queue_version;  /**< The queue version number. Useful for checking if queue has changed. */
+    bool queue_changed; /**< Whether the queue has changed since the last refresh. */
 };
 
 struct songnode *songnode_new(struct mpd_song *song);
