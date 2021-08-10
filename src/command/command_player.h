@@ -19,15 +19,15 @@
 
 /**
  * @brief Functions that control MPD playback.
- * 
+ *
  */
 
 #ifndef COMMAND_PLAYER_H
 #define COMMAND_PLAYER_H
 
-#include "command.h"
 #include "../mpdwrapper/mpdwrapper.h"
 #include "../ui/statusbar.h"
+#include "command.h"
 
 void toggle_pause(struct mpd_connection *connection);
 void start_playback(int id);

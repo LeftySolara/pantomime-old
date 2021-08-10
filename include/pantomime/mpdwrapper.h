@@ -24,8 +24,9 @@
 #ifndef MPDWRAPPER_H
 #define MPDWRAPPER_H
 
-#include "pantomime/stringlist.h"
 #include <mpd/client.h>
+
+#include "pantomime/stringlist.h"
 
 struct mpdwrapper;
 struct songlist;

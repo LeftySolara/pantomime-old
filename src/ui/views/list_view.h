@@ -27,29 +27,29 @@
 
 #include <ncurses.h>
 
-
 struct list_view_item {
-    char *text;     /**< The text to display for this item. */
-    int bold;       /**< Whether to print the text in bold. */
-    int highlight;  /**< Whether this item should be highlighted. */
+    char *text;    /**< The text to display for this item. */
+    int bold;      /**< Whether to print the text in bold. */
+    int highlight; /**< Whether this item should be highlighted. */
 
-    struct list_view_item *prev;    /**< The next item in the list. */
-    struct list_view_item *next;    /**< The previous item in the list. */
+    struct list_view_item *prev; /**< The next item in the list. */
+    struct list_view_item *next; /**< The previous item in the list. */
 };
 
 struct list_view {
-    WINDOW *win;    /**< The ncurses window to draw on. */
+    WINDOW *win; /**< The ncurses window to draw on. */
 
-    struct list_view_item *head;        /**< The first item in the list. */
-    struct list_view_item *tail;        /**< The last item in the list. */
-    struct list_view_item *selected;    /**< The currently selected item. */
+    struct list_view_item *head;     /**< The first item in the list. */
+    struct list_view_item *tail;     /**< The last item in the list. */
+    struct list_view_item *selected; /**< The currently selected item. */
 
-    struct list_view_item *top_visible;     /**< Topmost visible item in the list. */
-    struct list_view_item *bottom_visible;  /**< Bottommost visible item in the list. */
+    struct list_view_item *top_visible;    /**< Topmost visible item in the list. */
+    struct list_view_item *bottom_visible; /**< Bottommost visible item in the list. */
 
-    int item_count;     /**< The number of items in the list. */
-    int idx_selected;   /**< The index of the currently selected item. */
-    int max_visible;    /**< Max number of items that can be displayed with the current window dimensions. */
+    int item_count;   /**< The number of items in the list. */
+    int idx_selected; /**< The index of the currently selected item. */
+    int max_visible;  /**< Max number of items that can be displayed with the current window
+                         dimensions. */
 
     const struct list_view_operations *lv_ops; /* Callbacks for list view. */
 };
@@ -75,7 +75,6 @@ struct list_view_operations {
 
     void (*lv_draw)(struct list_view *);
 };
-
 
 struct list_view_item *list_view_item_new(char *text);
 void list_view_item_initialize(struct list_view_item *this, char *text);

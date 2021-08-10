@@ -22,6 +22,7 @@
  */
 
 #include "command_global.h"
+
 #include "../ui/statusbar.h"
 
 /**
@@ -31,7 +32,7 @@
 void update_mpd_database(struct mpdwrapper *mpd, struct ui *ui)
 {
     statusbar_set_notification(ui->statusbar, "Starting database update...", 3);
-    
+
     int rc = mpdwrapper_update_db(mpd);
     char *msg = (rc > 0) ? "Music database updated successfully" : "Error updating music database";
 
@@ -41,19 +42,19 @@ void update_mpd_database(struct mpdwrapper *mpd, struct ui *ui)
 void cmd_global(enum command_type cmd, struct mpdwrapper *mpd, struct ui *ui)
 {
     switch (cmd) {
-    case CMD_PANEL_HELP:
-        ui_set_visible_panel(ui, HELP);
-        break;
-    case CMD_PANEL_QUEUE:
-        ui_set_visible_panel(ui, QUEUE);
-        break;
-    case CMD_PANEL_LIBRARY:
-        ui_set_visible_panel(ui, LIBRARY);
-        break;
-    case CMD_DB_UPDATE:
-        update_mpd_database(mpd, ui);
-        break;
-    default:
-        break;
+        case CMD_PANEL_HELP:
+            ui_set_visible_panel(ui, HELP);
+            break;
+        case CMD_PANEL_QUEUE:
+            ui_set_visible_panel(ui, QUEUE);
+            break;
+        case CMD_PANEL_LIBRARY:
+            ui_set_visible_panel(ui, LIBRARY);
+            break;
+        case CMD_DB_UPDATE:
+            update_mpd_database(mpd, ui);
+            break;
+        default:
+            break;
     }
 }

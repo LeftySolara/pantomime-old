@@ -59,10 +59,10 @@ enum command_type {
 };
 
 struct command {
-    enum command_type cmd;  /** The type of command to execute. */
-    int keys[MAX_KEYS];     /** The keys bound to the command. */
-    char *name;             /** The name of the command. */
-    char *description;      /** Brief description of what the command does. */
+    enum command_type cmd; /** The type of command to execute. */
+    int keys[MAX_KEYS];    /** The keys bound to the command. */
+    char *name;            /** The name of the command. */
+    char *description;     /** Brief description of what the command does. */
 };
 
 enum command_type find_key_command(int key);

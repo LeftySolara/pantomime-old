@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "command.h"
 #include "../ui/ui.h"
+#include "command.h"
 
 void update_mpd_database(struct mpdwrapper *mpd, struct ui *ui);
 

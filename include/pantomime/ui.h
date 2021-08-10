@@ -28,13 +28,12 @@
 
 struct ui;
 
-enum ui_panel {HELP, QUEUE, LIBRARY, NUM_PANELS};
+enum ui_panel { HELP, QUEUE, LIBRARY, NUM_PANELS };
 
 struct ui *ui_new(struct mpdwrapper *mpd);
 void ui_free(struct ui *ui);
 
 void ui_draw(struct ui *ui, struct mpdwrapper *mpd);
 void ui_set_visible_panel(struct ui *ui, enum ui_panel panel);
-
 
 #endif /* UI_H */

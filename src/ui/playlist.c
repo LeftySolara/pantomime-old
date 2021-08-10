@@ -27,7 +27,7 @@
 
 /**
  * @brief Creates a new item to use in a playlist.
- * 
+ *
  * @param artist The song's artist.
  * @param title  The song's title.
  * @param album  The song's album.
@@ -35,7 +35,8 @@
  * @param id     The song's MPD id.
  * @return       Pointer to a playlist item, or NULL on error.
  */
-struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time, unsigned id)
+struct playlist_item *playlist_item_init(char *artist, char *title, char *album, int time,
+                                         unsigned id)
 {
     struct playlist_item *item = malloc(sizeof(*item));
     if (!item)
@@ -72,7 +73,7 @@ void playlist_item_free(struct playlist_item *item)
 
 /**
  * @brief Creates a new (empty) playlist UI that draws on the specified window.
- * 
+ *
  * @param win The ncurses window to draw the playlist on.
  * @return    Pointer to a new playlist struct, or NULL on error.
  */
@@ -90,7 +91,7 @@ struct playlist *playlist_init(WINDOW *win)
 
     playlist->top_visible = NULL;
     playlist->bottom_visible = NULL;
-    
+
     playlist->length = 0;
     playlist->idx_last_top = -1;
     playlist->idx_selected = -1;
@@ -115,7 +116,7 @@ void playlist_append(struct playlist *playlist, struct playlist_item *item)
 {
     if (!playlist || !item)
         return;
-    
+
     if (!playlist->head) {
         playlist->head = item;
         playlist->selected = item;
@@ -135,11 +136,11 @@ void playlist_append(struct playlist *playlist, struct playlist_item *item)
 
 /**
  * @brief Removes the currently selected song from the playlist.
- * 
+ *
  * This function removes the selected song's entry from the playlist display.
  * This is meant to be used alongside mpdwrapper_delete_from_queue(), which
  * tells the MPD connection to remove the song on the back-end.
- * 
+ *
  * @return True on success, or false on error.
  */
 bool playlist_remove_selected(struct playlist *playlist)
@@ -261,7 +262,7 @@ void playlist_set_selected(struct playlist *playlist, int idx)
 {
     if (idx < 0 || idx >= playlist->length)
         return;
-    
+
     struct playlist_item *current = playlist->head;
     for (int i = 0; i < idx; ++i)
         current = current->next;
@@ -348,7 +349,7 @@ void playlist_select_bottom_visible(struct playlist *playlist)
 {
     if (!playlist || playlist->selected == playlist->bottom_visible)
         return;
-    
+
     struct playlist_item *current = playlist->selected;
     current->highlight = 0;
 
@@ -472,10 +473,10 @@ void playlist_restore_last_top(struct playlist *playlist)
 
 /**
  * @brief Finds the playlist item at the given index.
- * 
+ *
  * @param playlist The playlist to search.
  * @param idx The index to check.
- * @return struct playlist_item* 
+ * @return struct playlist_item*
  */
 struct playlist_item *playlist_at(struct playlist *playlist, int index)
 {
@@ -484,7 +485,7 @@ struct playlist_item *playlist_at(struct playlist *playlist, int index)
 
     if (index == 0)
         return playlist->head;
-    if (index == playlist->length-1)
+    if (index == playlist->length - 1)
         return playlist->tail;
 
     struct playlist_item *current = playlist->head;
@@ -497,7 +498,7 @@ struct playlist_item *playlist_at(struct playlist *playlist, int index)
 
 /**
  * @brief Draws a playlist item on the specified window.
- * 
+ *
  * @param item          The item to draw.
  * @param win           The window to draw on.
  * @param y             The y-position for drawing.
@@ -515,7 +516,8 @@ void playlist_item_draw(struct playlist_item *item, WINDOW *win, unsigned y, uns
     mvwprintw(win, y, 0, "%.*s\n", field_width - 2, item->artist);
     mvwprintw(win, y, field_width + 1, "%.*s\n", field_width - 2, item->title);
     mvwprintw(win, y, (field_width * 2) + 1, "%.*s\n", field_width - 2, item->album);
-    mvwprintw(win, y, maxx - 8, "%d:%02d\n", item->time / 60, item->time % 60); /* "Length" column has a fixed width */
+    mvwprintw(win, y, maxx - 8, "%d:%02d\n", item->time / 60,
+              item->time % 60); /* "Length" column has a fixed width */
 
     if (item->highlight)
         mvwchgat(win, y, 0, -1, A_STANDOUT, 0, NULL);
@@ -525,7 +527,7 @@ void playlist_item_draw(struct playlist_item *item, WINDOW *win, unsigned y, uns
 
 /**
  * @brief Draws the playlist header.
- * 
+ *
  * @param playlist      The playlist whose header to draw.
  * @param field_width   The number of characters in each column.
  */
@@ -543,7 +545,7 @@ void playlist_deaw_header(struct playlist *playlist, unsigned field_width)
 
 /**
  * @brief Draws a playlist on the screen.
- * 
+ *
  * @param playlist      The playlist to draw.
  * @param playing_id    The MPD id of the currently playing song.
  */
@@ -560,14 +562,13 @@ void playlist_draw(struct playlist *playlist, unsigned playing_id)
     if (!playlist->selected)
         playlist_select_top_visible(playlist);
 
-
     /* Trying to draw the whole list at once and scrolling thorugh it
      * doesn't work because drawing past the bounds of an ncurses window
      * does nothing (this can kind of work with an ncurses pad, but that doesn't
      * allow for list selection, navigation, and manipulation in the way we want).
      * Because of this, it's more efficient to just worry about the items
      * that are currently visible and redraw manually when there's a change.
-     * 
+     *
      * Since we know which item is displayed at the top and have the window dimensions,
      * we can figure out which item will be the last one visible and only draw
      * the ones in that range.
@@ -581,7 +582,7 @@ void playlist_draw(struct playlist *playlist, unsigned playing_id)
             current->bold = 1;
         else
             current->bold = 0;
-        
+
         playlist_item_draw(current, playlist->win, y++, field_width);
         current = current->next;
     }
