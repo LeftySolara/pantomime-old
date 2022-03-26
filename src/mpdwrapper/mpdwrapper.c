@@ -1,7 +1,7 @@
 /*******************************************************************************
  * mpdwrapper.c
  *******************************************************************************
- * Copyright (C) 2019-2021  Jalen Adams
+ * Copyright (C) 2019-2022 Julianne Adams
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
