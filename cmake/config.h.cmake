@@ -11,4 +11,6 @@
 
 #define PANTOMIME_VERSION_PATCH "@PROJECT_VERSION_PATCH@"
 
+#define PANTOMIME_BUG_ADDRESS "<julianne@julianneadams.info"
+
 #endif
