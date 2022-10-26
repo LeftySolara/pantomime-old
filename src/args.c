@@ -26,24 +26,6 @@
 #include "config.h"
 
 /**
- * @brief Get the current program version.
- *
- * @return char* Pointer to the newly-allocated string containing the version number.
- *
- * This function fetches the current version number from the CMake build system.
- * The space for the output string is allocated as if malloc() were called.
- * To avoid memory leaks, the output string must be passed to free().
- */
-char *get_program_version(void)
-{
-    size_t bufsz = strlen("Pantomime 0.0.0");
-    char *version = malloc(sizeof(char) * bufsz);
-    snprintf(version, bufsz + 1, "%s %s", PROJECT, PANTOMIME_VERSION);
-
-    return version;
-}
-
-/**
  * @brief Parse a single option.
  */
 error_t parse_opt(int key, char *arg, struct argp_state *state)

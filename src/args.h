@@ -31,8 +31,6 @@ struct args {
     int timeout;
 };
 
-char *get_program_version(void);
-
 error_t parse_opt(int key, char *arg, struct argp_state *state);
 
 struct args parse_args(int argc, char **argv);
