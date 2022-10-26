@@ -23,6 +23,10 @@
 #include <string.h>
 
 #include "args.h"
+#include "config.h"
+
+const char *argp_program_version = PANTOMIME_VERSION_NAMED;
+const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
 
 int main(int argc, char **argv)
 {

@@ -22,8 +22,6 @@
 
 #include <argp.h>
 
-#include "config.h"
-
 /* Used by main() to communicate with parse_opt. */
 struct args {
     char *arg1;
@@ -32,9 +30,6 @@ struct args {
     int port;
     int timeout;
 };
-
-// const char *argp_program_version = PANTOMIME_VERSION;
-// const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
 
 char *get_program_version(void);
 
