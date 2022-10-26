@@ -1,5 +1,5 @@
 /*******************************************************************************
- * pantomime.c
+ * args.h
  *******************************************************************************
  * Copyright (C) 2017-2022  Julianne Adams
  *
@@ -17,21 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+#ifndef ARGS_H
+#define ARGS_H
+
 #include <argp.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include "args.h"
-#include "config.h"
+/* Used by main() to communicate with parse_opt. */
+struct args {
+    char *arg1;
+    char **strings;
+    char *host;
+    int port;
+    int timeout;
+};
 
-const char *argp_program_version = PANTOMIME_VERSION_NAMED;
-const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
+error_t parse_opt(int key, char *arg, struct argp_state *state);
 
-int main(int argc, char **argv)
-{
-    struct args args = parse_args(argc, argv);
-    printf("%s %d %d\n", args.host, args.port, args.timeout);
+struct args parse_args(int argc, char **argv);
 
-    return 0;
-}
+#endif /* ARGS_H */
