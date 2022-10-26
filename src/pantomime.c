@@ -18,6 +18,8 @@
  ******************************************************************************/
 
 #include <argp.h>
+#include <mpd/client.h>
+#include <mpd/error.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +33,15 @@ const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
 int main(int argc, char **argv)
 {
     struct args args = parse_args(argc, argv);
-    printf("%s %d %d\n", args.host, args.port, args.timeout);
+    struct mpd_connection *connection = mpd_connection_new(args.host, args.port, args.timeout);
+
+    if (mpd_connection_get_error(connection) != MPD_ERROR_SUCCESS) {
+        fprintf(stderr, "MPD error: %s\n", mpd_connection_get_error_message(connection));
+        exit(1);
+    }
+
+    printf("Connected to MPD at %s\n", args.host);
+    mpd_connection_free(connection);
 
     return 0;
 }
