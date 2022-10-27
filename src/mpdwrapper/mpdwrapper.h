@@ -1,5 +1,5 @@
 /*******************************************************************************
- * pantomime.c
+ * mpdwrapper.h
  *******************************************************************************
  * Copyright (C) 2017-2022  Julianne Adams
  *
@@ -17,36 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include <argp.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+/**
+ * @file mpdwrapper.h
+ */
 
-#include "args.h"
-#include "config.h"
-#include "mpdwrapper/mpdwrapper.h"
+#ifndef MPDWRAPPER_H
+#define MPDWRAPPER_H
 
-const char *argp_program_version = PANTOMIME_VERSION_NAMED;
-const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
+#include <mpd/client.h>
+#include <mpd/error.h>
 
-int main(int argc, char **argv)
-{
-    struct args args = parse_args(argc, argv);
+/**
+ * @brief A wrapper for an MPD server connection.
+ *
+ * This struct contains information about an MPD server connection.
+ * With this struct, we are able to keep track of connection state
+ * and other information without having to constantly make unnecessary
+ * server requests.
+ */
+struct mpdwrapper {
+    struct mpd_connection *connection; /**< The MPD server connection. */
+    enum mpd_error last_error;         /**< The most recent error encountered by MPD. */
+};
 
-    struct mpdwrapper *mpd = mpdwrapper_init(args.host, args.port, args.timeout);
-    if (!mpd) {
-        fprintf(stderr, "Could not allocate memory for MPD connection.\n");
-        exit(1);
-    }
-    if (mpd->last_error != MPD_ERROR_SUCCESS) {
-        fprintf(stderr, "MPD error: %s\n", mpdwrapper_get_last_error_message(mpd));
-        mpdwrapper_free(mpd);
-        exit(mpd->last_error);
-    }
+struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout);
+void mpdwrapper_free(struct mpdwrapper *mpd);
 
-    printf("Connected to mpd at %s\n", args.host);
+const char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd);
 
-    mpdwrapper_free(mpd);
-
-    return 0;
-}
+#endif /* MPDWRAPPER_H */
