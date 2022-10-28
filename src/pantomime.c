@@ -29,11 +29,18 @@
 const char *argp_program_version = PANTOMIME_VERSION_NAMED;
 const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
 
-int main(int argc, char **argv)
-{
-    struct args args = parse_args(argc, argv);
+/**
+ * @brief Set the up mpd object.
+ *
+ * @param host The hostname, IP address, or UNIX socket of the MPD server.
+ * @param port The TCP port to connect to, if using an IP address.
+ * @param timeout The timeout in milliseconds.
 
-    struct mpdwrapper *mpd = mpdwrapper_init(args.host, args.port, args.timeout);
+ * @return A pointer to a new mpdwrapper object.
+ */
+struct mpdwrapper *setup_mpd(const char *host, int port, int timeout)
+{
+    struct mpdwrapper *mpd = mpdwrapper_init(host, port, timeout);
     if (!mpd) {
         fprintf(stderr, "Could not allocate memory for MPD connection.\n");
         exit(1);
@@ -44,6 +51,13 @@ int main(int argc, char **argv)
         exit(mpd->last_error);
     }
 
+    return mpd;
+}
+
+int main(int argc, char **argv)
+{
+    struct args args = parse_args(argc, argv);
+    struct mpdwrapper *mpd = setup_mpd(args.host, args.port, args.timeout);
     printf("Connected to mpd at %s\n", args.host);
 
     mpdwrapper_free(mpd);
