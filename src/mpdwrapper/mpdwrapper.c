@@ -1,5 +1,5 @@
 /*******************************************************************************
- * pantomime.c
+ * mpdwrapper.c
  *******************************************************************************
  * Copyright (C) 2017-2022  Julianne Adams
  *
@@ -17,50 +17,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include <argp.h>
-#include <stdio.h>
+/**
+ * @file mpdwrapper.h
+ */
+
 #include <stdlib.h>
-#include <string.h>
 
-#include "args.h"
-#include "config.h"
-#include "mpdwrapper/mpdwrapper.h"
-
-const char *argp_program_version = PANTOMIME_VERSION_NAMED;
-const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
+#include "mpdwrapper.h"
 
 /**
- * @brief Set the up mpd object.
+ * @brief Connect to MPD and create an mpdwrapper object.
  *
  * @param host The hostname, IP address, or UNIX socket of the MPD server.
  * @param port The TCP port to connect to, if using an IP address.
  * @param timeout The timeout in milliseconds.
 
- * @return A pointer to a new mpdwrapper object.
+ * @return A pointer to the newly-allocated mpdwrapper object.
  */
-struct mpdwrapper *setup_mpd(const char *host, int port, int timeout)
+struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout)
 {
-    struct mpdwrapper *mpd = mpdwrapper_init(host, port, timeout);
+    struct mpdwrapper *mpd = malloc(sizeof(*mpd));
     if (!mpd) {
-        fprintf(stderr, "Could not allocate memory for MPD connection.\n");
-        exit(1);
+        return NULL;
     }
-    if (mpd->last_error != MPD_ERROR_SUCCESS) {
-        fprintf(stderr, "MPD error: %s\n", mpdwrapper_get_last_error_message(mpd));
-        mpdwrapper_free(mpd);
-        exit(mpd->last_error);
-    }
+
+    mpd->connection = mpd_connection_new(host, port, timeout);
+    mpd->last_error = mpd_connection_get_error(mpd->connection);
 
     return mpd;
 }
 
-int main(int argc, char **argv)
+/**
+ * @brief Disconnect from MPD and destroy an mpdwrapper object.
+ *
+ * @param mpd The connection to destroy.
+ */
+void mpdwrapper_free(struct mpdwrapper *mpd)
 {
-    struct args args = parse_args(argc, argv);
-    struct mpdwrapper *mpd = setup_mpd(args.host, args.port, args.timeout);
-    printf("Connected to mpd at %s\n", args.host);
+    mpd_connection_free(mpd->connection);
+    free(mpd);
+}
 
-    mpdwrapper_free(mpd);
-
-    return 0;
+/**
+ * @brief Get the most recent error message produced by MPD.
+ *
+ * @param mpd The MPD connection to check.
+ * @return The most recent error message from an MPD connection.
+ */
+const char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd)
+{
+    return mpd_connection_get_error_message(mpd->connection);
 }
