@@ -18,6 +18,7 @@
  ******************************************************************************/
 
 #include <argp.h>
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,7 +59,12 @@ int main(int argc, char **argv)
 {
     struct args args = parse_args(argc, argv);
     struct mpdwrapper *mpd = setup_mpd(args.host, args.port, args.timeout);
-    printf("Connected to mpd at %s\n", args.host);
+
+    initscr();
+    printw("Connected to mpd at %s\n", mpdwrapper_get_host(mpd));
+    refresh();
+    getch();
+    endwin();
 
     mpdwrapper_free(mpd);
 

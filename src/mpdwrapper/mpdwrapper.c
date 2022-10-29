@@ -59,6 +59,19 @@ void mpdwrapper_free(struct mpdwrapper *mpd)
 }
 
 /**
+ * @brief Get the hostname of the current MPD connection.
+ *
+ * @param mpd The MPD connection to check.
+
+ * @return A string containing the name of the connection host.
+ */
+const char *mpdwrapper_get_host(struct mpdwrapper *mpd)
+{
+    const struct mpd_settings *settings = mpd_connection_get_settings(mpd->connection);
+    return mpd_settings_get_host(settings);
+}
+
+/**
  * @brief Get the most recent error message produced by MPD.
  *
  * @param mpd The MPD connection to check.
