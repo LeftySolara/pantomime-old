@@ -1,5 +1,5 @@
 /*******************************************************************************
- * mpdwrapper.h
+ * ui.h
  *******************************************************************************
  * Copyright (C) 2017-2022  Julianne Adams
  *
@@ -18,33 +18,26 @@
  ******************************************************************************/
 
 /**
- * @file mpdwrapper.h
+ * @file ui.h
  */
 
-#ifndef MPDWRAPPER_H
-#define MPDWRAPPER_H
+#ifndef UI_H
+#define UI_H
 
-#include <mpd/client.h>
-#include <mpd/error.h>
+#include <curses.h>
+#include <panel.h>
 
-/**
- * @brief A wrapper for an MPD server connection.
- *
- * This struct contains information about an MPD server connection.
- * With this struct, we are able to keep track of connection state
- * and other information without having to constantly make unnecessary
- * server requests.
- */
-struct mpdwrapper {
-    struct mpd_connection *connection; /**< The MPD server connection. */
-    enum mpd_error last_error;         /**< The most recent error encountered by MPD. */
+enum ui_panel { HELP, QUEUE, LIBRARY, NUM_PANELS };
+
+struct ui {
+    PANEL **panels;
+    enum ui_panel visible_panel;
 };
 
-struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout);
-void mpdwrapper_free(struct mpdwrapper *mpd);
+struct ui *ui_init(void);
+void ui_free(struct ui *ui);
 
-const char *mpdwrapper_get_host(struct mpdwrapper *mpd);
+void start_ncurses(void);
+void stop_ncurses(void);
 
-const char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd);
-
-#endif /* MPDWRAPPER_H */
+#endif

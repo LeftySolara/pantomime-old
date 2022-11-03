@@ -1,5 +1,5 @@
 /*******************************************************************************
- * mpdwrapper.h
+ * ui.c
  *******************************************************************************
  * Copyright (C) 2017-2022  Julianne Adams
  *
@@ -18,33 +18,51 @@
  ******************************************************************************/
 
 /**
- * @file mpdwrapper.h
+ * @file ui.h
  */
 
-#ifndef MPDWRAPPER_H
-#define MPDWRAPPER_H
+#include <curses.h>
+#include <locale.h>
+#include <stdlib.h>
 
-#include <mpd/client.h>
-#include <mpd/error.h>
+#include "ui.h"
+
+struct ui *ui_init(void)
+{
+    struct ui *ui = malloc(sizeof(*ui));
+    // TODO: Create panels
+
+    start_ncurses();
+    return ui;
+}
+
+void ui_free(struct ui *ui)
+{
+    // TODO: destroy panels
+    free(ui->panels);
+    free(ui);
+}
 
 /**
- * @brief A wrapper for an MPD server connection.
- *
- * This struct contains information about an MPD server connection.
- * With this struct, we are able to keep track of connection state
- * and other information without having to constantly make unnecessary
- * server requests.
+ * @brief Set up the NCURSES interface for the program.
  */
-struct mpdwrapper {
-    struct mpd_connection *connection; /**< The MPD server connection. */
-    enum mpd_error last_error;         /**< The most recent error encountered by MPD. */
-};
+void start_ncurses(void)
+{
+    setlocale(LC_ALL, "");
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+    nodelay(stdscr, TRUE);
+    keypad(stdscr, TRUE);
+    refresh();
+}
 
-struct mpdwrapper *mpdwrapper_init(const char *host, int port, int timeout);
-void mpdwrapper_free(struct mpdwrapper *mpd);
-
-const char *mpdwrapper_get_host(struct mpdwrapper *mpd);
-
-const char *mpdwrapper_get_last_error_message(struct mpdwrapper *mpd);
-
-#endif /* MPDWRAPPER_H */
+/**
+ * @brief Stop NCURSES
+ *
+ */
+void stop_ncurses(void)
+{
+    endwin();
+}
