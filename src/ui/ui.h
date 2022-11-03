@@ -20,3 +20,24 @@
 /**
  * @file ui.h
  */
+
+#ifndef UI_H
+#define UI_H
+
+#include <curses.h>
+#include <panel.h>
+
+enum ui_panel { HELP, QUEUE, LIBRARY, NUM_PANELS };
+
+struct ui {
+    PANEL **panels;
+    enum ui_panel visible_panel;
+};
+
+struct ui *ui_init(void);
+void ui_free(struct ui *ui);
+
+void start_ncurses(void);
+void stop_ncurses(void);
+
+#endif

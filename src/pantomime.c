@@ -18,7 +18,6 @@
  ******************************************************************************/
 
 #include <argp.h>
-#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +25,7 @@
 #include "args.h"
 #include "config.h"
 #include "mpdwrapper/mpdwrapper.h"
+#include "ui/ui.h"
 
 const char *argp_program_version = PANTOMIME_VERSION_NAMED;
 const char *argp_program_bug_address = PANTOMIME_BUG_ADDRESS;
@@ -60,11 +60,11 @@ int main(int argc, char **argv)
     struct args args = parse_args(argc, argv);
     struct mpdwrapper *mpd = setup_mpd(args.host, args.port, args.timeout);
 
-    initscr();
+    start_ncurses();
     printw("Connected to mpd at %s\n", mpdwrapper_get_host(mpd));
     refresh();
     getch();
-    endwin();
+    stop_ncurses();
 
     mpdwrapper_free(mpd);
 
