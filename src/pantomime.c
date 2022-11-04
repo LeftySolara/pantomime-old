@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "args.h"
+#include "command/command.h"
 #include "config.h"
 #include "mpdwrapper/mpdwrapper.h"
 #include "ui/ui.h"
@@ -63,10 +64,17 @@ int main(int argc, char **argv)
     start_ncurses();
     printw("Connected to mpd at %s\n", mpdwrapper_get_host(mpd));
     refresh();
-    getch();
-    stop_ncurses();
 
+    int ch;
+    enum command_type cmd = CMD_NULL;
+
+    while (cmd != CMD_QUIT) {
+        ch = getch();
+        cmd = find_key_command(ch);
+    }
+
+    stop_ncurses();
     mpdwrapper_free(mpd);
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }
