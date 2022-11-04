@@ -1,1 +1,1 @@
-add_library(command command.c)
+add_library(command STATIC command.c)

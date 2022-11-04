@@ -24,4 +24,22 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+#define MAX_KEYS 3 /* The maximum number of keys a command can be mapped to. */
+
+enum command_type { CMD_NULL, CMD_QUIT, NUM_COMMANDS };
+
+struct command {
+    enum command_type type; /** The type of the command. */
+    int keys[MAX_KEYS];     /** The keys mapped to the command. */
+    char *name;             /** The user-friendly name of the command. */
+    char *description;      /** A brief description of whet the command does. */
+};
+
+enum command_type find_key_command(int key);
+
+char *get_command_keys(enum command_type command_type);
+char *get_command_description(enum command_type command_type);
+
+char *key_to_str(int key);
+
 #endif /* COMMAND_H */
