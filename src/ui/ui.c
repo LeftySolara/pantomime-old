@@ -23,6 +23,7 @@
 
 #include <curses.h>
 #include <locale.h>
+#include <panel.h>
 #include <stdlib.h>
 
 #include "ui.h"
@@ -65,4 +66,50 @@ void start_ncurses(void)
 void stop_ncurses(void)
 {
     endwin();
+}
+
+/**
+ * @brief Create ncurses panels with the specified width and height.
+ *
+ * @param num_panels The number of panels to create.
+ * @param height The height of the panels.
+ * @param width The width of the panels.
+ *
+ * @return An array of pointers to the created panels.
+ *
+ * The create_panels() function creates the number of specified ncurses
+ * panels. These panels are where windows are drawn and are meant to be
+ * viewed only one at a time. Users are able to switch between different
+ * panels using keyboard commands.
+ *
+ * Space for the panels is allocated as if malloc() had been called.
+ * To avoid memory leaks, the pointer returned from this function
+ * must be passed to destroy_panels().
+ */
+PANEL **create_panels(int num_panels, int height, int width)
+{
+    PANEL **panels = malloc(sizeof(PANEL *) * num_panels);
+    WINDOW *win;
+
+    for (int i = 0; i < num_panels; ++i) {
+        win = newwin(height, width, 0, 0);
+        panels[i] = new_panel(win);
+    }
+
+    return panels;
+}
+
+/**
+ * @brief Free memory used by panels.
+ *
+ * @param panels An array of PANEL pointers to free.
+ * @param num_panels The size of the array.
+ */
+void destroy_panels(PANEL **panels, int num_panels)
+{
+    for (int i = 0; i < num_panels; ++i) {
+        delwin(panel_window(panels[i]));
+        del_panel(panels[i]);
+    }
+    free(panels);
 }

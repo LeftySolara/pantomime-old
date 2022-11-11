@@ -40,4 +40,7 @@ void ui_free(struct ui *ui);
 void start_ncurses(void);
 void stop_ncurses(void);
 
+PANEL **create_panels(int num_panels, int width, int height);
+void destroy_panels(PANEL **panels, int num_panels);
+
 #endif
