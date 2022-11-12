@@ -32,6 +32,9 @@ enum ui_panel { HELP, QUEUE, LIBRARY, NUM_PANELS };
 struct ui {
     PANEL **panels;
     enum ui_panel visible_panel;
+
+    int maxx;
+    int maxy;
 };
 
 struct ui *ui_init(void);

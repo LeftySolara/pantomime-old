@@ -31,16 +31,23 @@
 struct ui *ui_init(void)
 {
     struct ui *ui = malloc(sizeof(*ui));
-    // TODO: Create panels
+    if (!ui) {
+        return NULL;
+    }
 
     start_ncurses();
+
+    getmaxyx(stdscr, ui->maxy, ui->maxx);
+    ui->panels = create_panels(NUM_PANELS, ui->maxy - 2, ui->maxx);
+    ui->visible_panel = QUEUE;
+    top_panel(ui->panels[ui->visible_panel]);
+
     return ui;
 }
 
 void ui_free(struct ui *ui)
 {
-    // TODO: destroy panels
-    free(ui->panels);
+    destroy_panels(ui->panels, NUM_PANELS);
     free(ui);
 }
 
